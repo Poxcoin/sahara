@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_name }} — Твій стиль. Твоя впевненість.{% endblock %}</title>
+
+    <!-- EXACT fonts from base44 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============ EXACT base44 design tokens ============ */
+        :root {
+            /* HSL values from base44 index.css */
+            --background: 40 20% 97%;
+            --foreground: 0 0% 10%;
+            --card: 40 20% 98%;
+            --card-foreground: 0 0% 10%;
+            --primary: 0 0% 10%;
+            --primary-foreground: 40 20% 97%;
+            --secondary: 40 15% 93%;
+            --secondary-foreground: 0 0% 10%;
+            --muted: 40 10% 93%;
+            --muted-foreground: 0 0% 45%;
+            --accent: 39 42% 60%;
+            --accent-foreground: 0 0% 10%;
+            --border: 40 10% 88%;
+            --input: 40 10% 88%;
+            --ring: 39 42% 60%;
+            --radius: 0.25rem;
+
+            --gold: 39 42% 60%;
+            --silver: 210 2% 75%;
+
+            --font-heading: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', system-ui, sans-serif;
+
+            /* Letter-spacings from tailwind.config */
+            --tracking-sahara: 0.35em;
+            --tracking-wide-xl: 0.15em;
+
+            --container: 1440px;
+            --bottom-nav-h: 64px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            font-weight: 300;
+            color: hsl(var(--foreground));
+            background: hsl(var(--background));
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            padding-top: 64px; /* sticky header height */
+            padding-bottom: var(--bottom-nav-h);
+        }
+        @media (min-width: 640px) { body { padding-top: 80px; } }
+        @media (min-width: 1280px) { body { padding-bottom: 0; } }
+
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        img { display: block; max-width: 100%; }
+        input, textarea { font-family: inherit; }
+
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 400; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: hsl(var(--gold)); border-radius: 2px; }
+
+        /* ============ UTILITY CLASSES (Tailwind-like) ============ */
+        .container { max-width: var(--container); margin: 0 auto; padding-left: 16px; padding-right: 16px; }
+        @media (min-width: 640px) { .container { padding-left: 32px; padding-right: 32px; } }
+        @media (min-width: 1024px) { .container { padding-left: 48px; padding-right: 48px; } }
+
+        .tracking-sahara { letter-spacing: var(--tracking-sahara); }
+        .tracking-wide-xl { letter-spacing: var(--tracking-wide-xl); }
+
+        .text-gold { color: hsl(var(--gold)); }
+        .bg-gold { background: hsl(var(--gold)); }
+        .border-gold { border-color: hsl(var(--gold)); }
+        .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+
+        /* ============ HEADER ============ */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 50;
+            transition: all .5s ease;
+            background: transparent;
+        }
+        .header.scrolled {
+            background: hsla(40, 20%, 97%, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 1px 3px rgba(0,0,0,.04);
+        }
+        .header-gold-line {
+            height: 1px;
+            background: linear-gradient(to right, transparent, hsla(39, 42%, 60%, 0.3), transparent);
+        }
+        .header-inner {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 16px;
+            position: relative;
+        }
+        @media (min-width: 640px) { .header-inner { padding: 0 32px; } }
+        @media (min-width: 1024px) { .header-inner { padding: 0 48px; } }
+
+        .header-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            height: 64px;
+        }
+        @media (min-width: 640px) { .header-row { height: 80px; } }
+
+        .header-left {
+            display: flex; align-items: center; gap: 8px;
+            justify-content: flex-start;
+        }
+        .header-right {
+            display: flex; align-items: center; gap: 20px;
+            justify-content: flex-end;
+        }
+
+        .header-burger {
+            padding: 8px; margin-left: -8px;
+            transition: color .2s; flex-shrink: 0;
+        }
+        .header-burger:hover { color: hsl(var(--gold)); }
+        @media (min-width: 1280px) { .header-burger { display: none; } }
+
+        .header-nav-desktop {
+            display: none; align-items: center; gap: 28px;
+        }
+        @media (min-width: 1280px) { .header-nav-desktop { display: flex; } }
+        .header-nav-desktop a {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide-xl);
+            font-weight: 300;
+            transition: color .3s;
+            white-space: nowrap;
+        }
+        .header-nav-desktop a:hover { color: hsl(var(--gold)); }
+
+        .header-logo {
+            text-align: center;
+        }
+        .header-logo h1 {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            letter-spacing: var(--tracking-sahara);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        @media (min-width: 640px) { .header-logo h1 { font-size: 24px; } }
+
+        .header-icons { display: flex; align-items: center; gap: 12px; }
+        @media (min-width: 640px) { .header-icons { gap: 20px; } }
+        .icon-btn {
+            padding: 6px;
+            transition: color .2s;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-btn:hover { color: hsl(var(--gold)); }
+        .icon-btn svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .icon-btn-mobile-hide { display: none; }
+        @media (min-width: 640px) { .icon-btn-mobile-hide { display: flex; } }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px; right: -4px;
+            width: 16px; height: 16px;
+            background: hsl(var(--gold));
+            color: hsl(var(--primary-foreground));
+            font-size: 9px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-body);
+            font-weight: 500;
+        }
+
+        /* ============ DRAWER (slide-out menu) ============ */
+        .overlay {
+            position: fixed; inset: 0;
+            background: hsla(0, 0%, 10%, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity .35s ease, visibility .35s;
+            z-index: 49;
+        }
+        .overlay.open { opacity: 1; visibility: visible; }
+
+        .drawer {
+            position: fixed; top: 0; bottom: 0; left: 0;
+            width: 300px; max-width: 85vw;
+            background: hsl(var(--background));
+            transform: translateX(-100%);
+            transition: transform .35s cubic-bezier(.2,.7,.2,1);
+            z-index: 50;
+            display: flex; flex-direction: column;
+        }
+        .drawer.open { transform: translateX(0); }
+        .drawer-head {
+            padding: 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
+        }
+        .drawer-logo {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            letter-spacing: var(--tracking-sahara);
+            font-weight: 500;
+        }
+        .drawer-nav {
+            flex: 1; padding: 24px;
+            display: flex; flex-direction: column;
+            gap: 24px;
+        }
+        .drawer-nav a {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide-xl);
+            font-weight: 300;
+            transition: color .3s;
+        }
+        .drawer-nav a:hover { color: hsl(var(--gold)); }
+        .drawer-foot {
+            padding: 24px;
+            border-top: 1px solid hsla(40, 10%, 88%, 0.5);
+            display: flex; gap: 24px;
+        }
+
+        /* ============ MOBILE BOTTOM NAV ============ */
+        .mobile-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            z-index: 50;
+            background: hsla(40, 20%, 97%, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid hsla(40, 10%, 88%, 0.3);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        @media (min-width: 1280px) { .mobile-nav { display: none; } }
+        .mobile-nav-inner {
+            display: flex; align-items: center; justify-content: space-around;
+            height: 64px;
+        }
+        .mobile-nav-item {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px;
+            padding: 8px 16px;
+            color: hsl(var(--muted-foreground));
+            transition: color .3s;
+        }
+        .mobile-nav-item:hover { color: hsl(var(--foreground)); }
+        .mobile-nav-item.active { color: hsl(var(--gold)); }
+        .mobile-nav-item svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .mobile-nav-item span {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ============ BUTTONS ============ */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0 40px;
+            height: 56px;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide-xl);
+            border-radius: 0;
+            transition: all .5s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            min-width: 220px;
+            text-align: center;
+        }
+        .btn-primary {
+            background: hsl(var(--foreground));
+            color: hsl(var(--background));
+        }
+        .btn-primary:hover {
+            background: hsl(var(--gold));
+            color: hsl(var(--foreground));
+        }
+        .btn-on-image {
+            background: #fff;
+            color: hsl(var(--foreground));
+        }
+        .btn-on-image:hover {
+            background: hsl(var(--gold));
+            color: #fff;
+        }
+        .btn-outline-light {
+            background: transparent;
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .btn-outline {
+            background: transparent;
+            color: hsl(var(--foreground));
+            border-color: hsl(var(--border));
+        }
+        .btn-outline:hover {
+            border-color: hsl(var(--foreground));
+        }
+
+        /* ============ TYPOGRAPHY HELPERS ============ */
+        .eyebrow {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide-xl);
+            color: hsl(var(--muted-foreground));
+            font-weight: 400;
+        }
+        .h-page {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: clamp(28px, 5vw, 48px);
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+        }
+        .h-section {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: clamp(24px, 4vw, 36px);
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+        }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .anim-fade-up { animation: fadeUp .8s cubic-bezier(.2,.7,.2,1) both; }
+        .anim-fade-in { animation: fadeIn 1s ease both; }
+        .anim-delay-1 { animation-delay: .15s; }
+        .anim-delay-2 { animation-delay: .3s; }
+        .anim-delay-3 { animation-delay: .5s; }
+
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- DRAWER -->
+<div class="overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+    <div class="drawer-head">
+        <span class="drawer-logo">SAHARA</span>
+        <button class="icon-btn" id="drawerClose" aria-label="Закрити">
+            <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+    </div>
+    <nav class="drawer-nav">
+        <a href="/">Головна</a>
+        <a href="/catalog?category=women">Жіночий одяг</a>
+        <a href="/catalog?category=men">Чоловічий одяг</a>
+        <a href="/catalog">Каталог</a>
+        <a href="/about">Про нас</a>
+        <a href="/support">Підтримка</a>
+    </nav>
+    <div class="drawer-foot">
+        <a href="/wishlist" class="icon-btn" aria-label="Обране">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </a>
+        <a href="/profile" class="icon-btn" aria-label="Профіль">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+        </a>
+    </div>
+</aside>
+
+<!-- HEADER -->
+<header class="header" id="header">
+    <div class="header-gold-line"></div>
+    <div class="header-inner">
+        <div class="header-row">
+            <div class="header-left">
+                <button class="header-burger icon-btn" id="drawerOpen" aria-label="Меню">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+                </button>
+                <nav class="header-nav-desktop">
+                    <a href="/">Головна</a>
+                    <a href="/catalog?category=women">Жіночий одяг</a>
+                    <a href="/catalog?category=men">Чоловічий одяг</a>
+                </nav>
+            </div>
+
+            <a href="/" class="header-logo">
+                <h1>SAHARA</h1>
+            </a>
+
+            <div class="header-right">
+                <nav class="header-nav-desktop">
+                    <a href="/catalog">Каталог</a>
+                    <a href="/about">Про нас</a>
+                    <a href="/support">Підтримка</a>
+                </nav>
+                <div class="header-icons">
+                    <a href="/catalog" class="icon-btn" aria-label="Пошук">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+                    </a>
+                    <a href="/wishlist" class="icon-btn icon-btn-mobile-hide" aria-label="Обране">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </a>
+                    <a href="/profile" class="icon-btn icon-btn-mobile-hide" aria-label="Профіль">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+                    </a>
+                    <a href="/cart" class="icon-btn" aria-label="Кошик">
+                        <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+                        {% if cart_count and cart_count > 0 %}
+                        <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>{% block content %}{% endblock %}</main>
+
+{% include "_footer.html" %}
+
+<!-- BOTTOM MOBILE NAV -->
+<nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+        <a href="/" class="mobile-nav-item {% if active == 'home' %}active{% endif %}">
+            <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>
+            <span>Головна</span>
+        </a>
+        <a href="/catalog" class="mobile-nav-item {% if active == 'catalog' %}active{% endif %}">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span>Каталог</span>
+        </a>
+        <a href="/cart" class="mobile-nav-item {% if active == 'cart' %}active{% endif %}">
+            <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+            <span>Кошик</span>
+        </a>
+        <a href="/profile" class="mobile-nav-item {% if active == 'profile' %}active{% endif %}">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+            <span>Профіль</span>
+        </a>
+    </div>
+</nav>
+
+<script>
+    // Header scroll effect
+    const header = document.getElementById('header');
+    const onScroll = () => {
+        if (window.scrollY > 20) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Drawer
+    const overlay = document.getElementById('drawerOverlay');
+    const drawer = document.getElementById('drawer');
+    const openBtn = document.getElementById('drawerOpen');
+    const closeBtn = document.getElementById('drawerClose');
+    const open = () => { overlay.classList.add('open'); drawer.classList.add('open'); document.body.style.overflow = 'hidden'; };
+    const close = () => { overlay.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow = ''; };
+    openBtn?.addEventListener('click', open);
+    closeBtn?.addEventListener('click', close);
+    overlay?.addEventListener('click', close);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAHARA — Адмінка</title>
+<style>
+  :root {
+    --gold: #c9a96e;
+    --bg: #f9f6f2;
+    --sidebar-bg: #1a1a1a;
+    --card: #fff;
+    --border: #e8e0d5;
+    --text: #1a1a1a;
+    --muted: #888;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --info: #2980b9;
+    --sidebar-w: 220px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    color: #fff;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    font-size: 18px; letter-spacing: 0.3em; font-weight: 500;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar-logo span { color: var(--gold); font-size: 10px; display: block; letter-spacing: 0.15em; margin-top: 2px; font-weight: 300; }
+  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 20px; cursor: pointer;
+    color: rgba(255,255,255,.55); font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    transition: all .2s; border-left: 3px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+  .nav-item.active { color: #fff; border-left-color: var(--gold); background: rgba(255,255,255,.07); }
+  .nav-count {
+    background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
+    font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
+  }
+  .nav-item.active .nav-count { background: var(--gold); color: #fff; }
+  .nav-count.red { background: #c0392b; color: #fff; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar-footer a {
+    color: var(--gold); font-size: 12px; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sidebar-footer a:hover { color: #fff; }
+
+  /* ===== MAIN ===== */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex; flex-direction: column;
+  }
+  .topbar {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 28px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-size: 15px; font-weight: 500; }
+  .topbar-meta { font-size: 12px; color: var(--muted); }
+
+  .content { padding: 24px 28px; }
+
+  /* ===== SECTION ===== */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ===== GRID ===== */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+  /* ===== CARD ===== */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+  .card-img { position: relative; background: #f0ebe4; aspect-ratio: 3/4; overflow: hidden; }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .card-img .no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
+  .card-img-pair { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .card-img-pair img { width: 100%; height: 100%; object-fit: cover; }
+  .card-img-label { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,.55); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .card-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .card-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .card-price { font-size: 15px; font-weight: 600; color: var(--gold); }
+  .card-meta { font-size: 11px; color: var(--muted); }
+  .card-error { font-size: 11px; color: var(--danger); background: #fdf3f3; padding: 6px 8px; border-radius: 4px; }
+  .card-generating { font-size: 11px; color: var(--info); display: flex; align-items: center; gap: 6px; }
+
+  .card-actions { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; cursor: pointer; border: none; font-family: inherit; transition: opacity .2s; }
+  .btn:hover { opacity: .82; }
+  .btn-ai      { background: var(--text); color: #fff; }
+  .btn-publish { background: var(--success); color: #fff; }
+  .btn-direct  { background: #777; color: #fff; }
+  .btn-regen   { background: var(--info); color: #fff; }
+  .btn-reject  { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(41,128,185,.3); border-top-color: var(--info); border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty { color: var(--muted); font-size: 13px; padding: 48px 0; text-align: center; }
+  .empty p { font-size: 20px; margin-bottom: 8px; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+  .badge-pending    { background: #fff3cd; color: #856404; }
+  .badge-ready      { background: #d4edda; color: #155724; }
+  .badge-live       { background: #28a745; color: #fff; }
+  .badge-failed     { background: #f8d7da; color: #721c24; }
+  .badge-generating { background: #cce5ff; color: #004085; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    SAHARA
+    <span>Адмін панель</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item {% if not request.query_params.get('tab') or request.query_params.get('tab') == 'pending' %}active{% endif %}" onclick="showTab('pending')">
+      Очікують
+      {% if grouped.pending %}
+      <span class="nav-count">{{ grouped.pending|length }}</span>
+      {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'generating' %}active{% endif %}" onclick="showTab('generating')">
+      Генерується
+      {% set gen_count = (grouped.generating|length) + (grouped.approved|length) %}
+      {% if gen_count > 0 %}
+      <span class="nav-count">{{ gen_count }}</span>
+      {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'ready' %}active{% endif %}" onclick="showTab('ready')">
+      Готові
+      {% if grouped.ready %}
+      <span class="nav-count" style="background:var(--gold);color:#fff">{{ grouped.ready|length }}</span>
+      {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'live' %}active{% endif %}" onclick="showTab('live')">
+      На сайті
+      {% if grouped.live %}
+      <span class="nav-count" style="background:var(--success);color:#fff">{{ grouped.live|length }}</span>
+      {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'failed' %}active{% endif %}" onclick="showTab('failed')">
+      Помилки
+      {% if grouped.failed %}
+      <span class="nav-count red">{{ grouped.failed|length }}</span>
+      {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'rejected' %}active{% endif %}" onclick="showTab('rejected')">
+      Відхилені
+      {% if grouped.rejected %}
+      <span class="nav-count">{{ grouped.rejected|length }}</span>
+      {% endif %}
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/" target="_blank">↗ Відкрити сайт</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="tab-title">Очікують</span>
+    <span class="topbar-meta" id="tab-meta"></span>
+  </div>
+
+  <div class="content">
+
+    <!-- PENDING -->
+    <div class="section" id="tab-pending">
+      {% if grouped.pending %}
+      <div class="grid">
+        {% for p in grouped.pending %}
+        <div class="card">
+          <div class="card-img">
+            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
+            {% else %}<div class="no-img">Немає фото</div>{% endif %}
+            <span class="card-img-label">Оригінал</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
+            {% if p.description %}<div class="card-meta">{{ p.description[:80] }}</div>{% endif %}
+            <div class="card-meta">#{{ p.id }} · {{ p.created_at.strftime('%d.%m.%y') }}</div>
+          </div>
+          <div class="card-actions">
+            <form method="post" action="/admin/generate/{{ p.id }}">
+              <button class="btn btn-ai">✦ AI try-on</button>
+            </form>
+            <form method="post" action="/admin/publish-direct/{{ p.id }}">
+              <button class="btn btn-direct">Без AI →</button>
+            </form>
+            <form method="post" action="/admin/reject/{{ p.id }}">
+              <button class="btn btn-reject">✕</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>🎉</p>Нових товарів немає</div>
+      {% endif %}
+    </div>
+
+    <!-- GENERATING -->
+    <div class="section" id="tab-generating">
+      {% set generating = grouped.generating + grouped.approved %}
+      {% if generating %}
+      <div class="grid">
+        {% for p in generating %}
+        <div class="card">
+          <div class="card-img">
+            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">{% endif %}
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
+            <div class="card-generating"><span class="spinner"></span> AI генерує... ~30-60 сек</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>—</p>Нічого не генерується</div>
+      {% endif %}
+    </div>
+
+    <!-- READY -->
+    <div class="section" id="tab-ready">
+      {% if grouped.ready %}
+      <div class="grid">
+        {% for p in grouped.ready %}
+        <div class="card">
+          <div class="card-img">
+            <div class="card-img-pair">
+              {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="Оригінал">{% endif %}
+              {% if p.generated_photo %}<img src="/media/{{ p.generated_photo }}" alt="AI">{% endif %}
+            </div>
+            <span class="card-img-label">Оригінал / AI</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
+          </div>
+          <div class="card-actions">
+            <form method="post" action="/admin/publish/{{ p.id }}">
+              <button class="btn btn-publish">✓ Публікувати</button>
+            </form>
+            <form method="post" action="/admin/generate/{{ p.id }}">
+              <button class="btn btn-regen">Re-gen</button>
+            </form>
+            <form method="post" action="/admin/reject/{{ p.id }}">
+              <button class="btn btn-reject">✕</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>—</p>Немає готових до публікації</div>
+      {% endif %}
+    </div>
+
+    <!-- LIVE -->
+    <div class="section" id="tab-live">
+      {% if grouped.live %}
+      <div class="grid">
+        {% for p in grouped.live %}
+        <div class="card">
+          <div class="card-img">
+            {% if p.generated_photo %}<img src="/media/{{ p.generated_photo }}" alt="{{ p.title }}">
+            {% elif p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">{% endif %}
+            <span class="card-img-label">Live</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
+            <div class="card-meta"><a href="/product/{{ p.id }}" target="_blank" style="color:var(--info)">↗ На сайті</a></div>
+          </div>
+          <div class="card-actions">
+            <form method="post" action="/admin/reject/{{ p.id }}">
+              <button class="btn btn-reject">Зняти</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>—</p>Ще нічого не опубліковано</div>
+      {% endif %}
+    </div>
+
+    <!-- FAILED -->
+    <div class="section" id="tab-failed">
+      {% if grouped.failed %}
+      <div class="grid">
+        {% for p in grouped.failed %}
+        <div class="card">
+          <div class="card-img">
+            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
+            {% else %}<div class="no-img">Немає фото</div>{% endif %}
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.error_message %}<div class="card-error">{{ p.error_message[:120] }}</div>{% endif %}
+          </div>
+          <div class="card-actions">
+            <form method="post" action="/admin/generate/{{ p.id }}">
+              <button class="btn btn-regen">Re-gen</button>
+            </form>
+            <form method="post" action="/admin/publish-direct/{{ p.id }}">
+              <button class="btn btn-direct">Без AI →</button>
+            </form>
+            <form method="post" action="/admin/reject/{{ p.id }}">
+              <button class="btn btn-reject">✕</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>✓</p>Помилок немає</div>
+      {% endif %}
+    </div>
+
+    <!-- REJECTED -->
+    <div class="section" id="tab-rejected">
+      {% if grouped.rejected %}
+      <div class="grid">
+        {% for p in grouped.rejected %}
+        <div class="card">
+          <div class="card-img">
+            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
+            {% else %}<div class="no-img">Немає фото</div>{% endif %}
+          </div>
+          <div class="card-body">
+            <div class="card-title">{{ p.title }}</div>
+            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
+          </div>
+          <div class="card-actions">
+            <form method="post" action="/admin/generate/{{ p.id }}">
+              <button class="btn btn-ai">Відновити</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>—</p>Відхилених немає</div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+const titles = {
+  pending:    'Очікують',
+  generating: 'Генерується',
+  ready:      'Готові до публікації',
+  live:       'На сайті',
+  failed:     'Помилки',
+  rejected:   'Відхилені',
+};
+
+const counts = {
+  pending:    {{ grouped.pending|length }},
+  generating: {{ (grouped.generating|length) + (grouped.approved|length) }},
+  ready:      {{ grouped.ready|length }},
+  live:       {{ grouped.live|length }},
+  failed:     {{ grouped.failed|length }},
+  rejected:   {{ grouped.rejected|length }},
+};
+
+function showTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+
+  document.getElementById('tab-title').textContent = titles[tab];
+  document.getElementById('tab-meta').textContent = counts[tab] ? `${counts[tab]} товарів` : '';
+
+  localStorage.setItem('adminTab', tab);
+}
+
+// Відновити активну вкладку
+const saved = localStorage.getItem('adminTab') || 'pending';
+showTab(saved);
+
+// Автооновлення якщо є generating
+if (counts.generating > 0) {
+  setTimeout(() => location.reload(), 12000);
+}
+</script>
+</body>
+</html>

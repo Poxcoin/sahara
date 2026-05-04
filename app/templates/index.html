@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+{% set active = 'home' %}
+
+{% block extra_css %}
+<style>
+    /* ============ HERO ============ */
+    .hero {
+        position: relative;
+        height: 100vh;
+        margin-top: -64px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+        text-align: center;
+        /* Real Calacatta marble from base44 */
+        background-image: url('/static/img/hero-marble.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    @media (min-width: 640px) { .hero { margin-top: -80px; } }
+
+    .hero-overlay {
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom,
+            hsla(0, 0%, 10%, 0.10) 0%,
+            hsla(0, 0%, 10%, 0.05) 50%,
+            hsla(40, 20%, 97%, 0.4) 92%,
+            hsla(40, 20%, 97%, 1) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        padding: 0 16px;
+    }
+    .hero-title {
+        font-family: var(--font-heading);
+        font-weight: 500;
+        color: hsl(var(--foreground));
+        font-size: clamp(48px, 12vw, 144px);
+        letter-spacing: var(--tracking-sahara);
+        line-height: 1;
+        padding-left: var(--tracking-sahara);
+        text-shadow: 0 2px 30px rgba(255,255,255,.4);
+    }
+    .hero-sub {
+        margin-top: 24px;
+        font-size: 14px;
+        font-weight: 300;
+        text-transform: none;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsla(0, 0%, 10%, 0.75);
+    }
+    @media (min-width: 640px) { .hero-sub { font-size: 16px; } }
+
+    .hero-actions {
+        margin-top: 40px;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 16px;
+    }
+    @media (min-width: 640px) {
+        .hero-actions { flex-direction: row; justify-content: center; }
+    }
+
+    .hero-scroll {
+        position: absolute; bottom: 32px; left: 50%;
+        transform: translateX(-50%);
+        animation: scrollPulse 2s infinite;
+    }
+    .hero-scroll-line {
+        width: 1px; height: 48px;
+        background: linear-gradient(to bottom, hsla(0, 0%, 10%, 0.4), transparent);
+    }
+    @keyframes scrollPulse {
+        0%, 100% { transform: translate(-50%, 0); }
+        50%      { transform: translate(-50%, 8px); }
+    }
+
+    /* ============ SECTION ============ */
+    .section {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 64px 16px;
+    }
+    @media (min-width: 640px) { .section { padding: 96px 32px; } }
+    @media (min-width: 1024px) { .section { padding: 96px 48px; } }
+
+    .section-head-row {
+        display: flex; align-items: flex-end; justify-content: space-between;
+        margin-bottom: 48px;
+    }
+    .section-head-center {
+        text-align: center;
+        margin-bottom: 48px;
+    }
+    .section-head-row .eyebrow,
+    .section-head-center .eyebrow { margin-bottom: 12px; }
+
+    .view-all {
+        display: none;
+        align-items: center; gap: 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        transition: color .3s, gap .3s;
+    }
+    @media (min-width: 640px) { .view-all { display: flex; } }
+    .view-all:hover { color: hsl(var(--gold)); gap: 14px; }
+
+    /* ============ COLLECTIONS ============ */
+    .collections {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 0 16px;
+        display: grid; grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    @media (min-width: 640px) { .collections { padding: 0 32px; gap: 24px; } }
+    @media (min-width: 1024px) {
+        .collections { padding: 0 48px; grid-template-columns: 1fr 1fr; }
+    }
+
+    .collection {
+        position: relative;
+        aspect-ratio: 4/5;
+        overflow: hidden;
+        display: block;
+        animation: fadeUp .8s cubic-bezier(.2,.7,.2,1) both;
+    }
+    @media (min-width: 640px) { .collection { aspect-ratio: 3/4; } }
+    .collection img {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform .7s ease;
+    }
+    .collection:hover img { transform: scale(1.05); }
+    .collection-grad {
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, hsla(0, 0%, 10%, 0.6) 0%, transparent 60%);
+    }
+    .collection-content {
+        position: absolute;
+        bottom: 32px; left: 32px; right: 32px;
+        color: #fff;
+    }
+    .collection-eyebrow {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 8px;
+    }
+    .collection-name {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        margin-bottom: 16px;
+    }
+    @media (min-width: 640px) { .collection-name { font-size: 32px; } }
+    .collection-cta {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: rgba(255, 255, 255, 0.9);
+        transition: color .3s, gap .3s;
+    }
+    .collection:hover .collection-cta { color: hsl(var(--gold)); gap: 14px; }
+
+    /* ============ PRODUCT GRID ============ */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    @media (min-width: 640px) { .grid { gap: 24px; } }
+    @media (min-width: 1024px) {
+        .grid { grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    }
+
+    .card { display: block; }
+    .card-img-wrap {
+        position: relative;
+        aspect-ratio: 2/3;
+        overflow: hidden;
+        background: hsla(40, 15%, 93%, 0.3);
+    }
+    .card-img-wrap img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform .7s ease;
+    }
+    .card:hover .card-img-wrap img { transform: scale(1.05); }
+    .card-overlay {
+        position: absolute; inset: 0;
+        background: hsla(0, 0%, 10%, 0.05);
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    .card:hover .card-overlay { opacity: 1; }
+    .badge-new {
+        position: absolute; top: 16px; left: 16px;
+        background: hsl(var(--gold));
+        color: hsl(var(--background));
+        padding: 6px 12px;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+    }
+    .card-info { margin-top: 16px; }
+    .card-info h3 {
+        font-family: var(--font-body);
+        font-weight: 300;
+        font-size: 14px;
+        letter-spacing: 0.02em;
+        transition: color .3s;
+    }
+    .card:hover .card-info h3 { color: hsl(var(--gold)); }
+    .card-info p {
+        font-size: 14px;
+        color: hsl(var(--muted-foreground));
+        margin-top: 4px;
+    }
+
+    /* ============ QUOTE ============ */
+    .quote-section {
+        padding: 80px 16px;
+        text-align: center;
+    }
+    @media (min-width: 640px) { .quote-section { padding: 128px 32px; } }
+    .quote {
+        font-family: var(--font-heading);
+        font-style: italic;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 1.6;
+        color: hsla(0, 0%, 10%, 0.7);
+        max-width: 640px;
+        margin: 0 auto;
+    }
+    @media (min-width: 640px) { .quote { font-size: 24px; } }
+    @media (min-width: 1024px) { .quote { font-size: 30px; } }
+    .quote-divider {
+        width: 48px; height: 1px;
+        background: hsl(var(--gold));
+        margin: 32px auto 0;
+    }
+
+    /* ============ EMPTY STATE ============ */
+    .empty-grid {
+        text-align: center;
+        padding: 80px 24px;
+        color: hsl(var(--muted-foreground));
+    }
+    .empty-grid p {
+        font-family: var(--font-heading);
+        font-size: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <h1 class="hero-title anim-fade-up">SAHARA</h1>
+        <p class="hero-sub anim-fade-in anim-delay-1">Твій стиль. Твоя впевненість.</p>
+        <div class="hero-actions anim-fade-up anim-delay-2">
+            <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
+            <a href="/about" class="btn btn-outline">Дізнатися більше</a>
+        </div>
+    </div>
+
+    <div class="hero-scroll">
+        <div class="hero-scroll-line"></div>
+    </div>
+</section>
+
+<!-- ============ NEW ARRIVALS ============ -->
+<section class="section">
+    <div class="section-head-row">
+        <div>
+            <p class="eyebrow">Колекція</p>
+            <h2 class="h-section">Нові надходження</h2>
+        </div>
+        <a href="/catalog" class="view-all">
+            Переглянути все
+            <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
+        </a>
+    </div>
+
+    {% if products %}
+    <div class="grid">
+        {% for p in products[:4] %}
+        <a href="/product/{{ p.id }}" class="card anim-fade-up" style="animation-delay: {{ loop.index0 * 0.08 }}s">
+            <div class="card-img-wrap">
+                <img src="/media/{{ p.generated_photo or p.original_photo }}" alt="{{ p.title }}" loading="lazy">
+                <div class="card-overlay"></div>
+                <span class="badge-new">Новинка</span>
+            </div>
+            <div class="card-info">
+                <h3>{{ p.title }}</h3>
+                {% if p.price_uah %}
+                <p>{{ "{:,.0f}".format(p.price_uah).replace(",", " ") }} ₴</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-grid"><p>Каталог наповнюється</p></div>
+    {% endif %}
+</section>
+
+<!-- ============ COLLECTIONS ============ -->
+<section class="collections">
+    <a href="/catalog?category=women" class="collection" style="animation-delay: 0s">
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=85" alt="Жіночий одяг">
+        <div class="collection-grad"></div>
+        <div class="collection-content">
+            <div class="collection-eyebrow">Колекція</div>
+            <h3 class="collection-name">Жіночий одяг</h3>
+            <span class="collection-cta">
+                Переглянути
+                <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
+            </span>
+        </div>
+    </a>
+    <a href="/catalog?category=men" class="collection" style="animation-delay: 0.15s">
+        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=1200&q=85" alt="Чоловічий одяг">
+        <div class="collection-grad"></div>
+        <div class="collection-content">
+            <div class="collection-eyebrow">Колекція</div>
+            <h3 class="collection-name">Чоловічий одяг</h3>
+            <span class="collection-cta">
+                Переглянути
+                <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
+            </span>
+        </div>
+    </a>
+</section>
+
+<!-- ============ POPULAR ============ -->
+{% if products and products|length > 4 %}
+<section class="section">
+    <div class="section-head-center">
+        <p class="eyebrow">Обрані</p>
+        <h2 class="h-section">Популярні товари</h2>
+    </div>
+    <div class="grid">
+        {% for p in products[4:8] %}
+        <a href="/product/{{ p.id }}" class="card">
+            <div class="card-img-wrap">
+                <img src="/media/{{ p.generated_photo or p.original_photo }}" alt="{{ p.title }}" loading="lazy">
+                <div class="card-overlay"></div>
+            </div>
+            <div class="card-info">
+                <h3>{{ p.title }}</h3>
+                {% if p.price_uah %}
+                <p>{{ "{:,.0f}".format(p.price_uah).replace(",", " ") }} ₴</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- ============ QUOTE ============ -->
+<section class="quote-section">
+    <p class="quote">"Справжня елегантність — це коли стиль говорить за тебе, а не кричить."</p>
+    <div class="quote-divider"></div>
+</section>
+
+{% endblock %}

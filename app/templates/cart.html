@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set active = 'cart' %}
+{% block title %}Кошик — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-page { max-width: var(--container); margin: 0 auto; padding: 32px 16px; }
+    @media (min-width: 640px) { .cart-page { padding: 48px 32px; } }
+    @media (min-width: 1024px) { .cart-page { padding: 48px 48px; } }
+
+    .cart-head { margin-bottom: 32px; }
+    @media (min-width: 640px) { .cart-head { margin-bottom: 48px; } }
+    .cart-head .eyebrow { margin-bottom: 12px; }
+
+    .cart-empty {
+        text-align: center;
+        padding: 80px 24px;
+    }
+    .cart-empty svg {
+        width: 40px; height: 40px;
+        stroke: hsl(var(--muted-foreground)); fill: none;
+        stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;
+        margin: 0 auto 24px;
+    }
+    .cart-empty h2 {
+        font-family: var(--font-heading);
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+    .cart-empty p {
+        font-size: 14px;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 32px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+    <div class="cart-head">
+        <p class="eyebrow">Ваш кошик</p>
+        <h1 class="h-page">Кошик</h1>
+    </div>
+
+    <div class="cart-empty">
+        <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        <h2>Кошик порожній</h2>
+        <p>Додайте товари з каталогу</p>
+        <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
+    </div>
+</div>
+{% endblock %}

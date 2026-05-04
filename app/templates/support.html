@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% set active = 'support' %}
+{% block title %}Підтримка — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-wrap {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 32px 16px;
+    }
+    @media (min-width: 640px) { .page-wrap { padding: 48px 32px; } }
+    @media (min-width: 1024px) { .page-wrap { padding: 48px 48px; } }
+
+    .page-head { margin-bottom: 48px; }
+    @media (min-width: 640px) { .page-head { margin-bottom: 64px; } }
+    .page-head .eyebrow { margin-bottom: 12px; }
+
+    .support-grid {
+        display: grid; grid-template-columns: 1fr;
+        gap: 64px;
+    }
+    @media (min-width: 1024px) { .support-grid { grid-template-columns: 1fr 1fr; gap: 96px; } }
+
+    .form-intro {
+        font-size: 14px;
+        font-weight: 300;
+        color: hsla(0, 0%, 10%, 0.7);
+        margin-bottom: 32px;
+        line-height: 1.7;
+    }
+
+    .form-group { margin-bottom: 24px; }
+    .form-group label {
+        display: block;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 8px;
+    }
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0 16px;
+        height: 48px;
+        background: hsl(var(--background));
+        border: 1px solid hsla(40, 10%, 88%, 0.5);
+        border-radius: 0;
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 300;
+        color: hsl(var(--foreground));
+        transition: border-color .2s;
+    }
+    .form-group textarea {
+        height: auto;
+        min-height: 160px;
+        padding: 16px;
+        resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: hsl(var(--foreground));
+    }
+
+    .submit-row { margin-top: 16px; }
+    .alert {
+        padding: 14px 18px;
+        background: hsla(39, 42%, 60%, 0.1);
+        border-left: 2px solid hsl(var(--gold));
+        margin-bottom: 24px;
+        font-size: 14px;
+    }
+
+    .info-block { margin-bottom: 48px; }
+    .info-block:last-child { margin-bottom: 0; }
+    .info-block .eyebrow { margin-bottom: 24px; }
+    .info-row {
+        display: flex; align-items: flex-start; gap: 16px;
+        margin-bottom: 24px;
+    }
+    .info-icon {
+        width: 40px; height: 40px;
+        background: hsla(40, 15%, 93%, 0.5);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .info-icon svg {
+        width: 16px; height: 16px;
+        stroke: hsl(var(--gold)); fill: none;
+        stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .info-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 4px;
+    }
+    .info-value {
+        font-size: 14px;
+        font-weight: 300;
+    }
+    .schedule-list {
+        display: flex; flex-direction: column;
+        gap: 12px;
+    }
+    .schedule-list p { font-size: 14px; font-weight: 300; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+    <div class="page-head">
+        <p class="eyebrow">Зв'язатися з нами</p>
+        <h1 class="h-page">Підтримка</h1>
+    </div>
+
+    <div class="support-grid">
+        <!-- LEFT: Form -->
+        <div class="anim-fade-up">
+            <p class="form-intro">Маєте запитання? Ми відповімо протягом 24 годин.</p>
+
+            {% if sent %}
+            <div class="alert">Дякуємо! Ваше повідомлення надіслано.</div>
+            {% endif %}
+
+            <form method="post" action="/support">
+                <div class="form-group">
+                    <label for="name">Ім'я</label>
+                    <input type="text" id="name" name="name" placeholder="Ваше ім'я" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Повідомлення</label>
+                    <textarea id="message" name="message" placeholder="Опишіть ваше запитання..." required></textarea>
+                </div>
+                <div class="submit-row">
+                    <button type="submit" class="btn btn-primary">
+                        Надіслати
+                        <svg style="margin-left:8px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RIGHT: Contacts -->
+        <div class="anim-fade-up anim-delay-1">
+            <div class="info-block">
+                <p class="eyebrow">Контактна інформація</p>
+
+                <div class="info-row">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <div>
+                        <div class="info-label">Телефон</div>
+                        <div class="info-value">+380 (44) 123-45-67</div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div>
+                        <div class="info-label">Email</div>
+                        <div class="info-value">info@sahara.ua</div>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div>
+                        <div class="info-label">Адреса</div>
+                        <div class="info-value">м. Київ, вул. Хрещатик, 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <p class="eyebrow">Графік роботи</p>
+                <div class="schedule-list">
+                    <p>Пн — Пт: 09:00 — 20:00</p>
+                    <p>Сб: 10:00 — 18:00</p>
+                    <p>Нд: Вихідний</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

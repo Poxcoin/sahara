@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% set active = 'catalog' %}
+{% block title %}{{ product.title }} — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pd-page { max-width: var(--container); margin: 0 auto; padding: 16px; }
+    @media (min-width: 640px) { .pd-page { padding: 32px; } }
+    @media (min-width: 1024px) { .pd-page { padding: 32px 48px; } }
+
+    .back-link {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 24px;
+        transition: color .3s;
+    }
+    @media (min-width: 640px) { .back-link { margin-bottom: 40px; } }
+    .back-link:hover { color: hsl(var(--foreground)); }
+    .back-link svg {
+        width: 14px; height: 14px;
+        stroke: currentColor; fill: none;
+        stroke-width: 1.5;
+    }
+
+    .pd-grid {
+        display: grid; grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    @media (min-width: 1024px) { .pd-grid { grid-template-columns: 1fr 1fr; gap: 64px; } }
+
+    .pd-images { display: flex; flex-direction: column; gap: 16px; }
+    .pd-main-img {
+        aspect-ratio: 2/3;
+        overflow: hidden;
+        background: hsla(40, 15%, 93%, 0.2);
+    }
+    .pd-main-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+    }
+    .pd-thumbs {
+        display: flex; gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+    .pd-thumb {
+        flex-shrink: 0;
+        width: 64px; height: 80px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color .3s;
+    }
+    @media (min-width: 640px) { .pd-thumb { width: 80px; height: 112px; } }
+    .pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .pd-thumb.active { border-color: hsl(var(--gold)); }
+
+    .pd-info { display: flex; flex-direction: column; gap: 32px; }
+    @media (min-width: 1024px) {
+        .pd-info { position: sticky; top: 112px; align-self: flex-start; }
+    }
+
+    .pd-info .eyebrow { margin-bottom: 8px; }
+    .pd-title {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        font-size: clamp(24px, 4vw, 36px);
+        letter-spacing: 0.05em;
+        line-height: 1.2;
+        margin-bottom: 16px;
+    }
+    .pd-price {
+        font-size: 22px;
+        color: hsla(0, 0%, 10%, 0.8);
+    }
+    @media (min-width: 640px) { .pd-price { font-size: 24px; } }
+
+    .pd-block .eyebrow { margin-bottom: 16px; }
+
+    .sizes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .size-btn {
+        width: 48px; height: 48px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px;
+        border: 1px solid hsl(var(--border));
+        background: transparent;
+        color: hsl(var(--foreground));
+        cursor: pointer;
+        transition: all .3s;
+    }
+    .size-btn:hover { border-color: hsl(var(--foreground)); }
+    .size-btn.active {
+        background: hsl(var(--foreground));
+        color: hsl(var(--background));
+        border-color: hsl(var(--foreground));
+    }
+
+    .qty-row { display: flex; align-items: center; gap: 16px; }
+    .qty-btn {
+        width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid hsl(var(--border));
+        cursor: pointer;
+        transition: border-color .3s;
+    }
+    .qty-btn:hover { border-color: hsl(var(--foreground)); }
+    .qty-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .qty-num { width: 32px; text-align: center; font-size: 14px; }
+
+    .pd-actions { display: flex; gap: 12px; }
+    .pd-actions .btn { flex: 1; min-width: 0; }
+    .heart-btn {
+        width: 56px; height: 56px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid hsl(var(--border));
+        cursor: pointer;
+        transition: all .3s;
+    }
+    .heart-btn:hover { border-color: hsl(var(--foreground)); }
+    .heart-btn.active { border-color: hsl(var(--gold)); color: hsl(var(--gold)); }
+    .heart-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .heart-btn.active svg { fill: currentColor; }
+
+    .pd-description {
+        padding-top: 32px;
+        border-top: 1px solid hsla(40, 10%, 88%, 0.5);
+    }
+    .pd-description .eyebrow { margin-bottom: 16px; }
+    .pd-description p {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.7;
+        color: hsla(0, 0%, 10%, 0.8);
+        white-space: pre-line;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pd-page">
+    <a href="/catalog" class="back-link">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Каталог
+    </a>
+
+    <div class="pd-grid">
+        <div class="pd-images">
+            <div class="pd-main-img">
+                <img id="pdMainImg"
+                     src="/media/{{ product.generated_photo or product.original_photo }}"
+                     alt="{{ product.title }}">
+            </div>
+            <div class="pd-thumbs">
+                <button class="pd-thumb active" data-src="/media/{{ product.generated_photo or product.original_photo }}">
+                    <img src="/media/{{ product.generated_photo or product.original_photo }}" alt="">
+                </button>
+                {% if product.generated_photo %}
+                <button class="pd-thumb" data-src="/media/{{ product.original_photo }}">
+                    <img src="/media/{{ product.original_photo }}" alt="">
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="pd-info">
+            <div>
+                <p class="eyebrow">SAHARA Collection</p>
+                <h1 class="pd-title">{{ product.title }}</h1>
+                {% if product.price_uah %}
+                <div class="pd-price">{{ "{:,.0f}".format(product.price_uah).replace(",", " ") }} ₴</div>
+                {% endif %}
+            </div>
+
+            <div class="pd-block">
+                <p class="eyebrow">Розмір</p>
+                <div class="sizes" id="sizeList">
+                    {% for s in ['XS','S','M','L','XL','XXL'] %}
+                    <button class="size-btn" data-size="{{ s }}">{{ s }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="pd-block">
+                <p class="eyebrow">Кількість</p>
+                <div class="qty-row">
+                    <button class="qty-btn" id="qtyMinus" aria-label="−">
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <span class="qty-num" id="qtyNum">1</span>
+                    <button class="qty-btn" id="qtyPlus" aria-label="+">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pd-actions">
+                <button class="btn btn-primary">Купити</button>
+                <button class="heart-btn" id="heartBtn" aria-label="В обране">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+            </div>
+
+            {% if product.description %}
+            <div class="pd-description">
+                <p class="eyebrow">Опис</p>
+                <p>{{ product.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Thumbs switch
+    document.querySelectorAll('.pd-thumb').forEach(t => {
+        t.addEventListener('click', () => {
+            document.querySelectorAll('.pd-thumb').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            document.getElementById('pdMainImg').src = t.dataset.src;
+        });
+    });
+    // Sizes
+    document.querySelectorAll('.size-btn').forEach(b => {
+        b.addEventListener('click', () => {
+            document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+        });
+    });
+    // Qty
+    let qty = 1;
+    const qtyNum = document.getElementById('qtyNum');
+    document.getElementById('qtyMinus').addEventListener('click', () => { if (qty > 1) qty--; qtyNum.textContent = qty; });
+    document.getElementById('qtyPlus').addEventListener('click', () => { qty++; qtyNum.textContent = qty; });
+    // Heart
+    document.getElementById('heartBtn').addEventListener('click', (e) => {
+        e.currentTarget.classList.toggle('active');
+    });
+</script>
+{% endblock %}

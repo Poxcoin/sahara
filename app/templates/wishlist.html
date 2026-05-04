@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% set active = 'wishlist' %}
+{% block title %}Обране — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div style="max-width:var(--container); margin:0 auto; padding:32px 16px;">
+    <div style="margin-bottom:48px;">
+        <p class="eyebrow" style="margin-bottom:12px;">Обране</p>
+        <h1 class="h-page">Список бажань</h1>
+    </div>
+    <div style="text-align:center; padding:80px 24px;">
+        <svg width="40" height="40" viewBox="0 0 24 24" stroke="hsl(var(--muted-foreground))" fill="none" stroke-width="1" style="margin: 0 auto 24px; display:block;">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <h2 style="font-family:var(--font-heading); font-size:22px; margin-bottom:8px;">Список бажань порожній</h2>
+        <p style="font-size:14px; color:hsl(var(--muted-foreground)); margin-bottom:32px;">Додавайте улюблені товари</p>
+        <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
+    </div>
+</div>
+{% endblock %}

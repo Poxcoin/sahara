@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% set active = 'profile' %}
+{% block title %}Профіль — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pr-page { max-width: var(--container); margin: 0 auto; padding: 32px 16px; }
+    @media (min-width: 640px) { .pr-page { padding: 48px 32px; } }
+    .pr-head { margin-bottom: 48px; }
+    .pr-head .eyebrow { margin-bottom: 12px; }
+    .pr-user-row {
+        display: flex; align-items: center; gap: 24px;
+        margin-bottom: 48px;
+    }
+    .pr-avatar {
+        width: 64px; height: 64px;
+        background: hsl(var(--secondary));
+        display: flex; align-items: center; justify-content: center;
+    }
+    @media (min-width: 640px) { .pr-avatar { width: 80px; height: 80px; } }
+    .pr-avatar svg {
+        width: 24px; height: 24px;
+        stroke: hsl(var(--muted-foreground)); fill: none;
+        stroke-width: 1.5;
+    }
+    .pr-stats {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 48px;
+    }
+    .pr-stat {
+        padding: 24px;
+        background: hsla(40, 15%, 93%, 0.3);
+        transition: background .3s;
+    }
+    .pr-stat:hover { background: hsla(40, 15%, 93%, 0.5); }
+    .pr-stat svg {
+        width: 20px; height: 20px;
+        stroke: hsl(var(--gold)); fill: none;
+        stroke-width: 1.5;
+        margin-bottom: 12px;
+    }
+    .pr-stat .num {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        letter-spacing: 0.05em;
+    }
+    .pr-stat .lab {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground));
+        margin-top: 4px;
+    }
+    .pr-links { display: flex; flex-direction: column; gap: 12px; }
+    .pr-link {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px;
+        border: 1px solid hsla(40, 10%, 88%, 0.5);
+        transition: border-color .3s;
+    }
+    .pr-link:hover { border-color: hsl(var(--gold)); }
+    .pr-link span { font-size: 14px; }
+    .pr-link .arrow { color: hsl(var(--muted-foreground)); transition: color .3s; }
+    .pr-link:hover .arrow { color: hsl(var(--gold)); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pr-page">
+    <div class="pr-head">
+        <p class="eyebrow">Мій аккаунт</p>
+        <h1 class="h-page">Профіль</h1>
+    </div>
+
+    <div style="max-width: 640px;">
+        <div class="pr-user-row">
+            <div class="pr-avatar">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div>
+                <h2 style="font-family:var(--font-heading); font-size:22px;">Гість</h2>
+                <p style="font-size:14px; color:hsl(var(--muted-foreground)); margin-top:4px;">Увійдіть, щоб побачити замовлення</p>
+            </div>
+        </div>
+
+        <div class="pr-stats">
+            <a href="/cart" class="pr-stat">
+                <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+                <div class="num">0</div>
+                <div class="lab">У кошику</div>
+            </a>
+            <a href="/wishlist" class="pr-stat">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <div class="num">0</div>
+                <div class="lab">В обраному</div>
+            </a>
+        </div>
+
+        <div class="pr-links">
+            <a href="/catalog" class="pr-link"><span>Каталог товарів</span><span class="arrow">→</span></a>
+            <a href="/support" class="pr-link"><span>Підтримка</span><span class="arrow">→</span></a>
+            <a href="/about" class="pr-link"><span>Про нас</span><span class="arrow">→</span></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

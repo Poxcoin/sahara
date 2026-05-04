@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% set active = 'about' %}
+{% block title %}Про нас — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        padding: 80px 16px;
+        text-align: center;
+    }
+    @media (min-width: 640px) { .about-hero { padding: 128px 32px; } }
+    .about-hero .eyebrow { margin-bottom: 24px; }
+    .about-hero h1 {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        letter-spacing: var(--tracking-sahara);
+        font-size: clamp(40px, 8vw, 112px);
+        margin-bottom: 32px;
+        padding-left: var(--tracking-sahara);
+    }
+    .gold-divider {
+        width: 64px; height: 1px;
+        background: hsl(var(--gold));
+        margin: 0 auto 32px;
+    }
+    .about-intro {
+        font-family: var(--font-body);
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.7;
+        color: hsla(0, 0%, 10%, 0.7);
+        max-width: 640px;
+        margin: 0 auto;
+    }
+    @media (min-width: 640px) { .about-intro { font-size: 18px; } }
+
+    .values {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 64px 16px;
+        display: grid; grid-template-columns: 1fr;
+        gap: 48px;
+    }
+    @media (min-width: 768px) {
+        .values { grid-template-columns: repeat(3, 1fr); gap: 64px; }
+    }
+    @media (min-width: 1024px) {
+        .values { padding: 64px 48px; }
+    }
+    .value { text-align: center; }
+    .value h3 {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: 0.05em;
+        margin-bottom: 16px;
+    }
+    .value-divider {
+        width: 32px; height: 1px;
+        background: hsl(var(--gold));
+        margin: 0 auto 24px;
+    }
+    .value p {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.7;
+        color: hsla(0, 0%, 10%, 0.7);
+    }
+
+    .mission {
+        background: hsla(40, 15%, 93%, 0.3);
+        padding: 80px 16px;
+        text-align: center;
+    }
+    @media (min-width: 640px) { .mission { padding: 128px 32px; } }
+    .mission-inner {
+        max-width: 768px;
+        margin: 0 auto;
+    }
+    .mission .eyebrow { margin-bottom: 24px; }
+    .mission p {
+        font-family: var(--font-heading);
+        font-style: italic;
+        font-size: 20px;
+        line-height: 1.6;
+        color: hsla(0, 0%, 10%, 0.8);
+    }
+    @media (min-width: 640px) { .mission p { font-size: 24px; } }
+    @media (min-width: 1024px) { .mission p { font-size: 30px; } }
+
+    .stats {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 80px 16px;
+        display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        text-align: center;
+    }
+    @media (min-width: 1024px) {
+        .stats { padding: 96px 48px; grid-template-columns: repeat(4, 1fr); }
+    }
+    .stat .num {
+        font-family: var(--font-heading);
+        font-weight: 400;
+        color: hsl(var(--gold));
+        font-size: clamp(28px, 5vw, 48px);
+        letter-spacing: 0.05em;
+    }
+    .stat .label {
+        margin-top: 12px;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground));
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="about-hero anim-fade-up">
+    <p class="eyebrow">Про бренд</p>
+    <h1>SAHARA</h1>
+    <div class="gold-divider"></div>
+    <p class="about-intro">
+        SAHARA — це більше ніж одяг. Це філософія стриманої розкоші, де кожна деталь має значення.
+        Ми створюємо речі для тих, хто цінує якість, комфорт та вишуканий стиль.
+    </p>
+</section>
+
+<section class="values">
+    <div class="value">
+        <h3>Якість</h3>
+        <div class="value-divider"></div>
+        <p>Ми обираємо лише найкращі матеріали — натуральний льон, мериносову вовну, органічну бавовну. Кожна річ створена, щоб служити роками.</p>
+    </div>
+    <div class="value">
+        <h3>Стиль</h3>
+        <div class="value-divider"></div>
+        <p>Наш дизайн — це баланс між сучасними трендами та позачасовою елегантністю. Речі SAHARA доречні в будь-якій ситуації.</p>
+    </div>
+    <div class="value">
+        <h3>Відповідальність</h3>
+        <div class="value-divider"></div>
+        <p>Ми дбаємо про планету. Наше виробництво мінімізує відходи, а упаковка повністю переробляється.</p>
+    </div>
+</section>
+
+<section class="mission">
+    <div class="mission-inner">
+        <p class="eyebrow">Наша місія</p>
+        <p>"Створювати одяг, який дарує впевненість та підкреслює індивідуальність."</p>
+        <div class="gold-divider" style="margin-top: 32px;"></div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <div class="num">2019</div>
+        <div class="label">Рік заснування</div>
+    </div>
+    <div class="stat">
+        <div class="num">50+</div>
+        <div class="label">Моделей у колекції</div>
+    </div>
+    <div class="stat">
+        <div class="num">10K+</div>
+        <div class="label">Задоволених клієнтів</div>
+    </div>
+    <div class="stat">
+        <div class="num">100%</div>
+        <div class="label">Натуральні матеріали</div>
+    </div>
+</section>
+
+{% endblock %}

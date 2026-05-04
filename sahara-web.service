@@ -1,0 +1,17 @@
+[Unit]
+Description=SAHARA Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/sahara
+ExecStart=/opt/sahara/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001
+Restart=always
+RestartSec=5
+StandardOutput=append:/opt/sahara/web.log
+StandardError=append:/opt/sahara/web.log
+EnvironmentFile=/opt/sahara/.env
+
+[Install]
+WantedBy=multi-user.target

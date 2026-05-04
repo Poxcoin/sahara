@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Контакти — {{ site_name }}{% endblock %}
+{% block content %}
+<section style="padding: 80px 0; min-height: 60vh;">
+  <div class="container" style="max-width: 600px;">
+    <p class="eyebrow" style="margin-bottom: 16px; text-align: center;">Зв'язок</p>
+    <h1 class="h-page" style="text-align: center; margin-bottom: 48px;">Контакти</h1>
+
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
+        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Telegram</p>
+        <a href="https://t.me/sahara_support" style="font-size: 16px; color: hsl(var(--gold));">@sahara_support</a>
+      </div>
+      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
+        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Email</p>
+        <a href="mailto:hello@sahara.style" style="font-size: 16px; color: hsl(var(--gold));">hello@sahara.style</a>
+      </div>
+      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
+        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Підтримка</p>
+        <a href="/support" class="btn btn-outline" style="min-width: auto; padding: 0 24px; height: 44px;">Написати нам</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+[Unit]
+Description=SAHARA Telegram Parser
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/sahara
+ExecStart=/opt/sahara/venv/bin/python -m app.services.tg_parser
+Restart=always
+RestartSec=10
+StandardOutput=append:/opt/sahara/tg.log
+StandardError=append:/opt/sahara/tg.log
+EnvironmentFile=/opt/sahara/.env
+
+[Install]
+WantedBy=multi-user.target
