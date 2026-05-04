@@ -4,7 +4,7 @@
 set -e
 
 APP_DIR=/opt/sahara
-REPO=https://github.com/Poxcoin/sahara.git   # замінити на реальний repo
+REPO=https://github.com/Poxcoin/saharaman.git
 
 echo "=== SAHARA Deploy ==="
 
