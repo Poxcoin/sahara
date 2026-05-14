@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum as PyEnum
-from sqlalchemy import String, Integer, DateTime, Enum, Text, Float
+from sqlalchemy import String, Integer, DateTime, Enum, Text, Float, Index
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -30,6 +30,15 @@ class Product(Base):
     # Шляхи до файлів (відносно media_dir)
     original_photo: Mapped[str] = mapped_column(String(500))  # фото від постачальника
     generated_photo: Mapped[str | None] = mapped_column(String(500), nullable=True)  # AI try-on результат
+    extra_photos: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON: ["path1", "path2", ...]
+    size_chart: Mapped[str | None] = mapped_column(Text, nullable=True)   # JSON: size chart table
+
+    article_1c: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+    gender: Mapped[str | None] = mapped_column(String(10), nullable=True)  # "women" | "men"
+    stock: Mapped[int] = mapped_column(Integer, default=0)
+
+    title_ua: Mapped[str | None] = mapped_column(Text, nullable=True)
+    title_en: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     status: Mapped[ProductStatus] = mapped_column(
         Enum(ProductStatus), default=ProductStatus.PENDING
@@ -40,3 +49,66 @@ class Product(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True)
+    name: Mapped[str] = mapped_column(String(255))
+    last_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    birthday: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    is_verified: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class OTPCode(Base):
+    __tablename__ = "otp_codes"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), index=True)
+    code: Mapped[str] = mapped_column(String(10))
+    purpose: Mapped[str] = mapped_column(String(20))  # "verify" | "login"
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    used: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class OrderStatus(str, PyEnum):
+    NEW       = "new"
+    CONFIRMED = "confirmed"
+    SHIPPED   = "shipped"
+    DONE      = "done"
+    CANCELLED = "cancelled"
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    name:  Mapped[str] = mapped_column(String(255))
+    phone: Mapped[str] = mapped_column(String(50))
+    email: Mapped[str] = mapped_column(String(255))
+    delivery_type: Mapped[str] = mapped_column(String(20))  # "nova_poshta" | "pickup"
+    city:      Mapped[str | None] = mapped_column(String(255), nullable=True)
+    np_branch: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    total_uah: Mapped[float] = mapped_column(Float, default=0)
+    status: Mapped[OrderStatus] = mapped_column(
+        Enum(OrderStatus), default=OrderStatus.NEW
+    )
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id:       Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(Integer, index=True)
+    product_id:    Mapped[int | None] = mapped_column(Integer, nullable=True)
+    product_title: Mapped[str]   = mapped_column(String(500))
+    price_uah:     Mapped[float] = mapped_column(Float)
+    qty:           Mapped[int]   = mapped_column(Integer, default=1)
