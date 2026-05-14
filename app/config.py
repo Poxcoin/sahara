@@ -1,4 +1,7 @@
+import sys
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_WEAK_PASSWORDS = {"change_me", "admin", "password", "1234", "sahara"}
 
 
 class Settings(BaseSettings):
@@ -11,13 +14,42 @@ class Settings(BaseSettings):
 
     replicate_api_token: str = ""
     anthropic_api_key: str = ""
+    fal_key: str = ""
+    fashn_key: str = ""
 
     admin_password: str = "change_me"
+    secret_key: str = "change_me_secret_key_32_chars_min"
     site_name: str = "SAHARA"
     base_url: str = "http://localhost:8000"
+
+    # 1C HTTP API key (shared secret for both 1C databases)
+    api_1c_key: str = ""
+
+    # Telegram Bot для сповіщень про замовлення
+    tg_bot_token: str = ""
+    tg_admin_chat_id: str = ""
+
+    # Resend (resend.com) — for transactional emails
+    resend_api_key: str = ""
+    smtp_from: str = "noreply@sahara-store.net"
+
+    # SMTP fallback (not used if resend_api_key is set)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
 
     db_path: str = "data/sahara.db"
     media_dir: str = "media"
 
 
 settings = Settings()
+
+# Refuse to start if the admin password is still the insecure default.
+if settings.admin_password.lower() in _WEAK_PASSWORDS:
+    print(
+        "[SECURITY] ERROR: ADMIN_PASSWORD is set to a weak/default value. "
+        "Set a strong password in your .env file and restart.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
