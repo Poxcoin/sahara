@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum as PyEnum
-from sqlalchemy import String, Integer, DateTime, Enum, Text, Float, Index
+from sqlalchemy import String, Integer, DateTime, Enum, Text, Float, Index, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -106,9 +106,9 @@ class Order(Base):
 class OrderItem(Base):
     __tablename__ = "order_items"
 
-    id:       Mapped[int] = mapped_column(primary_key=True)
-    order_id: Mapped[int] = mapped_column(Integer, index=True)
-    product_id:    Mapped[int | None] = mapped_column(Integer, nullable=True)
-    product_title: Mapped[str]   = mapped_column(String(500))
-    price_uah:     Mapped[float] = mapped_column(Float)
-    qty:           Mapped[int]   = mapped_column(Integer, default=1)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
+    product_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    product_title: Mapped[str] = mapped_column(String(500))
+    price_uah: Mapped[float] = mapped_column(Float)
+    qty: Mapped[int] = mapped_column(Integer, default=1)
