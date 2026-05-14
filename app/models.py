@@ -110,5 +110,6 @@ class OrderItem(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
     product_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     product_title: Mapped[str] = mapped_column(String(500))
+    size: Mapped[str | None] = mapped_column(String(20), nullable=True)
     price_uah: Mapped[float] = mapped_column(Float)
     qty: Mapped[int] = mapped_column(Integer, default=1)

@@ -293,7 +293,7 @@
       body:JSON.stringify({
         name:name,phone:phone,email:email,delivery_type:delivery,
         city:city||null,np_branch:branch||null,
-        items:cart.map(function(it){ return {product_id:parseInt(it.id)||null,title:it.title||'',price:Number(it.price)||0,qty:Number(it.qty)||1}; })
+        items:cart.map(function(it){ return {product_id:parseInt(it.id)||null,title:it.title||'',size:it.size||null,price:Number(it.price)||0,qty:Number(it.qty)||1}; })
       })
     })
     .then(function(r){ return r.json(); })

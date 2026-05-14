@@ -515,6 +515,7 @@ async def checkout_page(request: Request):
 class _OrderItemIn(BaseModel):
     product_id: int | None = None
     title: str
+    size: str | None = None
     price: float
     qty: int = 1
 
@@ -557,6 +558,7 @@ async def create_order(
             order_id=order.id,
             product_id=it.product_id,
             product_title=it.title,
+            size=it.size,
             price_uah=it.price,
             qty=it.qty,
         )
@@ -860,6 +862,13 @@ async def admin_orders(
     for o in orders:
         o.items = items_by_order.get(o.id, [])
 
+    product_ids = {it.product_id for o in orders for it in o.items if it.product_id}
+    products_map: dict[int, Product] = {}
+    if product_ids:
+        pr = await session.execute(select(Product).where(Product.id.in_(product_ids)))
+        for p in pr.scalars().all():
+            products_map[p.id] = p
+
     counts_result = await session.execute(
         select(Order.status, func.count(Order.id)).group_by(Order.status)
     )
@@ -873,6 +882,7 @@ async def admin_orders(
         "status": status,
         "counts": counts,
         "total": sum(counts.values()),
+        "products_map": products_map,
     })
 
 
