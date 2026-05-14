@@ -838,6 +838,64 @@ async def profile_update(
 
 # ==================== АДМІНКА ====================
 
+@app.get("/admin/orders", response_class=HTMLResponse)
+async def admin_orders(
+    request: Request,
+    status: str = "",
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    from sqlalchemy import func
+    q = select(Order).order_by(desc(Order.created_at))
+    if status in ("new", "confirmed", "shipped", "done", "cancelled"):
+        q = q.where(Order.status == OrderStatus(status))
+    result = await session.execute(q)
+    orders = result.scalars().all()
+
+    items_result = await session.execute(select(OrderItem))
+    all_items = items_result.scalars().all()
+    items_by_order: dict[int, list] = {}
+    for it in all_items:
+        items_by_order.setdefault(it.order_id, []).append(it)
+    for o in orders:
+        o.items = items_by_order.get(o.id, [])
+
+    counts_result = await session.execute(
+        select(Order.status, func.count(Order.id)).group_by(Order.status)
+    )
+    counts = {row[0].value: row[1] for row in counts_result.all()}
+    for s in ("new", "confirmed", "shipped", "done", "cancelled"):
+        counts.setdefault(s, 0)
+
+    return templates.TemplateResponse("admin_orders.html", {
+        "request": request,
+        "orders": orders,
+        "status": status,
+        "counts": counts,
+        "total": sum(counts.values()),
+    })
+
+
+@app.post("/admin/orders/{order_id}/status")
+async def admin_order_status(
+    order_id: int,
+    request: Request,
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    form = await request.form()
+    new_status = str(form.get("s", ""))
+    if new_status not in ("confirmed", "shipped", "done", "cancelled"):
+        raise HTTPException(400)
+    order = await session.get(Order, order_id)
+    if not order:
+        raise HTTPException(404)
+    order.status = OrderStatus(new_status)
+    await session.commit()
+    ref = request.headers.get("referer", "/admin/orders")
+    return RedirectResponse(ref, status_code=303)
+
+
 @app.get("/admin", response_class=HTMLResponse)
 async def admin(
     request: Request,

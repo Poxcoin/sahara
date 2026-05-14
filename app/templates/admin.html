@@ -90,12 +90,39 @@
 
   /* ===== CARD ===== */
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-  .card-img { position: relative; background: #f0ebe4; aspect-ratio: 3/4; overflow: hidden; }
-  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .card-img { position: relative; background: #f0ebe4; aspect-ratio: 3/4; overflow: hidden; user-select: none; }
   .card-img .no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
-  .card-img-pair { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
-  .card-img-pair img { width: 100%; height: 100%; object-fit: cover; }
-  .card-img-label { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,.55); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* Carousel */
+  .car-track { display: flex; height: 100%; transition: transform .25s ease; will-change: transform; }
+  .car-slide { flex: 0 0 100%; height: 100%; }
+  .car-slide img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .car-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,.4); color: #fff; border: none;
+    width: 28px; height: 40px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .2s; z-index: 2;
+  }
+  .card-img:hover .car-btn { opacity: 1; }
+  .car-prev { left: 0; border-radius: 0 4px 4px 0; }
+  .car-next { right: 0; border-radius: 4px 0 0 4px; }
+  .car-dots {
+    position: absolute; bottom: 8px; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 5px; z-index: 2;
+  }
+  .car-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255,255,255,.5); cursor: pointer; transition: background .2s;
+  }
+  .car-dot.active { background: #fff; }
+  .car-counter {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,.5); color: #fff;
+    font-size: 9px; padding: 2px 6px; border-radius: 3px;
+    letter-spacing: 0.05em; z-index: 2;
+  }
+  .card-img-label { position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,.55); color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.1em; text-transform: uppercase; z-index: 2; }
 
   .card-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .card-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
@@ -125,9 +152,84 @@
   .badge-live       { background: #28a745; color: #fff; }
   .badge-failed     { background: #f8d7da; color: #721c24; }
   .badge-generating { background: #cce5ff; color: #004085; }
+
+  /* ===== PHOTO REORDER STRIP ===== */
+  .photo-strip { display: none; padding: 10px 14px; border-top: 1px solid var(--border); background: #faf8f5; }
+  .photo-strip.open { display: block; }
+  .photo-strip-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+  .photo-strip-row { display: flex; gap: 6px; flex-wrap: wrap; min-height: 64px; }
+  .photo-thumb {
+    width: 56px; height: 72px; flex: 0 0 56px;
+    border: 2px solid var(--border); border-radius: 4px; overflow: hidden;
+    cursor: grab; position: relative; background: #eee;
+    transition: border-color .15s, box-shadow .15s;
+    user-select: none;
+  }
+  .photo-thumb:active { cursor: grabbing; }
+  .photo-thumb.drag-over { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,169,110,.3); }
+  .photo-thumb.dragging { opacity: 0.4; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .photo-thumb .thumb-num {
+    position: absolute; top: 2px; left: 2px;
+    background: rgba(0,0,0,.55); color: #fff;
+    font-size: 8px; width: 14px; height: 14px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-weight: 600;
+  }
+  .strip-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .btn-save-order { background: var(--gold); color: #1a1a1a; font-size: 10px; padding: 5px 14px; border-radius: 4px; border: none; cursor: pointer; font-family: inherit; font-weight: 600; letter-spacing: 0.05em; }
+  .btn-save-order:hover { opacity: .85; }
+  .strip-status { font-size: 10px; color: var(--muted); }
 </style>
 </head>
 <body>
+
+{% macro photo_carousel(p, show_generated=false) %}
+{% set ns = namespace(photos=[], reorder=[]) %}
+{% if show_generated and p.generated_photo %}{% set ns.photos = ns.photos + [p.generated_photo] %}{% endif %}
+{% if p.original_photo %}{% set ns.photos = ns.photos + [p.original_photo] %}{% set ns.reorder = ns.reorder + [p.original_photo] %}{% endif %}
+{% for ep in (p.extra_photos | fromjson) %}{% set ns.photos = ns.photos + [ep] %}{% set ns.reorder = ns.reorder + [ep] %}{% endfor %}
+<div class="card-img" data-carousel="{{ p.id }}">
+  {% if ns.photos %}
+  <div class="car-track">
+    {% for photo in ns.photos %}
+    <div class="car-slide"><img src="/media/{{ photo }}" alt="Фото {{ loop.index }}" loading="lazy"></div>
+    {% endfor %}
+  </div>
+  {% if ns.photos | length > 1 %}
+  <button class="car-btn car-prev" onclick="carMove({{ p.id }},-1,event)">‹</button>
+  <button class="car-btn car-next" onclick="carMove({{ p.id }},1,event)">›</button>
+  <div class="car-dots">
+    {% for photo in ns.photos %}
+    <span class="car-dot {% if loop.first %}active{% endif %}" onclick="carGo({{ p.id }},{{ loop.index0 }},event)"></span>
+    {% endfor %}
+  </div>
+  <span class="car-counter" id="car-count-{{ p.id }}">1 / {{ ns.photos | length }}</span>
+  {% endif %}
+  {% else %}
+  <div class="no-img">Немає фото</div>
+  {% endif %}
+</div>
+<!-- Photo reorder strip -->
+<div class="photo-strip" id="strip-{{ p.id }}">
+  <div class="photo-strip-label">Перетягни фото для зміни порядку</div>
+  <div class="photo-strip-row" id="strip-row-{{ p.id }}">
+    {% for photo in ns.reorder %}
+    <div class="photo-thumb" draggable="true" data-path="{{ photo }}"
+         ondragstart="dragStart(event,{{ p.id }})"
+         ondragover="dragOver(event)"
+         ondragleave="dragLeave(event)"
+         ondrop="dragDrop(event,{{ p.id }})">
+      <img src="/media/{{ photo }}" alt="">
+      <div class="thumb-num">{{ loop.index }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="strip-actions">
+    <button class="btn-save-order" onclick="saveOrder({{ p.id }})">Зберегти порядок</button>
+    <span class="strip-status" id="strip-status-{{ p.id }}"></span>
+  </div>
+</div>
+{% endmacro %}
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -175,6 +277,9 @@
     </div>
   </nav>
   <div class="sidebar-footer">
+    <a href="/admin/orders" style="display:block; margin-bottom:8px; padding:10px 16px; background:rgba(255,255,255,.07); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">🛒 Замовлення</a>
+    <a href="/admin/studio" target="_blank" style="display:block; margin-bottom:8px; padding:10px 16px; background:var(--gold); color:#1a1a1a; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">✨ AI Studio</a>
+    <a href="/admin/1c" target="_blank" style="display:block; margin-bottom:8px; padding:10px 16px; background:rgba(255,255,255,.07); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">🔗 1С Інтеграція</a>
     <a href="/" target="_blank">↗ Відкрити сайт</a>
   </div>
 </aside>
@@ -194,24 +299,22 @@
       <div class="grid">
         {% for p in grouped.pending %}
         <div class="card">
-          <div class="card-img">
-            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
-            {% else %}<div class="no-img">Немає фото</div>{% endif %}
-            <span class="card-img-label">Оригінал</span>
-          </div>
+          {{ photo_carousel(p) }}
           <div class="card-body">
-            <div class="card-title">{{ p.title }}</div>
+            <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
             {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
             {% if p.description %}<div class="card-meta">{{ p.description[:80] }}</div>{% endif %}
             <div class="card-meta">#{{ p.id }} · {{ p.created_at.strftime('%d.%m.%y') }}</div>
           </div>
           <div class="card-actions">
             <form method="post" action="/admin/generate/{{ p.id }}">
-              <button class="btn btn-ai">✦ AI try-on</button>
+              <button class="btn btn-ai">✦ AI</button>
             </form>
             <form method="post" action="/admin/publish-direct/{{ p.id }}">
-              <button class="btn btn-direct">Без AI →</button>
+              <button class="btn btn-direct">→ Сайт</button>
             </form>
+            <button class="btn" style="background:#e8f4fd;color:#1a6a9a" onclick="translateTitle({{ p.id }}, this)">🌐 UA</button>
+            <button class="btn" style="background:#f5f4f1;color:#555;border:1px solid var(--border)" onclick="toggleStrip({{ p.id }})">↕</button>
             <form method="post" action="/admin/reject/{{ p.id }}">
               <button class="btn btn-reject">✕</button>
             </form>
@@ -231,9 +334,7 @@
       <div class="grid">
         {% for p in generating %}
         <div class="card">
-          <div class="card-img">
-            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">{% endif %}
-          </div>
+          {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
             {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
@@ -253,15 +354,9 @@
       <div class="grid">
         {% for p in grouped.ready %}
         <div class="card">
-          <div class="card-img">
-            <div class="card-img-pair">
-              {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="Оригінал">{% endif %}
-              {% if p.generated_photo %}<img src="/media/{{ p.generated_photo }}" alt="AI">{% endif %}
-            </div>
-            <span class="card-img-label">Оригінал / AI</span>
-          </div>
+          {{ photo_carousel(p, show_generated=true) }}
           <div class="card-body">
-            <div class="card-title">{{ p.title }}</div>
+            <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
             {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
           </div>
           <div class="card-actions">
@@ -271,6 +366,8 @@
             <form method="post" action="/admin/generate/{{ p.id }}">
               <button class="btn btn-regen">Re-gen</button>
             </form>
+            <button class="btn" style="background:#e8f4fd;color:#1a6a9a" onclick="translateTitle({{ p.id }}, this)">🌐 UA</button>
+            <button class="btn" style="background:#f5f4f1;color:#555;border:1px solid var(--border)" onclick="toggleStrip({{ p.id }})">↕</button>
             <form method="post" action="/admin/reject/{{ p.id }}">
               <button class="btn btn-reject">✕</button>
             </form>
@@ -289,17 +386,15 @@
       <div class="grid">
         {% for p in grouped.live %}
         <div class="card">
-          <div class="card-img">
-            {% if p.generated_photo %}<img src="/media/{{ p.generated_photo }}" alt="{{ p.title }}">
-            {% elif p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">{% endif %}
-            <span class="card-img-label">Live</span>
-          </div>
+          {{ photo_carousel(p, show_generated=true) }}
           <div class="card-body">
-            <div class="card-title">{{ p.title }}</div>
+            <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
             {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
             <div class="card-meta"><a href="/product/{{ p.id }}" target="_blank" style="color:var(--info)">↗ На сайті</a></div>
           </div>
           <div class="card-actions">
+            <button class="btn" style="background:#e8f4fd;color:#1a6a9a" onclick="translateTitle({{ p.id }}, this)">🌐 UA</button>
+            <button class="btn" style="background:#f5f4f1;color:#555;border:1px solid var(--border)" onclick="toggleStrip({{ p.id }})">↕</button>
             <form method="post" action="/admin/reject/{{ p.id }}">
               <button class="btn btn-reject">Зняти</button>
             </form>
@@ -318,10 +413,7 @@
       <div class="grid">
         {% for p in grouped.failed %}
         <div class="card">
-          <div class="card-img">
-            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
-            {% else %}<div class="no-img">Немає фото</div>{% endif %}
-          </div>
+          {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
             {% if p.error_message %}<div class="card-error">{{ p.error_message[:120] }}</div>{% endif %}
@@ -351,10 +443,7 @@
       <div class="grid">
         {% for p in grouped.rejected %}
         <div class="card">
-          <div class="card-img">
-            {% if p.original_photo %}<img src="/media/{{ p.original_photo }}" alt="{{ p.title }}">
-            {% else %}<div class="no-img">Немає фото</div>{% endif %}
-          </div>
+          {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
             {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
@@ -414,6 +503,134 @@ showTab(saved);
 // Автооновлення якщо є generating
 if (counts.generating > 0) {
   setTimeout(() => location.reload(), 12000);
+}
+
+// ===== CAROUSEL =====
+const carState = {};
+
+function carInit(id) {
+  if (carState[id]) return carState[id];
+  const el = document.querySelector(`[data-carousel="${id}"]`);
+  if (!el) return null;
+  const track = el.querySelector('.car-track');
+  const slides = track ? track.querySelectorAll('.car-slide') : [];
+  const total = slides.length;
+  const state = carState[id] = { el, track, total, cur: 0, startX: 0, dragging: false };
+
+  el.addEventListener('touchstart', e => { state.startX = e.touches[0].clientX; state.dragging = true; }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (!state.dragging) return;
+    const dx = e.changedTouches[0].clientX - state.startX;
+    if (Math.abs(dx) > 40) carMove(id, dx < 0 ? 1 : -1);
+    state.dragging = false;
+  });
+  return state;
+}
+
+function carGo(id, idx, e) {
+  if (e) e.stopPropagation();
+  const s = carInit(id); if (!s) return;
+  s.cur = (idx + s.total) % s.total;
+  s.track.style.transform = `translateX(-${s.cur * 100}%)`;
+  s.el.querySelectorAll('.car-dot').forEach((d,i) => d.classList.toggle('active', i === s.cur));
+  const counter = document.getElementById('car-count-' + id);
+  if (counter) counter.textContent = `${s.cur + 1} / ${s.total}`;
+}
+
+function carMove(id, dir, e) {
+  if (e) e.stopPropagation();
+  const s = carInit(id); if (!s) return;
+  carGo(id, s.cur + dir);
+}
+
+document.querySelectorAll('[data-carousel]').forEach(el => carInit(el.dataset.carousel));
+
+// ===== PHOTO REORDER =====
+function toggleStrip(id) {
+  const strip = document.getElementById('strip-' + id);
+  if (strip) strip.classList.toggle('open');
+}
+
+let dragSrc = null;
+
+function dragStart(e, id) {
+  dragSrc = e.currentTarget;
+  dragSrc.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function dragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function dragDrop(e, id) {
+  e.preventDefault();
+  const target = e.currentTarget;
+  target.classList.remove('drag-over');
+  if (!dragSrc || dragSrc === target) return;
+  const row = document.getElementById('strip-row-' + id);
+  const thumbs = [...row.querySelectorAll('.photo-thumb')];
+  const srcIdx = thumbs.indexOf(dragSrc);
+  const tgtIdx = thumbs.indexOf(target);
+  if (srcIdx < tgtIdx) row.insertBefore(dragSrc, target.nextSibling);
+  else row.insertBefore(dragSrc, target);
+  dragSrc.classList.remove('dragging');
+  // update numbers
+  row.querySelectorAll('.photo-thumb').forEach((t, i) => {
+    const num = t.querySelector('.thumb-num');
+    if (num) num.textContent = i + 1;
+  });
+  dragSrc = null;
+}
+
+async function saveOrder(id) {
+  const row = document.getElementById('strip-row-' + id);
+  const photos = [...row.querySelectorAll('.photo-thumb')].map(t => t.dataset.path);
+  const st = document.getElementById('strip-status-' + id);
+  st.textContent = 'Зберігаємо...';
+  try {
+    const r = await fetch('/admin/photos/reorder/' + id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ photos }),
+      credentials: 'include',
+    });
+    if (!r.ok) throw new Error(r.status);
+    st.textContent = '✓ Збережено';
+    setTimeout(() => st.textContent = '', 2500);
+  } catch (err) {
+    st.textContent = '✗ Помилка: ' + err.message;
+  }
+}
+
+// ===== TRANSLATE TITLE =====
+async function translateTitle(id, btn) {
+  const titleEl = document.getElementById('title-' + id);
+  if (!titleEl) return;
+  const orig = btn.dataset.orig || titleEl.textContent.trim();
+  btn.dataset.orig = orig;
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const r = await fetch('/admin/translate/' + id, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    titleEl.textContent = d.title_ua;
+    btn.textContent = '✓ UA';
+    btn.style.background = '#d4edda';
+  } catch (err) {
+    btn.textContent = '✗';
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
