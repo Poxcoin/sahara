@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% block title %}Оформлення замовлення — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.co-page{max-width:960px;margin:0 auto;padding:32px 16px;}
+@media(min-width:640px){.co-page{padding:48px 32px;}}
+@media(min-width:1024px){.co-page{padding:48px;}}
+.co-grid{display:grid;grid-template-columns:1fr;gap:40px;}
+@media(min-width:900px){.co-grid{grid-template-columns:1fr 380px;align-items:start;}}
+.co-section{margin-bottom:32px;}
+.co-section h2{font-family:var(--font-heading);font-size:18px;font-weight:400;margin:0 0 20px;letter-spacing:.03em;}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;color:hsl(var(--muted-foreground));}
+.field input{width:100%;height:48px;border:1px solid hsla(40,10%,88%,.8);padding:0 14px;font-size:14px;font-family:inherit;background:transparent;outline:none;box-sizing:border-box;}
+.field input:focus{border-color:hsl(var(--foreground));}
+.delivery-options{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.delivery-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid hsla(40,10%,88%,.8);cursor:pointer;}
+.delivery-option.active{border-color:hsl(var(--foreground));}
+.delivery-option input[type=radio]{accent-color:hsl(var(--foreground));}
+.np-fields{display:none;}
+.np-fields.visible{display:block;}
+.pickup-info{display:none;padding:12px 16px;background:hsla(40,20%,97%,1);border:1px solid hsla(40,10%,88%,.8);font-size:13px;color:hsl(var(--muted-foreground));margin-bottom:18px;line-height:1.6;}
+.pickup-info.visible{display:block;}
+.summary-card{border:1px solid hsla(40,10%,88%,.8);padding:24px;position:sticky;top:80px;}
+.summary-card h2{font-family:var(--font-heading);font-size:16px;font-weight:400;margin:0 0 16px;}
+.summary-items{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+.si{display:flex;gap:12px;align-items:flex-start;}
+.si-img{width:56px;height:75px;object-fit:cover;flex-shrink:0;}
+.si-info{flex:1;min-width:0;}
+.si-title{font-size:12px;line-height:1.4;margin-bottom:4px;}
+.si-meta{font-size:11px;color:hsl(var(--muted-foreground));}
+.si-price{font-size:13px;white-space:nowrap;}
+.summary-total{border-top:1px solid hsla(40,10%,88%,.8);padding-top:16px;display:flex;justify-content:space-between;align-items:center;}
+.summary-total .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;}
+.summary-total .val{font-size:18px;font-family:var(--font-heading);}
+.co-submit{width:100%;height:52px;margin-top:20px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;font-family:inherit;transition:opacity .2s;}
+.co-submit:disabled{opacity:.5;cursor:not-allowed;}
+.co-error{display:none;color:#c0392b;font-size:13px;margin-top:12px;text-align:center;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="co-page">
+  <p class="eyebrow" style="margin-bottom:8px;">Замовлення</p>
+  <h1 style="font-family:var(--font-heading);font-size:clamp(24px,4vw,36px);font-weight:400;margin:0 0 40px;">Оформлення</h1>
+
+  <div id="emptyCart" style="display:none;text-align:center;padding:40px 0;">
+    <p style="font-size:15px;color:hsl(var(--muted-foreground));margin-bottom:24px;">Кошик порожній</p>
+    <a href="/catalog" class="btn btn-primary">До каталогу</a>
+  </div>
+
+  <div id="coContent" style="display:none;">
+    <div class="co-grid">
+      <div>
+        <div class="co-section">
+          <h2>Ваші дані</h2>
+          <div class="field">
+            <label for="co-name">Ім'я та прізвище</label>
+            <input type="text" id="co-name" placeholder="Іван Петренко" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="co-phone">Телефон</label>
+            <input type="tel" id="co-phone" placeholder="+380501234567" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="co-email">Email</label>
+            <input type="email" id="co-email" placeholder="ivan@example.com" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="co-section">
+          <h2>Доставка</h2>
+          <div class="delivery-options">
+            <label class="delivery-option active" id="opt-np">
+              <input type="radio" name="delivery" value="nova_poshta" checked>
+              <span>Нова пошта</span>
+            </label>
+            <label class="delivery-option" id="opt-pickup">
+              <input type="radio" name="delivery" value="pickup">
+              <span>Самовивіз з магазину</span>
+            </label>
+          </div>
+          <div class="np-fields visible" id="npFields">
+            <div class="field">
+              <label for="co-city">Місто</label>
+              <input type="text" id="co-city" placeholder="Київ" autocomplete="address-level2">
+            </div>
+            <div class="field">
+              <label for="co-branch">Відділення №</label>
+              <input type="text" id="co-branch" placeholder="42">
+            </div>
+          </div>
+          <div class="pickup-info" id="pickupInfo">
+            вул. Театральна, 6, Ковель, 45000<br>
+            Пн–Пт: 10:00–18:30 · Сб: 10:00–16:00 · Нд: 10:00–15:00
+          </div>
+        </div>
+
+        <button class="co-submit" id="coSubmit">Підтвердити замовлення</button>
+        <p class="co-error" id="coError"></p>
+      </div>
+
+      <div class="summary-card">
+        <h2>Ваше замовлення</h2>
+        <div class="summary-items" id="coItems"></div>
+        <div class="summary-total">
+          <span class="lbl">Всього</span>
+          <span class="val" id="coTotal">0 ₴</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  var KEY = 'sahara_cart';
+  function loadCart(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+
+  var cart = loadCart();
+  if(!cart.length){
+    document.getElementById('emptyCart').style.display = 'block';
+    return;
+  }
+  document.getElementById('coContent').style.display = 'block';
+
+  var itemsEl = document.getElementById('coItems');
+  var total = 0;
+  cart.forEach(function(it){
+    var sum = (Number(it.price)||0) * (Number(it.qty)||1);
+    total += sum;
+
+    var row = document.createElement('div');
+    row.className = 'si';
+
+    var img = document.createElement('img');
+    img.className = 'si-img';
+    img.src = it.img || '';
+    img.alt = '';
+    row.appendChild(img);
+
+    var info = document.createElement('div');
+    info.className = 'si-info';
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'si-title';
+    titleEl.textContent = it.title || '';
+    info.appendChild(titleEl);
+
+    if(it.size){
+      var meta = document.createElement('div');
+      meta.className = 'si-meta';
+      meta.textContent = 'Розмір: ' + it.size;
+      info.appendChild(meta);
+    }
+
+    var qtyEl = document.createElement('div');
+    qtyEl.className = 'si-meta';
+    qtyEl.textContent = '\xd7 ' + (it.qty||1);
+    info.appendChild(qtyEl);
+
+    row.appendChild(info);
+
+    var priceEl = document.createElement('div');
+    priceEl.className = 'si-price';
+    priceEl.textContent = sum.toLocaleString('uk-UA') + ' ₴';
+    row.appendChild(priceEl);
+
+    itemsEl.appendChild(row);
+  });
+  document.getElementById('coTotal').textContent = total.toLocaleString('uk-UA') + ' ₴';
+
+  document.querySelectorAll('input[name=delivery]').forEach(function(r){
+    r.addEventListener('change', function(){
+      var isNp = r.value === 'nova_poshta';
+      document.getElementById('npFields').classList.toggle('visible', isNp);
+      document.getElementById('pickupInfo').classList.toggle('visible', !isNp);
+      document.getElementById('opt-np').classList.toggle('active', isNp);
+      document.getElementById('opt-pickup').classList.toggle('active', !isNp);
+    });
+  });
+
+  document.getElementById('coSubmit').addEventListener('click', function(){
+    var name     = document.getElementById('co-name').value.trim();
+    var phone    = document.getElementById('co-phone').value.trim();
+    var email    = document.getElementById('co-email').value.trim();
+    var delivery = document.querySelector('input[name=delivery]:checked').value;
+    var city     = document.getElementById('co-city').value.trim();
+    var branch   = document.getElementById('co-branch').value.trim();
+    var errEl    = document.getElementById('coError');
+
+    errEl.style.display = 'none';
+    if(!name || name.length < 2){ errEl.textContent = "Введіть ім’я"; errEl.style.display = 'block'; return; }
+    if(!phone || phone.length < 10){ errEl.textContent = 'Введіть телефон'; errEl.style.display = 'block'; return; }
+    if(!email || !email.includes('@')){ errEl.textContent = 'Введіть коректний email'; errEl.style.display = 'block'; return; }
+    if(delivery === 'nova_poshta' && (!city || !branch)){
+      errEl.textContent = 'Вкажіть місто і відділення Нової пошти';
+      errEl.style.display = 'block'; return;
+    }
+
+    var btn = document.getElementById('coSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Оформлюємо...';
+
+    var payload = {
+      name: name, phone: phone, email: email,
+      delivery_type: delivery,
+      city: city || null,
+      np_branch: branch || null,
+      items: cart.map(function(it){
+        return {
+          product_id: parseInt(it.id) || null,
+          title: it.title || '',
+          price: Number(it.price) || 0,
+          qty: Number(it.qty) || 1
+        };
+      })
+    };
+
+    fetch('/api/orders/create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.order_id){
+        localStorage.removeItem(KEY);
+        if(window.saharaUpdateCartBadge) saharaUpdateCartBadge();
+        window.location.href = '/order/done/' + data.order_id;
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Підтвердити замовлення';
+        errEl.textContent = data.detail || 'Помилка. Спробуйте ще раз.';
+        errEl.style.display = 'block';
+      }
+    })
+    .catch(function(){
+      btn.disabled = false;
+      btn.textContent = 'Підтвердити замовлення';
+      errEl.textContent = "Помилка з’єднання. Спробуйте ще раз.";
+      errEl.style.display = 'block';
+    });
+  });
+})();
+</script>
+{% endblock %}
