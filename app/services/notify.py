@@ -1,5 +1,8 @@
+import logging
 import httpx
 from app.config import settings
+
+logger = logging.getLogger("sahara.notify")
 
 
 async def send_order_telegram(order, items: list) -> None:
@@ -35,5 +38,5 @@ async def send_order_telegram(order, items: list) -> None:
                 "text": "\n".join(lines),
                 "parse_mode": "HTML",
             })
-    except Exception:
-        pass  # не блокуємо замовлення якщо Telegram недоступний
+    except Exception as exc:
+        logger.warning("Telegram notify failed: %s", exc)

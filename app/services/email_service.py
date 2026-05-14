@@ -206,5 +206,6 @@ async def send_order_confirmation(to_email: str, order, items: list) -> None:
             "subject": f"Замовлення #{order.id} прийнято — SAHARA",
             "html": html,
         })
-    except Exception as e:
+        logger.info("Order confirmation sent to %s", to_email)
+    except Exception as e:  # fire-and-forget — don't fail the order
         logger.error("Order confirmation email failed: %s", e)
