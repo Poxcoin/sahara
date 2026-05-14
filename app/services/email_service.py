@@ -200,7 +200,8 @@ async def send_order_confirmation(to_email: str, order, items: list) -> None:
     resend.api_key = settings.resend_api_key
     html = _html_order(order, items)
     try:
-        resend.Emails.send({
+        import asyncio
+        await asyncio.to_thread(resend.Emails.send, {
             "from": f"SAHARA <{settings.smtp_from}>",
             "to": [to_email],
             "subject": f"Замовлення #{order.id} прийнято — SAHARA",

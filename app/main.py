@@ -473,6 +473,38 @@ async def catalog_page(request: Request, session: AsyncSession = Depends(get_ses
     )
 
 
+@app.get("/api/np/cities")
+async def np_cities(q: str = ""):
+    if not settings.np_api_key or len(q) < 2:
+        return {"data": []}
+    async with httpx.AsyncClient(timeout=5) as client:
+        r = await client.post("https://api.novaposhta.ua/v2.0/json/", json={
+            "apiKey": settings.np_api_key,
+            "modelName": "Address",
+            "calledMethod": "searchSettlements",
+            "methodProperties": {"CityName": q, "Limit": "10"},
+        })
+        data = r.json()
+    addresses = data.get("data", [{}])[0].get("Addresses", []) if data.get("success") else []
+    return {"data": [{"name": a["Present"], "ref": a["DeliveryCity"]} for a in addresses]}
+
+
+@app.get("/api/np/warehouses")
+async def np_warehouses(city_ref: str = "", q: str = ""):
+    if not settings.np_api_key or not city_ref:
+        return {"data": []}
+    async with httpx.AsyncClient(timeout=5) as client:
+        r = await client.post("https://api.novaposhta.ua/v2.0/json/", json={
+            "apiKey": settings.np_api_key,
+            "modelName": "AddressGeneral",
+            "calledMethod": "getWarehouses",
+            "methodProperties": {"CityRef": city_ref, "FindByString": q, "Limit": "30"},
+        })
+        data = r.json()
+    warehouses = data.get("data", []) if data.get("success") else []
+    return {"data": [{"name": w["Description"], "number": w["Number"]} for w in warehouses]}
+
+
 @app.get("/checkout", response_class=HTMLResponse)
 async def checkout_page(request: Request):
     return templates.TemplateResponse(
@@ -533,8 +565,15 @@ async def create_order(
 
     await session.commit()
 
-    background_tasks.add_task(send_order_telegram, order, db_items)
-    background_tasks.add_task(send_order_confirmation, data.email, order, db_items)
+    async def _notify():
+        import asyncio
+        await asyncio.gather(
+            send_order_telegram(order, db_items),
+            send_order_confirmation(data.email, order, db_items),
+            return_exceptions=True,
+        )
+
+    background_tasks.add_task(_notify)
 
     return {"order_id": order.id}
 

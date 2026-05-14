@@ -10,18 +10,29 @@
 @media(min-width:900px){.co-grid{grid-template-columns:1fr 380px;align-items:start;}}
 .co-section{margin-bottom:32px;}
 .co-section h2{font-family:var(--font-heading);font-size:18px;font-weight:400;margin:0 0 20px;letter-spacing:.03em;}
-.field{margin-bottom:18px;}
+.field{margin-bottom:18px;position:relative;}
 .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;color:hsl(var(--muted-foreground));}
-.field input{width:100%;height:48px;border:1px solid hsla(40,10%,88%,.8);padding:0 14px;font-size:14px;font-family:inherit;background:transparent;outline:none;box-sizing:border-box;}
+.field input{width:100%;height:48px;border:1px solid hsla(40,10%,88%,.8);padding:0 14px;font-size:14px;font-family:inherit;background:transparent;outline:none;box-sizing:border-box;transition:border-color .15s;}
 .field input:focus{border-color:hsl(var(--foreground));}
+.field input.invalid{border-color:#c0392b;}
+.field input.valid{border-color:#27ae60;}
+.field-hint{font-size:11px;color:#c0392b;margin-top:4px;display:none;}
+.field-hint.show{display:block;}
 .delivery-options{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
-.delivery-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid hsla(40,10%,88%,.8);cursor:pointer;}
+.delivery-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid hsla(40,10%,88%,.8);cursor:pointer;transition:border-color .15s;}
 .delivery-option.active{border-color:hsl(var(--foreground));}
 .delivery-option input[type=radio]{accent-color:hsl(var(--foreground));}
 .np-fields{display:none;}
 .np-fields.visible{display:block;}
 .pickup-info{display:none;padding:12px 16px;background:hsla(40,20%,97%,1);border:1px solid hsla(40,10%,88%,.8);font-size:13px;color:hsl(var(--muted-foreground));margin-bottom:18px;line-height:1.6;}
 .pickup-info.visible{display:block;}
+.ac-wrap{position:relative;}
+.ac-drop{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid hsla(40,10%,88%,1);border-top:none;z-index:100;max-height:220px;overflow-y:auto;display:none;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.ac-drop.open{display:block;}
+.ac-item{padding:10px 14px;font-size:13px;cursor:pointer;line-height:1.4;border-bottom:1px solid hsla(40,10%,95%,1);}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover,.ac-item.focused{background:hsl(var(--secondary));}
+.ac-msg{padding:10px 14px;font-size:13px;color:hsl(var(--muted-foreground));}
 .summary-card{border:1px solid hsla(40,10%,88%,.8);padding:24px;position:sticky;top:80px;}
 .summary-card h2{font-family:var(--font-heading);font-size:16px;font-weight:400;margin:0 0 16px;}
 .summary-items{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
@@ -58,14 +69,17 @@
           <div class="field">
             <label for="co-name">Ім'я та прізвище</label>
             <input type="text" id="co-name" placeholder="Іван Петренко" autocomplete="name">
+            <div class="field-hint" id="hint-name">Введіть ім'я та прізвище (лише літери)</div>
           </div>
           <div class="field">
             <label for="co-phone">Телефон</label>
             <input type="tel" id="co-phone" placeholder="+380501234567" autocomplete="tel">
+            <div class="field-hint" id="hint-phone">Формат: +380501234567 або 0501234567</div>
           </div>
           <div class="field">
             <label for="co-email">Email</label>
             <input type="email" id="co-email" placeholder="ivan@example.com" autocomplete="email">
+            <div class="field-hint" id="hint-email">Введіть коректний email</div>
           </div>
         </div>
 
@@ -84,11 +98,20 @@
           <div class="np-fields visible" id="npFields">
             <div class="field">
               <label for="co-city">Місто</label>
-              <input type="text" id="co-city" placeholder="Київ" autocomplete="address-level2">
+              <div class="ac-wrap">
+                <input type="text" id="co-city" placeholder="Почніть вводити місто..." autocomplete="off">
+                <div class="ac-drop" id="drop-city"></div>
+              </div>
+              <input type="hidden" id="co-city-ref">
+              <div class="field-hint" id="hint-city">Оберіть місто зі списку</div>
             </div>
             <div class="field">
-              <label for="co-branch">Відділення №</label>
-              <input type="text" id="co-branch" placeholder="42">
+              <label for="co-branch">Відділення / Поштомат</label>
+              <div class="ac-wrap">
+                <input type="text" id="co-branch" placeholder="Спочатку оберіть місто..." autocomplete="off" disabled>
+                <div class="ac-drop" id="drop-branch"></div>
+              </div>
+              <div class="field-hint" id="hint-branch">Оберіть відділення зі списку</div>
             </div>
           </div>
           <div class="pickup-info" id="pickupInfo">
@@ -127,55 +150,28 @@
   }
   document.getElementById('coContent').style.display = 'block';
 
+  /* ─── Рендер кошика ─── */
   var itemsEl = document.getElementById('coItems');
   var total = 0;
   cart.forEach(function(it){
     var sum = (Number(it.price)||0) * (Number(it.qty)||1);
     total += sum;
-
-    var row = document.createElement('div');
-    row.className = 'si';
-
-    var img = document.createElement('img');
-    img.className = 'si-img';
-    img.src = it.img || '';
-    img.alt = '';
-    row.appendChild(img);
-
-    var info = document.createElement('div');
-    info.className = 'si-info';
-
-    var titleEl = document.createElement('div');
-    titleEl.className = 'si-title';
-    titleEl.textContent = it.title || '';
-    info.appendChild(titleEl);
-
-    if(it.size){
-      var meta = document.createElement('div');
-      meta.className = 'si-meta';
-      meta.textContent = 'Розмір: ' + it.size;
-      info.appendChild(meta);
-    }
-
-    var qtyEl = document.createElement('div');
-    qtyEl.className = 'si-meta';
-    qtyEl.textContent = '\xd7 ' + (it.qty||1);
-    info.appendChild(qtyEl);
-
+    var row = document.createElement('div'); row.className = 'si';
+    var img = document.createElement('img'); img.className='si-img'; img.src=it.img||''; img.alt=''; row.appendChild(img);
+    var info = document.createElement('div'); info.className='si-info';
+    var tEl = document.createElement('div'); tEl.className='si-title'; tEl.textContent=it.title||''; info.appendChild(tEl);
+    if(it.size){ var m=document.createElement('div'); m.className='si-meta'; m.textContent='Розмір: '+it.size; info.appendChild(m); }
+    var qEl=document.createElement('div'); qEl.className='si-meta'; qEl.textContent='\xd7'+(it.qty||1); info.appendChild(qEl);
     row.appendChild(info);
-
-    var priceEl = document.createElement('div');
-    priceEl.className = 'si-price';
-    priceEl.textContent = sum.toLocaleString('uk-UA') + ' ₴';
-    row.appendChild(priceEl);
-
+    var pEl=document.createElement('div'); pEl.className='si-price'; pEl.textContent=sum.toLocaleString('uk-UA')+' ₴'; row.appendChild(pEl);
     itemsEl.appendChild(row);
   });
-  document.getElementById('coTotal').textContent = total.toLocaleString('uk-UA') + ' ₴';
+  document.getElementById('coTotal').textContent = total.toLocaleString('uk-UA')+' ₴';
 
+  /* ─── Доставка toggle ─── */
   document.querySelectorAll('input[name=delivery]').forEach(function(r){
     r.addEventListener('change', function(){
-      var isNp = r.value === 'nova_poshta';
+      var isNp = r.value==='nova_poshta';
       document.getElementById('npFields').classList.toggle('visible', isNp);
       document.getElementById('pickupInfo').classList.toggle('visible', !isNp);
       document.getElementById('opt-np').classList.toggle('active', isNp);
@@ -183,66 +179,137 @@
     });
   });
 
-  document.getElementById('coSubmit').addEventListener('click', function(){
-    var name     = document.getElementById('co-name').value.trim();
-    var phone    = document.getElementById('co-phone').value.trim();
-    var email    = document.getElementById('co-email').value.trim();
-    var delivery = document.querySelector('input[name=delivery]:checked').value;
-    var city     = document.getElementById('co-city').value.trim();
-    var branch   = document.getElementById('co-branch').value.trim();
-    var errEl    = document.getElementById('coError');
+  /* ─── Валідація ─── */
+  function validateName(v){ return v.trim().length>=2 && !/\d/.test(v); }
+  function validatePhone(v){ var c=v.replace(/[\s\-\(\)]/g,''); return /^(\+?380\d{9}|0\d{9})$/.test(c); }
+  function validateEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); }
 
-    errEl.style.display = 'none';
-    if(!name || name.length < 2){ errEl.textContent = "Введіть ім’я"; errEl.style.display = 'block'; return; }
-    if(!phone || phone.length < 10){ errEl.textContent = 'Введіть телефон'; errEl.style.display = 'block'; return; }
-    if(!email || !email.includes('@')){ errEl.textContent = 'Введіть коректний email'; errEl.style.display = 'block'; return; }
-    if(delivery === 'nova_poshta' && (!city || !branch)){
-      errEl.textContent = 'Вкажіть місто і відділення Нової пошти';
-      errEl.style.display = 'block'; return;
+  function setFieldState(inputId, hintId, valid){
+    var inp=document.getElementById(inputId), hint=document.getElementById(hintId);
+    if(!inp.value.trim()){ inp.classList.remove('valid','invalid'); hint.classList.remove('show'); return; }
+    inp.classList.toggle('valid',valid); inp.classList.toggle('invalid',!valid);
+    hint.classList.toggle('show',!valid);
+  }
+  document.getElementById('co-name').addEventListener('blur', function(){ setFieldState('co-name','hint-name',validateName(this.value)); });
+  document.getElementById('co-phone').addEventListener('blur', function(){ setFieldState('co-phone','hint-phone',validatePhone(this.value)); });
+  document.getElementById('co-email').addEventListener('blur', function(){ setFieldState('co-email','hint-email',validateEmail(this.value)); });
+
+  /* ─── Autocomplete ─── */
+  function clearDrop(drop){ while(drop.firstChild) drop.removeChild(drop.firstChild); }
+
+  function makeAC(inputId, dropId, fetchFn, onSelect){
+    var inp=document.getElementById(inputId), drop=document.getElementById(dropId), timer;
+
+    function renderItems(items){
+      clearDrop(drop);
+      if(!items.length){
+        var el=document.createElement('div'); el.className='ac-msg'; el.textContent='Нічого не знайдено';
+        drop.appendChild(el);
+      } else {
+        items.forEach(function(item){
+          var el=document.createElement('div'); el.className='ac-item'; el.textContent=item.label;
+          el.addEventListener('mousedown', function(e){
+            e.preventDefault(); inp.value=item.label; clearDrop(drop); drop.classList.remove('open'); onSelect(item);
+          });
+          drop.appendChild(el);
+        });
+      }
+      drop.classList.add('open');
     }
 
-    var btn = document.getElementById('coSubmit');
-    btn.disabled = true;
-    btn.textContent = 'Оформлюємо...';
+    inp.addEventListener('input', function(){
+      clearTimeout(timer);
+      var q=inp.value.trim();
+      if(q.length<2){ clearDrop(drop); drop.classList.remove('open'); return; }
+      clearDrop(drop);
+      var spin=document.createElement('div'); spin.className='ac-msg'; spin.textContent='Шукаємо...';
+      drop.appendChild(spin); drop.classList.add('open');
+      timer=setTimeout(function(){ fetchFn(q, renderItems); }, 300);
+    });
+    inp.addEventListener('blur', function(){ setTimeout(function(){ drop.classList.remove('open'); }, 150); });
+    inp.addEventListener('focus', function(){ if(inp.value.trim().length>=2 && drop.children.length) drop.classList.add('open'); });
+  }
 
-    var payload = {
-      name: name, phone: phone, email: email,
-      delivery_type: delivery,
-      city: city || null,
-      np_branch: branch || null,
-      items: cart.map(function(it){
-        return {
-          product_id: parseInt(it.id) || null,
-          title: it.title || '',
-          price: Number(it.price) || 0,
-          qty: Number(it.qty) || 1
-        };
+  /* ─── NP: міста ─── */
+  var cityRef='';
+  makeAC('co-city','drop-city',
+    function(q,cb){
+      fetch('/api/np/cities?q='+encodeURIComponent(q))
+        .then(function(r){ return r.json(); })
+        .then(function(d){ cb((d.data||[]).map(function(x){ return {label:x.name,ref:x.ref}; })); })
+        .catch(function(){ cb([]); });
+    },
+    function(item){
+      cityRef=item.ref;
+      document.getElementById('co-city-ref').value=item.ref;
+      document.getElementById('hint-city').classList.remove('show');
+      document.getElementById('co-city').classList.replace('invalid','valid')||document.getElementById('co-city').classList.add('valid');
+      var b=document.getElementById('co-branch'); b.disabled=false; b.value=''; b.placeholder='Номер або адреса відділення...';
+      b.classList.remove('valid','invalid');
+    }
+  );
+
+  /* ─── NP: відділення ─── */
+  makeAC('co-branch','drop-branch',
+    function(q,cb){
+      if(!cityRef){ cb([]); return; }
+      fetch('/api/np/warehouses?city_ref='+encodeURIComponent(cityRef)+'&q='+encodeURIComponent(q))
+        .then(function(r){ return r.json(); })
+        .then(function(d){ cb((d.data||[]).map(function(x){ return {label:x.name,number:x.number}; })); })
+        .catch(function(){ cb([]); });
+    },
+    function(item){
+      document.getElementById('hint-branch').classList.remove('show');
+      document.getElementById('co-branch').classList.remove('invalid');
+      document.getElementById('co-branch').classList.add('valid');
+    }
+  );
+
+  /* ─── Submit ─── */
+  document.getElementById('coSubmit').addEventListener('click', function(){
+    var name=document.getElementById('co-name').value.trim();
+    var phone=document.getElementById('co-phone').value.trim();
+    var email=document.getElementById('co-email').value.trim();
+    var delivery=document.querySelector('input[name=delivery]:checked').value;
+    var city=document.getElementById('co-city').value.trim();
+    var branch=document.getElementById('co-branch').value.trim();
+    var errEl=document.getElementById('coError');
+    errEl.style.display='none';
+
+    if(!validateName(name)){ setFieldState('co-name','hint-name',false); errEl.textContent="Введіть коректне ім'я та прізвище"; errEl.style.display='block'; return; }
+    if(!validatePhone(phone)){ setFieldState('co-phone','hint-phone',false); errEl.textContent='Введіть коректний номер телефону (0501234567)'; errEl.style.display='block'; return; }
+    if(!validateEmail(email)){ setFieldState('co-email','hint-email',false); errEl.textContent='Введіть коректний email'; errEl.style.display='block'; return; }
+    if(delivery==='nova_poshta'){
+      if(!city||!document.getElementById('co-city-ref').value){ document.getElementById('co-city').classList.add('invalid'); document.getElementById('hint-city').classList.add('show'); errEl.textContent='Оберіть місто зі списку Нової пошти'; errEl.style.display='block'; return; }
+      if(!branch){ document.getElementById('co-branch').classList.add('invalid'); document.getElementById('hint-branch').classList.add('show'); errEl.textContent='Оберіть відділення або поштомат'; errEl.style.display='block'; return; }
+    }
+
+    var btn=document.getElementById('coSubmit');
+    btn.disabled=true; btn.textContent='Оформлюємо...';
+
+    fetch('/api/orders/create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        name:name,phone:phone,email:email,delivery_type:delivery,
+        city:city||null,np_branch:branch||null,
+        items:cart.map(function(it){ return {product_id:parseInt(it.id)||null,title:it.title||'',price:Number(it.price)||0,qty:Number(it.qty)||1}; })
       })
-    };
-
-    fetch('/api/orders/create', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
       if(data.order_id){
         localStorage.removeItem(KEY);
         if(window.saharaUpdateCartBadge) saharaUpdateCartBadge();
-        window.location.href = '/order/done/' + data.order_id;
+        window.location.href='/order/done/'+data.order_id;
       } else {
-        btn.disabled = false;
-        btn.textContent = 'Підтвердити замовлення';
-        errEl.textContent = data.detail || 'Помилка. Спробуйте ще раз.';
-        errEl.style.display = 'block';
+        btn.disabled=false; btn.textContent='Підтвердити замовлення';
+        errEl.textContent=data.detail||'Помилка. Спробуйте ще раз.'; errEl.style.display='block';
       }
     })
     .catch(function(){
-      btn.disabled = false;
-      btn.textContent = 'Підтвердити замовлення';
-      errEl.textContent = "Помилка з’єднання. Спробуйте ще раз.";
-      errEl.style.display = 'block';
+      btn.disabled=false; btn.textContent='Підтвердити замовлення';
+      errEl.textContent="Помилка з’єднання. Спробуйте ще раз."; errEl.style.display=’block’;
     });
   });
 })();

@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     tg_bot_token: str = ""
     tg_admin_chat_id: str = ""
 
+    # Nova Poshta API (np.api.key з особистого кабінету сайту novaposhta.ua)
+    np_api_key: str = ""
+
     # Resend (resend.com) — for transactional emails
     resend_api_key: str = ""
     smtp_from: str = "noreply@sahara-store.net"
