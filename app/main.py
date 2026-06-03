@@ -611,11 +611,13 @@ async def create_order(
 
 @app.get("/order/done/{order_id}", response_class=HTMLResponse)
 async def order_done_page(
-    order_id: int, request: Request, session: AsyncSession = Depends(get_session)
+    order_id: int, request: Request, user: User | None = Depends(get_current_user), session: AsyncSession = Depends(get_session)
 ):
     order = await session.get(Order, order_id)
     if not order:
         raise HTTPException(404)
+    if not user or order.email != user.email:
+        raise HTTPException(403, "Unauthorized to view this order")
     return templates.TemplateResponse(
         "order_done.html",
         {"request": request, "order": order, "site_name": settings.site_name},
@@ -949,6 +951,7 @@ async def admin_order_status(
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     new_status = str(form.get("s", ""))
     if new_status not in ("confirmed", "shipped", "done", "cancelled"):
         raise HTTPException(400)
@@ -1014,9 +1017,12 @@ async def _generate_task(product_id: int):
 async def admin_generate(
     product_id: int,
     background: BackgroundTasks,
+    request: Request,
     _: str = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     product = await session.get(Product, product_id)
     if not product:
         raise HTTPException(404)
@@ -1029,9 +1035,12 @@ async def admin_generate(
 @app.post("/admin/publish/{product_id}")
 async def admin_publish(
     product_id: int,
+    request: Request,
     _: str = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     product = await session.get(Product, product_id)
     if not product or product.status != ProductStatus.READY:
         raise HTTPException(400, "Product not ready")
@@ -1043,10 +1052,13 @@ async def admin_publish(
 @app.post("/admin/publish-direct/{product_id}")
 async def admin_publish_direct(
     product_id: int,
+    request: Request,
     _: str = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Публікує одразу з оригінальним фото, без AI генерації."""
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     product = await session.get(Product, product_id)
     if not product:
         raise HTTPException(404)
@@ -1058,9 +1070,12 @@ async def admin_publish_direct(
 @app.post("/admin/reject/{product_id}")
 async def admin_reject(
     product_id: int,
+    request: Request,
     _: str = Depends(require_admin),
     session: AsyncSession = Depends(get_session),
 ):
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     product = await session.get(Product, product_id)
     if not product:
         raise HTTPException(404)
@@ -1161,6 +1176,7 @@ async def admin_studio_generate(
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
     mode = str(form.get("mode", "img2img"))
     product_id = int(form.get("product_id") or 0)
     prompt = str(form.get("prompt", "")).strip()
