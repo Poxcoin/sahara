@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вхід — {{ site_name }} Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f5f3ef;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    color: #1a1a1a;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #e5e0d8;
+    padding: 48px 40px;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+  }
+  .logo {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    letter-spacing: 0.35em;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .sub {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 36px;
+  }
+  .error {
+    background: #fff0f0;
+    border: 1px solid #f5c5c5;
+    color: #c0392b;
+    font-size: 13px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    font-family: inherit;
+    font-size: 15px;
+    color: #1a1a1a;
+    background: #fafafa;
+    outline: none;
+    transition: border-color .2s;
+    border-radius: 2px;
+  }
+  input:focus { border-color: #1a1a1a; background: #fff; }
+  .field { margin-bottom: 20px; }
+  .pass-wrap { position: relative; }
+  .pass-wrap input { padding-right: 44px; }
+  .toggle-pass {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; padding: 4px;
+    color: #999; transition: color .2s;
+    display: flex; align-items: center;
+  }
+  .toggle-pass:hover { color: #1a1a1a; }
+  .toggle-pass svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .eye-off { display: none; }
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s;
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+  .btn-login:hover { background: #c9a96e; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">SAHARA</div>
+  <div class="sub">Адміністративна панель</div>
+
+  {% if error %}
+  <div class="error">Невірний логін або пароль</div>
+  {% endif %}
+
+  <form method="post" action="/admin/login">
+    <div class="field">
+      <label for="username">Логін</label>
+      <input type="text" id="username" name="username" autocomplete="username" autofocus>
+    </div>
+    <div class="field">
+      <label for="password">Пароль</label>
+      <div class="pass-wrap">
+        <input type="password" id="password" name="password" autocomplete="current-password">
+        <button type="button" class="toggle-pass" id="togglePass" aria-label="Показати пароль">
+          <svg class="eye-on" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+    </div>
+    <button type="submit" class="btn-login">Увійти</button>
+  </form>
+</div>
+<script>
+  const toggle = document.getElementById('togglePass');
+  const passInput = document.getElementById('password');
+  toggle.addEventListener('click', () => {
+    const show = passInput.type === 'password';
+    passInput.type = show ? 'text' : 'password';
+    toggle.querySelector('.eye-on').style.display = show ? 'none' : '';
+    toggle.querySelector('.eye-off').style.display = show ? '' : 'none';
+  });
+</script>
+</body>
+</html>

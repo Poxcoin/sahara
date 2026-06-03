@@ -179,6 +179,12 @@
   .btn-save-order { background: var(--gold); color: #1a1a1a; font-size: 10px; padding: 5px 14px; border-radius: 4px; border: none; cursor: pointer; font-family: inherit; font-weight: 600; letter-spacing: 0.05em; }
   .btn-save-order:hover { opacity: .85; }
   .strip-status { font-size: 10px; color: var(--muted); }
+
+  /* ===== STOCK FILTER ===== */
+  .sf-btn { padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; background: #fff; color: #555; font-size: 11px; cursor: pointer; font-family: inherit; transition: all .15s; }
+  .sf-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .sf-btn.sf-active { background: var(--gold); border-color: var(--gold); color: #1a1a1a; font-weight: 600; }
+  .card.sf-hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -275,10 +281,21 @@
       <span class="nav-count">{{ grouped.rejected|length }}</span>
       {% endif %}
     </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'no_photo' %}active{% endif %}" onclick="showTab('no_photo')">
+      Без фото
+      {% if no_photo %}
+      <span class="nav-count red">{{ no_photo|length }}</span>
+      {% endif %}
+    </div>
   </nav>
   <div class="sidebar-footer">
     <a href="/admin/orders" style="display:block; margin-bottom:8px; padding:10px 16px; background:rgba(255,255,255,.07); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">🛒 Замовлення</a>
     <a href="/admin/studio" target="_blank" style="display:block; margin-bottom:8px; padding:10px 16px; background:var(--gold); color:#1a1a1a; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">✨ AI Studio</a>
+    <label id="upload-1c-btn" style="display:block; margin-bottom:8px; padding:10px 16px; background:rgba(255,255,255,.07); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; font-weight:500; cursor:pointer;">
+      📥 Завантажити з 1С
+      <input type="file" id="upload-1c-input" accept=".xlsx,.csv,.txt" style="display:none" onchange="upload1C(this)">
+    </label>
+    <div id="upload-1c-result" style="font-size:11px;color:#c9a96e;text-align:center;margin-bottom:6px;display:none"></div>
     <a href="/admin/1c" target="_blank" style="display:block; margin-bottom:8px; padding:10px 16px; background:rgba(255,255,255,.07); color:rgba(255,255,255,.7); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; text-align:center; text-decoration:none; font-weight:500;">🔗 1С Інтеграція</a>
     <a href="/" target="_blank">↗ Відкрити сайт</a>
   </div>
@@ -289,6 +306,50 @@
   <div class="topbar">
     <span class="topbar-title" id="tab-title">Очікують</span>
     <span class="topbar-meta" id="tab-meta"></span>
+    <div style="display:flex;gap:4px;margin-left:auto;align-items:center">
+      <div id="stock-filter" style="display:flex;gap:4px">
+        <button class="sf-btn sf-active" onclick="setStockFilter('all',this)">Всі</button>
+        <button class="sf-btn" onclick="setStockFilter('in',this)">В наявності</button>
+        <button class="sf-btn" onclick="setStockFilter('out',this)">0 шт</button>
+      </div>
+      <button id="btn-publish-all" onclick="publishAllPending(this)" style="display:none;padding:6px 14px;background:#1a1a1a;color:#c9a96e;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;margin-left:8px">→ Опублікувати все</button>
+    </div>
+  </div>
+  <div id="filter-bar" style="padding:8px 20px;background:#faf9f7;border-bottom:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+    <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Сезон</span>
+      <button class="sf-btn sf-active" onclick="setFilter('season','',this)">Всі</button>
+      <button class="sf-btn" onclick="setFilter('season','Весна/Літо 2025',this)">Весна/Літо 2025</button>
+      <button class="sf-btn" onclick="setFilter('season','Зима 2025/2026',this)">Зима 2025/2026</button>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Категорія</span>
+      <button class="sf-btn sf-active" onclick="setFilter('category','',this)" id="cat-all">Всі</button>
+      <button class="sf-btn" onclick="setFilter('category','Футболка',this)">Футболка</button>
+      <button class="sf-btn" onclick="setFilter('category','Поло',this)">Поло</button>
+      <button class="sf-btn" onclick="setFilter('category','Сорочка',this)">Сорочка</button>
+      <button class="sf-btn" onclick="setFilter('category','Світшот',this)">Світшот</button>
+      <button class="sf-btn" onclick="setFilter('category','Светр/Кардиган',this)">Светр</button>
+      <button class="sf-btn" onclick="setFilter('category','Джинси',this)">Джинси</button>
+      <button class="sf-btn" onclick="setFilter('category','Штани',this)">Штани</button>
+      <button class="sf-btn" onclick="setFilter('category','Шорти',this)">Шорти</button>
+      <button class="sf-btn" onclick="setFilter('category','Спортивні штани',this)">Спорт</button>
+      <button class="sf-btn" onclick="setFilter('category','Майка',this)">Майка</button>
+      <button class="sf-btn" onclick="setFilter('category','Пальто/Жакет',this)">Куртка</button>
+      <button class="sf-btn" onclick="setFilter('category','Аксесуари',this)">Аксесуари</button>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Фото</span>
+      <button class="sf-btn sf-active" onclick="setFilter('match','',this)">Всі</button>
+      <button class="sf-btn" onclick="setFilter('match','exact',this)">Точно</button>
+      <button class="sf-btn" onclick="setFilter('match','approx',this)">Не факт</button>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Фото</span>
+      <button class="sf-btn sf-active" onclick="setFilter('photo','',this)">Всі</button>
+      <button class="sf-btn" onclick="setFilter('photo','yes',this)">З фото</button>
+      <button class="sf-btn" onclick="setFilter('photo','no',this)">Без фото</button>
+    </div>
   </div>
 
   <div class="content">
@@ -298,12 +359,20 @@
       {% if grouped.pending %}
       <div class="grid">
         {% for p in grouped.pending %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
-            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
-            {% if p.description %}<div class="card-meta">{{ p.description[:80] }}</div>{% endif %}
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              {% if p.price_uah %}<div class="card-price" style="font-size:14px">{{ p.price_uah | int }} ₴</div>{% endif %}
+              {% if p.stock is not none %}<span style="font-size:11px;background:#f0ede8;color:#555;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.stock }} шт</span>{% endif %}
+              {% if p.article_1c %}<span style="font-size:10px;background:#1a1a1a;color:#c9a96e;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.article_1c }}</span>{% endif %}
+              {% if p.size_chart %}<span onclick="showSizeChart(this)" data-chart="{{ p.size_chart | e }}" data-name="{{ (p.title_ua or p.title) | e }}" style="font-size:10px;background:#eafaf1;color:#1a7a3c;padding:2px 7px;border-radius:10px;cursor:pointer">📐 розміри</span>{% endif %}
+              {% if p.category %}<span style="font-size:10px;background:#f0e8f8;color:#6a2d9a;padding:2px 7px;border-radius:10px">{{ p.category }}</span>{% endif %}
+              {% if p.season %}<span style="font-size:10px;background:#e8f0f8;color:#1a4d9a;padding:2px 7px;border-radius:10px">{{ p.season }}</span>{% endif %}
+              {% if p.match_type %}<span id="mt-badge-{{ p.id }}" onclick="toggleMatchType({{ p.id }}, this)" style="font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;user-select:none;{% if p.match_type == 'exact' %}background:#eafaf1;color:#1a7a3c{% else %}background:#fef9e7;color:#9a6a1a{% endif %}">{{ '✓ Точно' if p.match_type == 'exact' else '? Не факт' }}</span>{% endif %}
+            </div>
+            {% if p.description and not p.description.startswith('http') and '| http' not in p.description %}<div class="card-meta" style="margin-top:4px;font-size:11px;line-height:1.4">{{ p.description[:140] }}</div>{% endif %}
             <div class="card-meta">#{{ p.id }} · {{ p.created_at.strftime('%d.%m.%y') }}</div>
           </div>
           <div class="card-actions">
@@ -333,7 +402,7 @@
       {% if generating %}
       <div class="grid">
         {% for p in generating %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
@@ -353,7 +422,7 @@
       {% if grouped.ready %}
       <div class="grid">
         {% for p in grouped.ready %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p, show_generated=true) }}
           <div class="card-body">
             <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
@@ -385,12 +454,17 @@
       {% if grouped.live %}
       <div class="grid">
         {% for p in grouped.live %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p, show_generated=true) }}
           <div class="card-body">
             <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
-            {% if p.price_uah %}<div class="card-price">{{ p.price_uah | int }} ₴</div>{% endif %}
-            <div class="card-meta"><a href="/product/{{ p.id }}" target="_blank" style="color:var(--info)">↗ На сайті</a></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              {% if p.price_uah %}<div class="card-price" style="font-size:14px">{{ p.price_uah | int }} ₴</div>{% endif %}
+              {% if p.stock is not none %}<span style="font-size:11px;background:#f0ede8;color:#555;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.stock }} шт</span>{% endif %}
+              {% if p.article_1c %}<span style="font-size:10px;background:#1a1a1a;color:#c9a96e;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.article_1c }}</span>{% endif %}
+              {% if p.size_chart %}<span onclick="showSizeChart(this)" data-chart="{{ p.size_chart | e }}" data-name="{{ (p.title_ua or p.title) | e }}" style="font-size:10px;background:#eafaf1;color:#1a7a3c;padding:2px 7px;border-radius:10px;cursor:pointer">📐 розміри</span>{% endif %}
+            </div>
+            <div class="card-meta" style="margin-top:4px"><a href="/product/{{ p.id }}" target="_blank" style="color:var(--info)">↗ На сайті</a></div>
           </div>
           <div class="card-actions">
             <button class="btn" style="background:#e8f4fd;color:#1a6a9a" onclick="translateTitle({{ p.id }}, this)">🌐 UA</button>
@@ -412,7 +486,7 @@
       {% if grouped.failed %}
       <div class="grid">
         {% for p in grouped.failed %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
@@ -442,7 +516,7 @@
       {% if grouped.rejected %}
       <div class="grid">
         {% for p in grouped.rejected %}
-        <div class="card">
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="{{ p.match_type or '' }}" data-photo="{{ 'yes' if p.original_photo else 'no' }}">
           {{ photo_carousel(p) }}
           <div class="card-body">
             <div class="card-title">{{ p.title }}</div>
@@ -461,6 +535,51 @@
       {% endif %}
     </div>
 
+    <!-- NO PHOTO -->
+    <div class="section" id="tab-no_photo">
+      {% if no_photo %}
+      <div class="grid">
+        {% for p in no_photo %}
+        <div class="card" data-stock="{{ p.stock if p.stock is not none else '' }}" data-category="{{ p.category or '' }}" data-season="{{ p.season or '' }}" data-match="">
+          <div style="height:160px;background:#f0ede8;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:32px">☐</div>
+          <div class="card-body">
+            <div class="card-title" id="title-{{ p.id }}">{{ p.title_ua or p.title }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              {% if p.stock is not none %}<span style="font-size:11px;background:#f0ede8;color:#555;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.stock }} шт</span>{% endif %}
+              {% if p.article_1c %}<span style="font-size:10px;background:#1a1a1a;color:#c9a96e;padding:2px 7px;border-radius:10px;font-family:monospace">{{ p.article_1c }}</span>{% endif %}
+              {% if p.category %}<span style="font-size:10px;background:#f0e8f8;color:#6a2d9a;padding:2px 7px;border-radius:10px">{{ p.category }}</span>{% endif %}
+              {% if p.season %}<span style="font-size:10px;background:#e8f0f8;color:#1a4d9a;padding:2px 7px;border-radius:10px">{{ p.season }}</span>{% endif %}
+            </div>
+            <div class="card-meta">#{{ p.id }} · {{ p.created_at.strftime('%d.%m.%y') }}</div>
+          </div>
+          <div class="card-actions">
+            <button class="btn" style="background:#e8f4fd;color:#1a6a9a" onclick="translateTitle({{ p.id }}, this)">🌐 UA</button>
+            <form method="post" action="/admin/reject/{{ p.id }}">
+              <button class="btn btn-reject">✕</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><p>🎉</p>Усі товари мають фото</div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<!-- Size chart modal -->
+<div id="size-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:12px;padding:24px;max-width:90vw;max-height:85vh;overflow:auto;min-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <strong id="size-modal-title" style="font-size:15px"></strong>
+      <button onclick="document.getElementById('size-modal').style.display='none'" style="border:none;background:none;font-size:20px;cursor:pointer;color:#888">✕</button>
+    </div>
+    <table style="border-collapse:collapse;width:100%">
+      <thead id="size-modal-thead"></thead>
+      <tbody id="size-modal-tbody"></tbody>
+    </table>
   </div>
 </div>
 
@@ -472,6 +591,7 @@ const titles = {
   live:       'На сайті',
   failed:     'Помилки',
   rejected:   'Відхилені',
+  no_photo:   'Без фото',
 };
 
 const counts = {
@@ -481,7 +601,53 @@ const counts = {
   live:       {{ grouped.live|length }},
   failed:     {{ grouped.failed|length }},
   rejected:   {{ grouped.rejected|length }},
+  no_photo:   {{ no_photo|length }},
 };
+
+let currentStockFilter = 'all';
+let currentSeasonFilter = '';
+let currentCategoryFilter = '';
+
+function setStockFilter(mode, btn) {
+  currentStockFilter = mode;
+  document.querySelectorAll('#stock-filter .sf-btn').forEach(b => b.classList.remove('sf-active'));
+  btn.classList.add('sf-active');
+  applyFilters();
+}
+
+let currentMatchFilter = '';
+let currentPhotoFilter = '';
+
+function setFilter(type, value, btn) {
+  if (type === 'season')        currentSeasonFilter = value;
+  else if (type === 'category') currentCategoryFilter = value;
+  else if (type === 'match')    currentMatchFilter = value;
+  else if (type === 'photo')    currentPhotoFilter = value;
+  btn.closest('div').querySelectorAll('.sf-btn').forEach(b => b.classList.remove('sf-active'));
+  btn.classList.add('sf-active');
+  applyFilters();
+}
+
+function applyFilters() {
+  document.querySelectorAll('.card').forEach(card => {
+    const raw = card.dataset.stock;
+    const stock = raw === '' ? null : parseInt(raw, 10);
+    const cat = card.dataset.category || '';
+    const season = card.dataset.season || '';
+    const match = card.dataset.match || '';
+    const photo = card.dataset.photo || '';
+
+    let hide = false;
+    if (currentStockFilter === 'in')  hide = stock === null || stock === 0;
+    if (currentStockFilter === 'out') hide = stock === null || stock > 0;
+    if (!hide && currentSeasonFilter)   hide = season !== currentSeasonFilter;
+    if (!hide && currentCategoryFilter) hide = cat !== currentCategoryFilter;
+    if (!hide && currentMatchFilter)    hide = match !== currentMatchFilter;
+    if (!hide && currentPhotoFilter)    hide = photo !== currentPhotoFilter;
+
+    card.classList.toggle('sf-hidden', hide);
+  });
+}
 
 function showTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -493,7 +659,30 @@ function showTab(tab) {
   document.getElementById('tab-title').textContent = titles[tab];
   document.getElementById('tab-meta').textContent = counts[tab] ? `${counts[tab]} товарів` : '';
 
+  const btnAll = document.getElementById('btn-publish-all');
+  if (btnAll) btnAll.style.display = tab === 'pending' ? 'block' : 'none';
+
   localStorage.setItem('adminTab', tab);
+}
+
+async function publishAllPending(btn) {
+  if (!confirm('Опублікувати всі товари з фото без AI генерації?')) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const r = await fetch('/api/admin/publish-all-pending', { method: 'POST', credentials: 'include' });
+    const d = await r.json();
+    if (d.ok) {
+      btn.textContent = `✓ ${d.published} опубліковано`;
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      btn.textContent = '✗ Помилка';
+      btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = '✗ Помилка';
+    btn.disabled = false;
+  }
 }
 
 // Відновити активну вкладку
@@ -609,6 +798,50 @@ async function saveOrder(id) {
   }
 }
 
+// ===== SIZE CHART MODAL =====
+function makeTd(text, isFirst) {
+  const td = document.createElement(isFirst ? 'th' : 'td');
+  td.textContent = text;
+  td.style.cssText = 'padding:5px 10px;font-size:12px;border-bottom:1px solid #eee;white-space:nowrap';
+  if (isFirst) { td.style.fontWeight = '500'; td.style.background = '#faf9f7'; }
+  return td;
+}
+
+function showSizeChart(btn) {
+  const raw = btn.dataset.chart;
+  if (!raw) return;
+  let chart;
+  try { chart = JSON.parse(raw); } catch { return; }
+
+  const modal = document.getElementById('size-modal');
+  document.getElementById('size-modal-title').textContent = btn.dataset.name || 'Таблиця розмірів';
+
+  const thead = document.getElementById('size-modal-thead');
+  thead.replaceChildren();
+  const hRow = document.createElement('tr');
+  (chart.headers || []).forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    th.style.cssText = 'padding:6px 10px;background:#f5f4f1;font-size:12px;white-space:nowrap';
+    hRow.appendChild(th);
+  });
+  thead.appendChild(hRow);
+
+  const tbody = document.getElementById('size-modal-tbody');
+  tbody.replaceChildren();
+  (chart.rows || []).forEach(row => {
+    const tr = document.createElement('tr');
+    row.forEach((c, i) => tr.appendChild(makeTd(c, i === 0)));
+    tbody.appendChild(tr);
+  });
+
+  modal.style.display = 'flex';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('size-modal').style.display = 'none';
+});
+
 // ===== TRANSLATE TITLE =====
 async function translateTitle(id, btn) {
   const titleEl = document.getElementById('title-' + id);
@@ -631,6 +864,49 @@ async function translateTitle(id, btn) {
     btn.textContent = '✗';
     btn.disabled = false;
   }
+}
+
+async function toggleMatchType(id, badge) {
+  try {
+    const r = await fetch(`/api/admin/match-type/${id}`, { method: 'POST', credentials: 'include' });
+    if (!r.ok) return;
+    const { match_type } = await r.json();
+    const card = badge.closest('.card');
+    card.dataset.match = match_type;
+    if (match_type === 'exact') {
+      badge.textContent = '✓ Точно';
+      badge.style.background = '#eafaf1';
+      badge.style.color = '#1a7a3c';
+    } else {
+      badge.textContent = '? Не факт';
+      badge.style.background = '#fef9e7';
+      badge.style.color = '#9a6a1a';
+    }
+    applyFilters();
+  } catch(e) {}
+}
+
+async function upload1C(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const res = document.getElementById('upload-1c-result');
+  res.style.display = 'block';
+  res.textContent = 'Завантаження...';
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const r = await fetch('/api/admin/1c-file-upload', {method:'POST', body:fd});
+    const d = await r.json();
+    if (d.ok) {
+      res.textContent = `✓ Оновлено: ${d.updated} з ${d.total}`;
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      res.textContent = '✗ Помилка: ' + (d.detail || JSON.stringify(d));
+    }
+  } catch(e) {
+    res.textContent = '✗ ' + e.message;
+  }
+  input.value = '';
 }
 </script>
 </body>

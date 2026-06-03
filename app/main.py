@@ -137,6 +137,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.mount("/media", StaticFiles(directory=settings.media_dir), name="media")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.mount("/1c", StaticFiles(directory="1c"), name="1c")
+
 import json as _json
 templates = Jinja2Templates(directory="app/templates")
 templates.env.globals["koton_category"] = koton_category
@@ -417,8 +418,36 @@ async def support_page(request: Request):
 
 
 @app.post("/support", response_class=HTMLResponse)
-async def support_submit(request: Request):
-    # TODO: відправка email або збереження в БД
+async def support_submit(request: Request, background_tasks: BackgroundTasks):
+    form = await request.form()
+    name    = str(form.get("name", "")).strip()
+    email   = str(form.get("email", "")).strip()
+    topic   = str(form.get("topic", "")).strip()
+    order   = str(form.get("order", "")).strip()
+    message = str(form.get("message", "")).strip()
+
+    async def _notify():
+        if not settings.tg_bot_token or not settings.tg_admin_chat_id:
+            return
+        order_line = f"\n📦 Замовлення: <code>{order}</code>" if order else ""
+        text = (
+            f"📩 <b>Нове звернення</b>\n\n"
+            f"👤 {name}\n"
+            f"📧 {email}\n"
+            f"🏷 {topic}{order_line}\n\n"
+            f"{message}"
+        )
+        try:
+            async with httpx.AsyncClient(timeout=10) as cl:
+                await cl.post(
+                    f"https://api.telegram.org/bot{settings.tg_bot_token}/sendMessage",
+                    json={"chat_id": settings.tg_admin_chat_id, "text": text, "parse_mode": "HTML"},
+                )
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("Support notify failed: %s", exc)
+
+    background_tasks.add_task(_notify)
     return templates.TemplateResponse(
         "support.html",
         {"request": request, "site_name": settings.site_name, "sent": True},
@@ -608,11 +637,37 @@ async def wishlist_page(request: Request):
 
 
 @app.get("/profile", response_class=HTMLResponse)
-async def profile_page(request: Request, user: User | None = Depends(get_current_user)):
+async def profile_page(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
     if not user:
         return RedirectResponse("/login", status_code=303)
+
+    orders_result = await session.execute(
+        select(Order).where(Order.email == user.email).order_by(desc(Order.created_at))
+    )
+    orders = orders_result.scalars().all()
+
+    if orders:
+        order_ids = [o.id for o in orders]
+        items_result = await session.execute(
+            select(OrderItem).where(OrderItem.order_id.in_(order_ids))
+        )
+        items_by_order: dict[int, list] = {}
+        for it in items_result.scalars().all():
+            items_by_order.setdefault(it.order_id, []).append(it)
+        for o in orders:
+            o.items = items_by_order.get(o.id, [])
+
     resp = templates.TemplateResponse(
-        "profile.html", {"request": request, "site_name": settings.site_name, "user": user}
+        "profile.html", {
+            "request": request,
+            "site_name": settings.site_name,
+            "user": user,
+            "orders": orders,
+        }
     )
     auth_svc.ensure_csrf_cookie(resp, request)
     return resp
@@ -919,8 +974,10 @@ async def admin(
     for p in products:
         grouped[p.status.value].append(p)
 
+    no_photo = [p for p in products if not p.original_photo]
+
     return templates.TemplateResponse(
-        "admin.html", {"request": request, "grouped": grouped}
+        "admin.html", {"request": request, "grouped": grouped, "no_photo": no_photo}
     )
 
 
@@ -1010,6 +1067,20 @@ async def admin_reject(
     product.status = ProductStatus.REJECTED
     await session.commit()
     return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/api/admin/match-type/{product_id}")
+async def admin_set_match_type(
+    product_id: int,
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    product = await session.get(Product, product_id)
+    if not product:
+        raise HTTPException(404)
+    product.match_type = "approx" if product.match_type == "exact" else "exact"
+    await session.commit()
+    return {"id": product_id, "match_type": product.match_type}
 
 
 # ==================== AI STUDIO ====================
@@ -1329,6 +1400,7 @@ async def api_1c_sync(request: Request, background: BackgroundTasks):
     async with async_session() as session:
         for item in products_data:
             article = str(item.get("article", "")).strip()
+            name_1c = str(item.get("name", "")).strip()
             price = item.get("price")
             stock = int(item.get("stock", 0))
 
@@ -1336,7 +1408,12 @@ async def api_1c_sync(request: Request, background: BackgroundTasks):
                 skipped += 1
                 continue
 
-            # Шукаємо існуючий товар по артикулу 1С
+            # Чоловічий відділ: артикулі з M на 3-й позиції (WAM, SAM тощо)
+            if source == "men" and len(article) >= 4 and article[3] != "M":
+                skipped += 1
+                continue
+
+            # Шукаємо існуючий товар по повному артикулу
             result = await session.execute(
                 select(Product).where(Product.article_1c == article)
             )
@@ -1347,11 +1424,14 @@ async def api_1c_sync(request: Request, background: BackgroundTasks):
                     existing.price_uah = float(price)
                 existing.stock = stock
                 existing.gender = source
+                # Якщо title == article (нема нормальної назви) — оновлюємо з 1С
+                if name_1c and (not existing.title or existing.title == article):
+                    existing.title = name_1c
                 existing.updated_at = __import__("datetime").datetime.utcnow()
                 updated += 1
             else:
                 new_p = Product(
-                    title=article,
+                    title=name_1c or article,
                     article_1c=article,
                     gender=source,
                     price_uah=float(price) if price is not None else None,
@@ -1363,10 +1443,6 @@ async def api_1c_sync(request: Request, background: BackgroundTasks):
                 created += 1
 
         await session.commit()
-
-    if created > 0:
-        from app.services.koton_scraper import enrich_pending_from_1c
-        background.add_task(enrich_pending_from_1c, source)
 
     return {
         "ok": True,
@@ -1457,6 +1533,63 @@ async def admin_enrich_koton(
     return {"ok": True, "message": "Збагачення запущено у фоні"}
 
 
+@app.post("/api/admin/translate-all")
+async def admin_translate_all(
+    background: BackgroundTasks,
+    _: str = Depends(require_admin),
+):
+    """Масовий переклад всіх турецьких назв на українську."""
+    from app.services.koton_scraper import bulk_translate_titles
+    background.add_task(bulk_translate_titles)
+    return {"ok": True, "message": "Переклад запущено у фоні"}
+
+
+@app.post("/api/admin/re-enrich-koton")
+async def admin_re_enrich_koton(
+    background: BackgroundTasks,
+    gender: str = "",
+    force: bool = False,
+    prefix: str = "",
+    _: str = Depends(require_admin),
+):
+    """
+    Повторно збагачує ВСІ товари з article_1c — оновлює ціну, всі фото,
+    таблицю розмірів незалежно від статусу. force=true перезаписує навіть повні.
+    prefix=6 — тільки артикули що починаються з 6.
+    """
+    from app.services.koton_scraper import re_enrich_all_koton_products
+    background.add_task(re_enrich_all_koton_products, gender or None, force, prefix or None)
+    return {"ok": True, "message": f"Повторне збагачення запущено (prefix={prefix or 'всі'}, force={force})"}
+
+
+@app.post("/api/admin/enrich-wayback")
+async def admin_enrich_wayback(
+    background: BackgroundTasks,
+    gender: str = "men",
+    _: str = Depends(require_admin),
+):
+    """Шукає товари без фото в Wayback Machine за датою сезону артикула. Тільки точний збіг."""
+    from app.services.koton_scraper import enrich_missing_via_wayback
+    background.add_task(enrich_missing_via_wayback, gender)
+    return {"ok": True, "message": f"Wayback збагачення запущено для gender={gender}"}
+
+
+@app.post("/api/admin/assign-koton-categories")
+async def admin_assign_koton_categories(
+    background: BackgroundTasks,
+    gender: str = "men",
+    _: str = Depends(require_admin),
+):
+    """
+    Визначає категорію та сезон товарів через архіви Koton.com (Wayback Machine).
+    Використовує дати замовлень: лют/трав/вер/груд 2025, бер 2026.
+    Оновлює поля category + season у БД для товарів без категорії.
+    """
+    from app.services.koton_scraper import assign_categories_from_order_dates
+    background.add_task(assign_categories_from_order_dates, gender)
+    return {"ok": True, "message": f"Категоризація запущена для gender={gender}"}
+
+
 # ════════════════════════════════════════════
 #  Синхронізація залишків з 1С (файловий режим)
 # ════════════════════════════════════════════
@@ -1469,6 +1602,149 @@ async def admin_1c_sync_status(_: str = Depends(require_admin)):
     if not state:
         return {"last_sync": None, "message": "Синхронізацій ще не було"}
     return state
+
+
+@app.post("/api/admin/1c-file-upload")
+async def admin_1c_file_upload(
+    file: UploadFile,
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    """Приймає Excel (.xlsx) або CSV файл з 1С. Колонки: Артикул, Залишок, Ціна."""
+    import io, csv as _csv
+    from app.services.sync_1c import save_state as _save
+    from datetime import datetime as _dt
+
+    content = await file.read()
+    fname_orig = file.filename or ""
+    rows = []
+
+    if fname_orig.endswith(".xlsx") or fname_orig.endswith(".xls"):
+        import openpyxl
+        wb = openpyxl.load_workbook(io.BytesIO(content), data_only=True)
+        ws = wb.active
+        headers = None
+        for row in ws.iter_rows(values_only=True):
+            if headers is None:
+                headers = [str(c or "").strip().lower() for c in row]
+                continue
+            if all(c is None for c in row):
+                continue
+            item = dict(zip(headers, row))
+            rows.append(item)
+    elif fname_orig.endswith(".csv") or fname_orig.endswith(".txt"):
+        text = content.decode("utf-8-sig", errors="replace")
+        sample = text[:512]
+        delim = ";" if sample.count(";") > sample.count(",") else ","
+        reader = _csv.DictReader(io.StringIO(text), delimiter=delim)
+        rows = list(reader)
+    else:
+        raise HTTPException(400, "Підтримуються лише .xlsx або .csv файли")
+
+    ARTICLE_KEYS = ["артикул", "article", "код", "code"]
+    STOCK_KEYS   = ["залишок", "stock", "кількість", "quantity", "qty"]
+    PRICE_KEYS   = ["ціна", "price", "цена"]
+
+    def _find(item: dict, keys: list):
+        for k in keys:
+            for ik in item:
+                if str(ik).strip().lower() == k:
+                    v = item[ik]
+                    return str(v).strip() if v is not None else ""
+        return ""
+
+    def _num(s, as_int=False):
+        if not s:
+            return None
+        try:
+            s = str(s).replace(" ", "").replace(",", ".").replace("\xa0", "")
+            return int(float(s)) if as_int else float(s)
+        except Exception:
+            return None
+
+    updated = created = skipped = 0
+    sync_dir = Path("sync")
+    sync_dir.mkdir(exist_ok=True)
+
+    async with async_session() as s:
+        for item in rows:
+            article = _find(item, ARTICLE_KEYS)
+            if not article:
+                skipped += 1
+                continue
+            stock = _num(_find(item, STOCK_KEYS), as_int=True) or 0
+            price = _num(_find(item, PRICE_KEYS))
+
+            res = await s.execute(select(Product).where(Product.article_1c == article))
+            p = res.scalar_one_or_none()
+            if p:
+                p.stock = stock
+                if price is not None:
+                    p.price_uah = price
+                updated += 1
+            else:
+                skipped += 1
+        await s.commit()
+
+    saved = sync_dir / f"upload_{_dt.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+    _save(saved, len(rows), updated, created)
+    return {"ok": True, "updated": updated, "skipped": skipped, "total": len(rows)}
+
+
+@app.post("/api/admin/1c-upload")
+async def admin_1c_upload(
+    request: Request,
+    background: BackgroundTasks,
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    """Завантажує JSON-файл з 1С і одразу синхронізує."""
+    from app.services.sync_1c import save_state as _save
+    import json as _json
+
+    body = await request.body()
+    try:
+        raw = _json.loads(body)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Невалідний JSON")
+
+    rows = raw if isinstance(raw, list) else raw.get("products", [])
+    if not rows:
+        raise HTTPException(status_code=400, detail="Порожній список товарів")
+
+    sync_dir = Path("sync")
+    sync_dir.mkdir(exist_ok=True)
+    from datetime import datetime as _dt
+    fname = sync_dir / f"upload_{_dt.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+    fname.write_text(_json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+
+    updated = created = skipped = 0
+    async with async_session() as s:
+        for item in rows:
+            article = str(item.get("article", "")).strip()
+            if not article:
+                skipped += 1
+                continue
+            res = await s.execute(select(Product).where(Product.article_1c == article))
+            p = res.scalar_one_or_none()
+            if p:
+                p.stock = int(item.get("stock", 0))
+                if item.get("price"):
+                    p.price_uah = float(item["price"])
+                updated += 1
+            else:
+                s.add(Product(
+                    title=article, article_1c=article,
+                    gender=str(item.get("source", "women")),
+                    price_uah=float(item["price"]) if item.get("price") else None,
+                    stock=int(item.get("stock", 0)),
+                    original_photo="", status=ProductStatus.PENDING,
+                ))
+                created += 1
+        await s.commit()
+
+    _save(fname, len(rows), updated, created)
+    return {"ok": True, "updated": updated, "created": created, "skipped": skipped, "total": len(rows)}
 
 
 @app.post("/api/admin/1c-sync-now")
@@ -1504,6 +1780,41 @@ async def admin_1c_sync_now(
 
     background.add_task(_do_sync)
     return {"ok": True, "message": f"Синхронізацію запущено ({len(products)} рядків з {file_path.name})"}
+
+
+@app.post("/api/admin/scrape-women")
+async def admin_scrape_women(
+    background: BackgroundTasks,
+    limit: int = 50,
+    _: str = Depends(require_admin),
+):
+    """Скрейпить жіночі товари з категорій Koton.com."""
+    from app.services.koton_scraper import scrape_koton_women_catalog
+    background.add_task(scrape_koton_women_catalog, limit)
+    return {"ok": True, "message": f"Запущено скрейпінг жіночих (limit={limit})"}
+
+
+@app.post("/api/admin/publish-all-pending")
+async def admin_publish_all_pending(
+    _: str = Depends(require_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    """Публікує всі PENDING товари що мають фото (без AI)."""
+    from sqlalchemy import update
+    result = await session.execute(
+        select(Product).where(
+            Product.status == ProductStatus.PENDING,
+            Product.original_photo != "",
+            Product.original_photo.isnot(None),
+        )
+    )
+    products = result.scalars().all()
+    count = 0
+    for p in products:
+        p.status = ProductStatus.LIVE
+        count += 1
+    await session.commit()
+    return {"ok": True, "published": count}
 
 
 @app.get("/admin/1c", response_class=HTMLResponse)

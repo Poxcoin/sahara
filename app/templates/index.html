@@ -3,270 +3,333 @@
 
 {% block extra_css %}
 <style>
-    /* ============ HERO ============ */
-    .hero {
-        position: relative;
-        height: 100vh;
-        margin-top: -64px;
-        display: flex; align-items: center; justify-content: center;
-        overflow: hidden;
-        text-align: center;
-        /* Real Calacatta marble from base44 */
-        background-image: url('/static/img/hero-marble.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-    @media (min-width: 640px) { .hero { margin-top: -80px; } }
+/* ============ HERO ============ */
+.hero {
+    position: relative;
+    height: 100vh;
+    margin-top: -64px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+@media (min-width: 640px) { .hero { margin-top: -80px; } }
 
-    .hero-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(to bottom,
-            hsla(0, 0%, 10%, 0.10) 0%,
-            hsla(0, 0%, 10%, 0.05) 50%,
-            hsla(40, 20%, 97%, 0.4) 92%,
-            hsla(40, 20%, 97%, 1) 100%);
-    }
+.hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    animation: kenBurns 14s ease-out forwards;
+}
+@keyframes kenBurns {
+    0%   { transform: scale(1) translateY(0); }
+    100% { transform: scale(1.07) translateY(-2%); }
+}
 
-    .hero-content {
-        position: relative;
-        z-index: 10;
-        padding: 0 16px;
-    }
-    .hero-title {
-        font-family: var(--font-heading);
-        font-weight: 500;
-        color: hsl(var(--foreground));
-        font-size: clamp(48px, 12vw, 144px);
-        letter-spacing: var(--tracking-sahara);
-        line-height: 1;
-        padding-left: var(--tracking-sahara);
-        text-shadow: 0 2px 30px rgba(255,255,255,.4);
-    }
-    .hero-sub {
-        margin-top: 24px;
-        font-size: 14px;
-        font-weight: 300;
-        text-transform: none;
-        letter-spacing: var(--tracking-wide-xl);
-        color: hsla(0, 0%, 10%, 0.75);
-    }
-    @media (min-width: 640px) { .hero-sub { font-size: 16px; } }
+.hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom,
+        hsla(0, 0%, 10%, 0.12) 0%,
+        hsla(0, 0%, 10%, 0.04) 50%,
+        hsla(40, 20%, 97%, 0.55) 92%,
+        hsla(40, 20%, 97%, 1) 100%);
+}
 
-    .hero-actions {
-        margin-top: 40px;
-        display: flex; flex-direction: column; align-items: center;
-        gap: 16px;
-    }
-    @media (min-width: 640px) {
-        .hero-actions { flex-direction: row; justify-content: center; }
-    }
+.hero-content {
+    position: relative;
+    z-index: 10;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 16px;
+}
 
-    .hero-scroll {
-        position: absolute; bottom: 32px; left: 50%;
-        transform: translateX(-50%);
-        animation: scrollPulse 2s infinite;
-    }
-    .hero-scroll-line {
-        width: 1px; height: 48px;
-        background: linear-gradient(to bottom, hsla(0, 0%, 10%, 0.4), transparent);
-    }
-    @keyframes scrollPulse {
-        0%, 100% { transform: translate(-50%, 0); }
-        50%      { transform: translate(-50%, 8px); }
-    }
+.hero-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: clamp(56px, 14vw, 168px);
+    letter-spacing: var(--tracking-sahara);
+    padding-left: var(--tracking-sahara);
+    line-height: 1;
+    color: hsl(var(--foreground));
+    text-shadow: 0 2px 40px rgba(255,255,255,.35);
+}
 
-    /* ============ SECTION ============ */
-    .section {
-        max-width: var(--container);
-        margin: 0 auto;
-        padding: 64px 16px;
-    }
-    @media (min-width: 640px) { .section { padding: 96px 32px; } }
-    @media (min-width: 1024px) { .section { padding: 96px 48px; } }
+.hero-sub {
+    margin-top: 24px;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsla(0, 0%, 10%, 0.7);
+}
+@media (min-width: 640px) { .hero-sub { font-size: 15px; } }
 
-    .section-head-row {
-        display: flex; align-items: flex-end; justify-content: space-between;
-        margin-bottom: 48px;
-    }
-    .section-head-center {
-        text-align: center;
-        margin-bottom: 48px;
-    }
-    .section-head-row .eyebrow,
-    .section-head-center .eyebrow { margin-bottom: 12px; }
+.hero-actions {
+    margin-top: 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+@media (min-width: 640px) { .hero-actions { flex-direction: row; justify-content: center; } }
 
-    .view-all {
-        display: none;
-        align-items: center; gap: 8px;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        transition: color .3s, gap .3s;
-    }
-    @media (min-width: 640px) { .view-all { display: flex; } }
-    .view-all:hover { color: hsl(var(--gold)); gap: 14px; }
+.hero-scroll {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    animation: scrollPulse 2s infinite;
+    z-index: 10;
+}
+.hero-scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, hsla(0,0%,10%,.35), transparent); }
+@keyframes scrollPulse {
+    0%, 100% { transform: translate(-50%, 0); }
+    50%       { transform: translate(-50%, 8px); }
+}
 
-    /* ============ COLLECTIONS ============ */
-    .collections {
-        max-width: var(--container);
-        margin: 0 auto;
-        padding: 0 16px;
-        display: grid; grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    @media (min-width: 640px) { .collections { padding: 0 32px; gap: 24px; } }
-    @media (min-width: 1024px) {
-        .collections { padding: 0 48px; grid-template-columns: 1fr 1fr; }
-    }
+/* ============ INTRO ============ */
+.intro-section {
+    padding: 96px 32px 80px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+.intro-section .eyebrow { margin-bottom: 20px; }
+.intro-text {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(20px, 2.8vw, 30px);
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: hsla(0,0%,10%,.75);
+}
+.intro-divider { width: 48px; height: 1px; background: hsl(var(--gold)); margin: 32px auto; }
 
-    .collection {
-        position: relative;
-        aspect-ratio: 4/5;
-        overflow: hidden;
-        display: block;
-        animation: fadeUp .8s cubic-bezier(.2,.7,.2,1) both;
-    }
-    @media (min-width: 640px) { .collection { aspect-ratio: 3/4; } }
-    .collection img {
-        position: absolute; inset: 0;
-        width: 100%; height: 100%;
-        object-fit: cover;
-        transition: transform .7s ease;
-    }
-    .collection:hover img { transform: scale(1.05); }
-    .collection-grad {
-        position: absolute; inset: 0;
-        background: linear-gradient(to top, hsla(0, 0%, 10%, 0.6) 0%, transparent 60%);
-    }
-    .collection-content {
-        position: absolute;
-        bottom: 32px; left: 32px; right: 32px;
-        color: #fff;
-    }
-    .collection-eyebrow {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 8px;
-    }
-    .collection-name {
-        font-family: var(--font-heading);
-        font-size: 24px;
-        font-weight: 400;
-        letter-spacing: 0.05em;
-        margin-bottom: 16px;
-    }
-    @media (min-width: 640px) { .collection-name { font-size: 32px; } }
-    .collection-cta {
-        display: inline-flex; align-items: center; gap: 8px;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        color: rgba(255, 255, 255, 0.9);
-        transition: color .3s, gap .3s;
-    }
-    .collection:hover .collection-cta { color: hsl(var(--gold)); gap: 14px; }
+/* ============ EDITORIAL COLLECTIONS ============ */
+.ec-section-wrap {
+    width: 100%;
+    background: hsl(var(--background));
+}
+.ec-section {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 32px 96px;
+    border-left: 1px solid hsla(39,42%,55%,.35);
+    border-right: 1px solid hsla(39,42%,55%,.35);
+}
+@media (min-width: 1024px) { .ec-section { padding: 0 48px 96px; } }
 
-    /* ============ PRODUCT GRID ============ */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-    @media (min-width: 640px) { .grid { gap: 24px; } }
-    @media (min-width: 1024px) {
-        .grid { grid-template-columns: repeat(4, 1fr); gap: 32px; }
-    }
+.ec-head { margin-bottom: 40px; }
+.ec-head .eyebrow { margin-bottom: 8px; }
 
-    .card { display: block; }
-    .card-img-wrap {
-        position: relative;
-        aspect-ratio: 2/3;
-        overflow: hidden;
-        background: hsla(40, 15%, 93%, 0.3);
+.ec-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+@media (min-width: 768px) {
+    .ec-grid {
+        grid-template-columns: 1.4fr 1fr 1fr;
+        grid-template-rows: 600px 860px;
     }
-    .card-img-wrap img {
-        width: 100%; height: 100%;
-        object-fit: cover;
-        transition: transform .7s ease;
-    }
-    .card:hover .card-img-wrap img { transform: scale(1.05); }
-    .card-overlay {
-        position: absolute; inset: 0;
-        background: hsla(0, 0%, 10%, 0.05);
-        opacity: 0;
-        transition: opacity .5s;
-    }
-    .card:hover .card-overlay { opacity: 1; }
-    .badge-new {
-        position: absolute; top: 16px; left: 16px;
-        background: hsl(var(--gold));
-        color: hsl(var(--background));
-        padding: 6px 12px;
-        font-size: 9px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-    }
-    .card-info { margin-top: 16px; }
-    .card-info h3 {
-        font-family: var(--font-body);
-        font-weight: 300;
-        font-size: 14px;
-        letter-spacing: 0.02em;
-        transition: color .3s;
-    }
-    .card:hover .card-info h3 { color: hsl(var(--gold)); }
-    .card-info p {
-        font-size: 14px;
-        color: hsl(var(--muted-foreground));
-        margin-top: 4px;
-    }
+    .cc-1 { grid-row: 1; grid-column: 1; }
+    .cc-2 { grid-row: 1; grid-column: 2; }
+    .cc-3 { grid-row: 1; grid-column: 3; }
+    .cc-4 { grid-row: 2; grid-column: 1 / 3; }
+    .cc-5 { grid-row: 2; grid-column: 3; }
+}
+@media (max-width: 767px) {
+    .ec-card { aspect-ratio: 3/4; }
+    .cc-1 .ec-card-bg { background-position: center 15% !important; }
+    .cc-4 .ec-card-bg { background-position: center 60% !important; }
+}
 
-    /* ============ QUOTE ============ */
-    .quote-section {
-        padding: 80px 16px;
-        text-align: center;
-    }
-    @media (min-width: 640px) { .quote-section { padding: 128px 32px; } }
-    .quote {
-        font-family: var(--font-heading);
-        font-style: italic;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 1.6;
-        color: hsla(0, 0%, 10%, 0.7);
-        max-width: 640px;
-        margin: 0 auto;
-    }
-    @media (min-width: 640px) { .quote { font-size: 24px; } }
-    @media (min-width: 1024px) { .quote { font-size: 30px; } }
-    .quote-divider {
-        width: 48px; height: 1px;
-        background: hsl(var(--gold));
-        margin: 32px auto 0;
-    }
+.ec-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+}
+.ec-card-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    transition: transform .9s cubic-bezier(.25,.46,.45,.94);
+}
+.ec-card:hover .ec-card-bg { transform: scale(1.06); }
+.ec-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 55%);
+    transition: opacity .4s;
+}
+.ec-card:hover .ec-card-overlay { opacity: 0.8; }
+.ec-card-body {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 28px 32px;
+    z-index: 2;
+}
+.ec-card-eye {
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(245,243,238,.6); margin-bottom: 8px;
+}
+.ec-card-title {
+    font-family: var(--font-heading);
+    font-size: clamp(20px, 2.8vw, 44px);
+    font-weight: 400; color: #f5f3ee;
+    line-height: 1.1; letter-spacing: 0.04em;
+    margin-bottom: 18px;
+}
+.ec-card-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #f5f3ee; border-bottom: 1px solid rgba(245,243,238,.4);
+    padding-bottom: 3px; transition: color .25s, border-color .25s;
+}
+.ec-card:hover .ec-card-cta { color: hsl(var(--gold)); border-color: hsla(39,42%,60%,.65); }
+.ec-card-cta svg { transition: transform .25s; }
+.ec-card:hover .ec-card-cta svg { transform: translateX(4px); }
 
-    /* ============ EMPTY STATE ============ */
-    .empty-grid {
-        text-align: center;
-        padding: 80px 24px;
-        color: hsl(var(--muted-foreground));
-    }
-    .empty-grid p {
-        font-family: var(--font-heading);
-        font-size: 24px;
-    }
+
+/* ============ TRY-ON ============ */
+.tryon-section {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: hsla(40,15%,93%,.45);
+    overflow: hidden;
+}
+@media (min-width: 1024px) { .tryon-section { grid-template-columns: 1fr 1fr; min-height: 580px; } }
+
+.tryon-text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 64px 40px;
+}
+@media (min-width: 1024px) { .tryon-text { padding: 80px 72px; } }
+.tryon-text .eyebrow { margin-bottom: 16px; }
+.tryon-title {
+    font-family: var(--font-heading);
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 400; line-height: 1.15; letter-spacing: 0.03em;
+    margin-bottom: 24px;
+}
+.tryon-desc {
+    font-size: 14px; font-weight: 300; line-height: 1.75;
+    color: hsla(0,0%,10%,.7);
+    max-width: 420px; margin-bottom: 36px;
+}
+.tryon-models {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 8px;
+    padding: 48px 32px 0;
+    overflow: hidden;
+}
+@media (min-width: 1024px) { .tryon-models { padding: 56px 0 0; } }
+
+.tryon-model {
+    flex: 1; max-width: 180px;
+    aspect-ratio: 2/3;
+    background: hsla(40,15%,88%,.6);
+    overflow: hidden;
+    position: relative;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1);
+}
+.tryon-model:nth-child(2) { max-width: 200px; }
+.tryon-model:hover { transform: translateY(-10px); }
+.tryon-model img { width: 100%; height: 100%; object-fit: cover; }
+.tryon-model-label {
+    position: absolute; bottom: 12px; left: 0; right: 0;
+    text-align: center;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em;
+    color: hsla(0,0%,10%,.55);
+    background: hsla(40,20%,97%,.7);
+    padding: 4px 0;
+}
+
+/* ============ JOURNAL ============ */
+.journal-section {
+    width: 100%;
+    padding: 96px 32px;
+}
+@media (min-width: 1024px) { .journal-section { padding: 96px 48px; } }
+
+.journal-head {
+    margin-bottom: 40px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+}
+.journal-head-left .eyebrow { margin-bottom: 8px; }
+.journal-all {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: hsl(var(--muted-foreground)); transition: color .25s;
+    display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap; flex-shrink: 0;
+}
+.journal-all:hover { color: hsl(var(--gold)); }
+.journal-all svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform .25s; }
+.journal-all:hover svg { transform: translateX(3px); }
+
+.journal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+@media (min-width: 640px) { .journal-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+
+.j-card { display: block; text-decoration: none; }
+.j-card-img {
+    aspect-ratio: 4/3; overflow: hidden;
+    background: hsla(40,15%,90%,.4);
+    margin-bottom: 20px;
+}
+.j-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s ease; }
+.j-card:hover .j-card-img img { transform: scale(1.05); }
+.j-card-cat {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: hsl(var(--gold)); margin-bottom: 8px; display: block;
+}
+.j-card-title {
+    font-family: var(--font-heading);
+    font-size: 18px; font-weight: 400; letter-spacing: 0.03em;
+    line-height: 1.3; color: hsl(var(--foreground));
+    transition: color .25s; margin-bottom: 10px;
+}
+.j-card:hover .j-card-title { color: hsl(var(--gold)); }
+.j-card-date { font-size: 11px; color: hsl(var(--muted-foreground)); font-weight: 300; }
+
+/* ============ PRE-FOOTER WORDMARK ============ */
+.pre-footer-mark {
+    width: 100%;
+    background: hsl(var(--background));
+    padding: 72px 32px 64px;
+    text-align: center;
+    overflow: hidden;
+}
+.pre-footer-wordmark {
+    font-family: var(--font-heading);
+    font-size: clamp(80px, 18vw, 260px);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    padding-left: 0.14em;
+    line-height: 1;
+    color: hsl(var(--foreground));
+    opacity: 0.07;
+    user-select: none;
+    white-space: nowrap;
+}
+.pre-footer-tagline {
+    margin-top: -12px;
+    font-size: 12px; font-weight: 300;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+}
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ============ HERO ============ -->
+<!-- HERO -->
 <section class="hero">
+    <img class="hero-img" src="/static/img/hero-marble.jpg?v=1" alt="SAHARA Editorial" fetchpriority="high">
     <div class="hero-overlay"></div>
-
     <div class="hero-content">
         <h1 class="hero-title anim-fade-up">SAHARA</h1>
         <p class="hero-sub anim-fade-in anim-delay-1">Твій стиль. Твоя впевненість.</p>
@@ -275,106 +338,145 @@
             <a href="/about" class="btn btn-outline">Дізнатися більше</a>
         </div>
     </div>
-
-    <div class="hero-scroll">
-        <div class="hero-scroll-line"></div>
-    </div>
+    <div class="hero-scroll"><div class="hero-scroll-line"></div></div>
 </section>
 
-<!-- ============ NEW ARRIVALS ============ -->
-<section class="section">
-    <div class="section-head-row">
-        <div>
-            <p class="eyebrow">Колекція</p>
-            <h2 class="h-section">Нові надходження</h2>
-        </div>
-        <a href="/catalog" class="view-all">
-            Переглянути все
-            <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
-        </a>
+<!-- INTRO -->
+<section class="intro-section anim-fade-up">
+    <div class="intro-divider"></div>
+    <p class="intro-text">SAHARA — це нова мова стилю. Ми створюємо одяг для жінок та чоловіків, у якому ви відчуваєте себе собою: впевненим, вільним, красивим.</p>
+    <div class="intro-divider"></div>
+</section>
+
+<!-- EDITORIAL COLLECTIONS -->
+<div class="ec-section-wrap">
+<section class="ec-section">
+    <div class="ec-head">
+        <p class="eyebrow">Сезон 2026</p>
+        <h2 class="h-section">Колекції</h2>
     </div>
 
-    {% if products %}
-    <div class="grid">
-        {% for p in products[:4] %}
-        <a href="/product/{{ p.id }}" class="card anim-fade-up" style="animation-delay: {{ loop.index0 * 0.08 }}s">
-            <div class="card-img-wrap">
-                <img src="/media/{{ p.generated_photo or p.original_photo }}" alt="{{ p.title }}" loading="lazy">
-                <div class="card-overlay"></div>
-                <span class="badge-new">Новинка</span>
-            </div>
-            <div class="card-info">
-                <h3>{{ p.title }}</h3>
-                {% if p.price_uah %}
-                <p>{{ "{:,.0f}".format(p.price_uah).replace(",", " ") }} ₴</p>
-                {% endif %}
+    <div class="ec-grid">
+        <!-- cc-1 large main card — AI-generated: draped mini dress -->
+        <a href="/catalog?cat=dress" class="ec-card cc-1">
+            <div class="ec-card-bg" style="background-image: url('/static/img/banner_col1.jpg'); background-color: #c9b89a; background-position: center 30%;"></div>
+            <div class="ec-card-overlay"></div>
+            <div class="ec-card-body">
+                <p class="ec-card-eye">Нова колекція</p>
+                <h3 class="ec-card-title">Жіноча<br>Колекція</h3>
+                <span class="ec-card-cta">Переглянути <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </a>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-grid"><p>Каталог наповнюється</p></div>
-    {% endif %}
-</section>
-
-<!-- ============ COLLECTIONS ============ -->
-<section class="collections">
-    <a href="/catalog?category=women" class="collection" style="animation-delay: 0s">
-        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=85" alt="Жіночий одяг">
-        <div class="collection-grad"></div>
-        <div class="collection-content">
-            <div class="collection-eyebrow">Колекція</div>
-            <h3 class="collection-name">Жіночий одяг</h3>
-            <span class="collection-cta">
-                Переглянути
-                <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
-            </span>
-        </div>
-    </a>
-    <a href="/catalog?category=men" class="collection" style="animation-delay: 0.15s">
-        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=1200&q=85" alt="Чоловічий одяг">
-        <div class="collection-grad"></div>
-        <div class="collection-content">
-            <div class="collection-eyebrow">Колекція</div>
-            <h3 class="collection-name">Чоловічий одяг</h3>
-            <span class="collection-cta">
-                Переглянути
-                <svg width="14" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 5h14M11 1l4 4-4 4"/></svg>
-            </span>
-        </div>
-    </a>
-</section>
-
-<!-- ============ POPULAR ============ -->
-{% if products and products|length > 4 %}
-<section class="section">
-    <div class="section-head-center">
-        <p class="eyebrow">Обрані</p>
-        <h2 class="h-section">Популярні товари</h2>
-    </div>
-    <div class="grid">
-        {% for p in products[4:8] %}
-        <a href="/product/{{ p.id }}" class="card">
-            <div class="card-img-wrap">
-                <img src="/media/{{ p.generated_photo or p.original_photo }}" alt="{{ p.title }}" loading="lazy">
-                <div class="card-overlay"></div>
-            </div>
-            <div class="card-info">
-                <h3>{{ p.title }}</h3>
-                {% if p.price_uah %}
-                <p>{{ "{:,.0f}".format(p.price_uah).replace(",", " ") }} ₴</p>
-                {% endif %}
+        <!-- cc-2 portrait — AI-generated: blouse with V-neck ruffle -->
+        <a href="/catalog?cat=blouse" class="ec-card cc-2">
+            <div class="ec-card-bg" style="background-image: url('/static/img/banner_col2.jpg'); background-color: #e8e2d8; background-position: center top;"></div>
+            <div class="ec-card-overlay"></div>
+            <div class="ec-card-body">
+                <p class="ec-card-eye">Базовий гардероб</p>
+                <h3 class="ec-card-title">Блузи<br>SS 2026</h3>
+                <span class="ec-card-cta">Переглянути <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </a>
-        {% endfor %}
+        <!-- cc-3 portrait — AI-generated: chiffon mini dress -->
+        <a href="/catalog?cat=dress" class="ec-card cc-3">
+            <div class="ec-card-bg" style="background-image: url('/static/img/banner_col3.jpg'); background-color: #d4cfc8; background-position: center top;"></div>
+            <div class="ec-card-overlay"></div>
+            <div class="ec-card-body">
+                <p class="ec-card-eye">Літній образ</p>
+                <h3 class="ec-card-title">Сукні<br>Колекція</h3>
+                <span class="ec-card-cta">Переглянути <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+        </a>
+        <!-- cc-4 wide landscape — AI-generated: wide straight trousers -->
+        <a href="/catalog?cat=pants" class="ec-card cc-4">
+            <div class="ec-card-bg" style="background-image: url('/static/img/banner_col4.jpg'); background-color: #b0a898; background-size: cover; background-position: center 75%;"></div>
+            <div class="ec-card-overlay"></div>
+            <div class="ec-card-body">
+                <p class="ec-card-eye">Трендово</p>
+                <h3 class="ec-card-title">Джинси та<br>Штани</h3>
+                <span class="ec-card-cta">Дивитися <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+        </a>
+        <!-- cc-5 accent — shorts & skirts -->
+        <a href="/catalog?cat=skirt" class="ec-card cc-5">
+            <div class="ec-card-bg" style="background-image: url('/static/img/banner_col5.jpg'); background-color: #c8bfb0; background-position: center top;"></div>
+            <div class="ec-card-overlay"></div>
+            <div class="ec-card-body">
+                <p class="ec-card-eye">Весь асортимент</p>
+                <h3 class="ec-card-title">Шорти та<br>Спідниці</h3>
+                <span class="ec-card-cta">До каталогу <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+        </a>
     </div>
 </section>
-{% endif %}
+</div>
 
-<!-- ============ QUOTE ============ -->
-<section class="quote-section">
-    <p class="quote">"Справжня елегантність — це коли стиль говорить за тебе, а не кричить."</p>
-    <div class="quote-divider"></div>
+
+<!-- TRY-ON -->
+<section class="tryon-section">
+    <div class="tryon-text">
+        <p class="eyebrow">Нова функція</p>
+        <h2 class="tryon-title">Приміряйте<br>одяг онлайн</h2>
+        <p class="tryon-desc">Завантажте своє фото та подивіться, як виглядає одяг на вас — без походу до магазину. Технологія AI-примірки від SAHARA.</p>
+        <a href="/tryon" class="btn btn-primary" style="align-self: flex-start;">Спробувати примірку</a>
+    </div>
+    <div class="tryon-models">
+        <div class="tryon-model">
+            <img src="/media/models/sahara_woman_1.jpg" alt="Вигляд спереду" onerror="this.parentElement.style.background='hsla(40,15%,85%,.6)'">
+            <span class="tryon-model-label">Спереду</span>
+        </div>
+        <div class="tryon-model">
+            <img src="/media/models/F-001.jpg" alt="3/4 вигляд" onerror="this.parentElement.style.background='hsla(40,15%,82%,.6)'">
+            <span class="tryon-model-label">3/4</span>
+        </div>
+        <div class="tryon-model">
+            <img src="/media/models/sahara_woman_1.jpg" alt="Вигляд ззаду" onerror="this.parentElement.style.background='hsla(40,15%,87%,.6)'" style="transform:scaleX(-1)">
+            <span class="tryon-model-label">Ззаду</span>
+        </div>
+    </div>
 </section>
+
+<!-- JOURNAL -->
+<section class="journal-section">
+    <div class="journal-head">
+        <div class="journal-head-left">
+            <p class="eyebrow">Натхнення</p>
+            <h2 class="h-section">Журнал</h2>
+        </div>
+        <a href="/about" class="journal-all">Усі статті <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    </div>
+    <div class="journal-grid">
+        <a href="/about" class="j-card">
+            <div class="j-card-img">
+                <img src="/static/img/journal1.jpg" alt="Тенденції весни 2026" loading="lazy" style="object-position: center top;">
+            </div>
+            <span class="j-card-cat">Стиль</span>
+            <h3 class="j-card-title">Тенденції весни 2026: що носити цього сезону</h3>
+            <p class="j-card-date">12 квітня 2026</p>
+        </a>
+        <a href="/about" class="j-card">
+            <div class="j-card-img">
+                <img src="/static/img/journal2.jpg" alt="Як зібрати базовий гардероб" loading="lazy" style="object-position: center top;">
+            </div>
+            <span class="j-card-cat">Поради</span>
+            <h3 class="j-card-title">Як зібрати базовий гардероб на будь-який сезон</h3>
+            <p class="j-card-date">5 квітня 2026</p>
+        </a>
+        <a href="/about" class="j-card">
+            <div class="j-card-img">
+                <img src="/static/img/journal3.jpg" alt="SAHARA SS 2026: нова колекція" loading="lazy" style="object-position: center top;">
+            </div>
+            <span class="j-card-cat">Колекція</span>
+            <h3 class="j-card-title">SAHARA SS 2026: перший погляд на нову колекцію</h3>
+            <p class="j-card-date">28 березня 2026</p>
+        </a>
+    </div>
+</section>
+
+<!-- PRE-FOOTER WORDMARK -->
+<div class="pre-footer-mark">
+    <div class="pre-footer-wordmark">SAHARA</div>
+    <p class="pre-footer-tagline">Твій стиль. Твоя впевненість.</p>
+</div>
 
 {% endblock %}

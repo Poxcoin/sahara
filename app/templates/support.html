@@ -4,196 +4,271 @@
 
 {% block extra_css %}
 <style>
-    .page-wrap {
-        max-width: var(--container);
-        margin: 0 auto;
-        padding: 32px 16px;
-    }
-    @media (min-width: 640px) { .page-wrap { padding: 48px 32px; } }
-    @media (min-width: 1024px) { .page-wrap { padding: 48px 48px; } }
+    .sup-page { max-width: var(--container); margin: 0 auto; padding: 32px 16px; }
+    @media (min-width: 640px) { .sup-page { padding: 48px 32px; } }
+    @media (min-width: 1024px) { .sup-page { padding: 48px 48px; } }
 
-    .page-head { margin-bottom: 48px; }
-    @media (min-width: 640px) { .page-head { margin-bottom: 64px; } }
-    .page-head .eyebrow { margin-bottom: 12px; }
+    .sup-head { margin-bottom: 32px; }
+    @media (min-width: 640px) { .sup-head { margin-bottom: 56px; } }
+    .sup-head .eyebrow { margin-bottom: 12px; }
+    .sup-intro { max-width: 560px; font-size: 15px; font-weight: 300; line-height: 1.7; color: hsla(0,0%,10%,.7); margin-top: 16px; }
 
-    .support-grid {
-        display: grid; grid-template-columns: 1fr;
-        gap: 64px;
-    }
-    @media (min-width: 1024px) { .support-grid { grid-template-columns: 1fr 1fr; gap: 96px; } }
+    .sup-tiles { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 64px; }
+    @media (min-width: 640px) { .sup-tiles { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
 
-    .form-intro {
-        font-size: 14px;
-        font-weight: 300;
-        color: hsla(0, 0%, 10%, 0.7);
-        margin-bottom: 32px;
-        line-height: 1.7;
-    }
+    .sup-tile { display: block; padding: 28px 24px; background: hsla(40, 15%, 93%, 0.4); border: 1px solid transparent; transition: all .3s; text-decoration: none; }
+    .sup-tile:hover { background: hsla(40, 15%, 93%, 0.7); border-color: hsl(var(--gold)); }
+    .sup-tile-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .sup-tile-icon svg { width: 22px; height: 22px; stroke: hsl(var(--gold)); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    .sup-tile-label { font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 6px; }
+    .sup-tile-value { font-family: var(--font-heading); font-size: 18px; letter-spacing: 0.03em; margin-bottom: 8px; }
+    .sup-tile-meta { font-size: 12px; font-weight: 300; color: hsl(var(--muted-foreground)); }
+
+    .sup-grid { display: grid; grid-template-columns: 1fr; gap: 64px; }
+    @media (min-width: 1024px) { .sup-grid { grid-template-columns: 1.2fr 1fr; gap: 96px; } }
+
+    .sup-form-head { margin-bottom: 32px; }
+    .sup-form-head h2 { font-family: var(--font-heading); font-size: 24px; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .sup-form-head p { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 300; }
 
     .form-group { margin-bottom: 24px; }
-    .form-group label {
-        display: block;
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 8px;
+    .form-group label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 8px; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 0 16px; height: 48px;
+        background: hsl(var(--background)); border: 1px solid hsla(40, 10%, 88%, 0.7); border-radius: 0;
+        font-family: var(--font-body); font-size: 14px; font-weight: 300;
+        color: hsl(var(--foreground)); transition: border-color .2s;
     }
-    .form-group input,
-    .form-group textarea {
-        width: 100%;
-        padding: 0 16px;
-        height: 48px;
-        background: hsl(var(--background));
-        border: 1px solid hsla(40, 10%, 88%, 0.5);
-        border-radius: 0;
-        font-family: var(--font-body);
-        font-size: 14px;
-        font-weight: 300;
-        color: hsl(var(--foreground));
-        transition: border-color .2s;
-    }
-    .form-group textarea {
-        height: auto;
-        min-height: 160px;
-        padding: 16px;
-        resize: none;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: hsl(var(--foreground));
-    }
+    .form-group textarea { height: auto; min-height: 160px; padding: 16px; resize: vertical; line-height: 1.6; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: hsl(var(--foreground)); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (min-width: 640px) { .form-row-2 { grid-template-columns: 1fr 1fr; } }
 
-    .submit-row { margin-top: 16px; }
-    .alert {
-        padding: 14px 18px;
-        background: hsla(39, 42%, 60%, 0.1);
-        border-left: 2px solid hsl(var(--gold));
-        margin-bottom: 24px;
-        font-size: 14px;
-    }
+    .submit-row { margin-top: 8px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .submit-meta { font-size: 11px; color: hsl(var(--muted-foreground)); font-weight: 300; }
+    .alert { padding: 14px 18px; background: hsla(39, 42%, 60%, 0.1); border-left: 2px solid hsl(var(--gold)); margin-bottom: 24px; font-size: 13px; font-weight: 300; }
 
-    .info-block { margin-bottom: 48px; }
-    .info-block:last-child { margin-bottom: 0; }
-    .info-block .eyebrow { margin-bottom: 24px; }
-    .info-row {
-        display: flex; align-items: flex-start; gap: 16px;
-        margin-bottom: 24px;
+    .sup-info-block { margin-bottom: 48px; }
+    .sup-info-block:last-child { margin-bottom: 0; }
+    .sup-info-block h3 { font-family: var(--font-heading); font-size: 18px; letter-spacing: 0.04em; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid hsla(40, 10%, 88%, 0.7); }
+
+    .sup-row { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid hsla(40, 10%, 88%, 0.4); }
+    .sup-row:last-child { border-bottom: none; }
+    .sup-row-icon { width: 36px; height: 36px; background: hsla(40, 15%, 93%, 0.5); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sup-row-icon svg { width: 14px; height: 14px; stroke: hsl(var(--gold)); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .sup-row-label { font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 4px; }
+    .sup-row-value { font-size: 14px; font-weight: 300; line-height: 1.5; }
+
+    .sup-schedule { display: flex; flex-direction: column; }
+    .sched-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed hsla(40, 10%, 88%, 0.6); font-size: 13px; font-weight: 300; }
+    .sched-row:last-child { border-bottom: none; }
+    .sched-row .day { color: hsl(var(--muted-foreground)); }
+    .sched-row.today .day, .sched-row.today .hours { color: hsl(var(--gold)); }
+
+    .sup-faq { margin-top: 96px; padding-top: 64px; border-top: 1px solid hsla(40, 10%, 88%, 0.5); }
+    .sup-faq-head { text-align: center; margin-bottom: 48px; }
+    .sup-faq-head .eyebrow { margin-bottom: 12px; }
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid hsla(40, 10%, 88%, 0.7); }
+    .faq-q {
+        width: 100%; text-align: left; padding: 24px 0;
+        display: flex; justify-content: space-between; align-items: center; gap: 24px;
+        font-family: var(--font-heading); font-size: 17px; letter-spacing: 0.02em;
+        color: hsl(var(--foreground)); transition: color .25s; cursor: pointer;
+        background: none; border: none; font-weight: 400;
     }
-    .info-icon {
-        width: 40px; height: 40px;
-        background: hsla(40, 15%, 93%, 0.5);
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
+    .faq-q:hover { color: hsl(var(--gold)); }
+    .faq-toggle {
+        flex-shrink: 0; width: 14px; height: 14px; position: relative;
     }
-    .info-icon svg {
-        width: 16px; height: 16px;
-        stroke: hsl(var(--gold)); fill: none;
-        stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-    }
-    .info-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 4px;
-    }
-    .info-value {
-        font-size: 14px;
-        font-weight: 300;
-    }
-    .schedule-list {
-        display: flex; flex-direction: column;
-        gap: 12px;
-    }
-    .schedule-list p { font-size: 14px; font-weight: 300; }
+    .faq-toggle::before, .faq-toggle::after { content: ''; position: absolute; background: currentColor; }
+    .faq-toggle::before { top: 50%; left: 0; right: 0; height: 1px; }
+    .faq-toggle::after { left: 50%; top: 0; bottom: 0; width: 1px; transition: transform .3s; }
+    .faq-item.open .faq-toggle::after { transform: scaleY(0); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+    .faq-a-inner { padding: 0 0 28px; font-size: 14px; font-weight: 300; line-height: 1.7; color: hsla(0,0%,10%,.75); max-width: 640px; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page-wrap">
-    <div class="page-head">
+<div class="sup-page">
+    <div class="sup-head">
         <p class="eyebrow">Зв'язатися з нами</p>
         <h1 class="h-page">Підтримка</h1>
+        <p class="sup-intro">Ми тут, щоб допомогти. Оберіть зручний канал зв'язку — і отримайте відповідь протягом 24 годин.</p>
     </div>
 
-    <div class="support-grid">
-        <!-- LEFT: Form -->
+    <div class="sup-tiles anim-fade-up">
+        <a href="tel:+380441234567" class="sup-tile">
+            <div class="sup-tile-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div class="sup-tile-label">Телефон</div>
+            <div class="sup-tile-value">+380 (44) 123-45-67</div>
+            <div class="sup-tile-meta">Пн–Пт, 10:00–18:30</div>
+        </a>
+        <a href="mailto:info@sahara.ua" class="sup-tile">
+            <div class="sup-tile-icon">
+                <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="sup-tile-label">Email</div>
+            <div class="sup-tile-value">info@sahara.ua</div>
+            <div class="sup-tile-meta">Відповідь до 24 годин</div>
+        </a>
+        <a href="https://t.me/sahara_support" target="_blank" rel="noopener" class="sup-tile">
+            <div class="sup-tile-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div class="sup-tile-label">Telegram</div>
+            <div class="sup-tile-value">@sahara_support</div>
+            <div class="sup-tile-meta">Швидкі відповіді щодня</div>
+        </a>
+    </div>
+
+    <div class="sup-grid">
         <div class="anim-fade-up">
-            <p class="form-intro">Маєте запитання? Ми відповімо протягом 24 годин.</p>
+            <div class="sup-form-head">
+                <h2>Напишіть нам</h2>
+                <p>Заповніть форму — оператор повернеться до вас із відповіддю</p>
+            </div>
 
             {% if sent %}
-            <div class="alert">Дякуємо! Ваше повідомлення надіслано.</div>
+            <div class="alert">Дякуємо! Ваше повідомлення надіслано — ми відповімо протягом 24 годин.</div>
             {% endif %}
 
             <form method="post" action="/support">
-                <div class="form-group">
-                    <label for="name">Ім'я</label>
-                    <input type="text" id="name" name="name" placeholder="Ваше ім'я" required>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="name">Ім'я</label>
+                        <input type="text" id="name" name="name" placeholder="Ваше ім'я" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="topic">Тема звернення</label>
+                        <select id="topic" name="topic">
+                            <option>Замовлення та доставка</option>
+                            <option>Повернення та обмін</option>
+                            <option>Розміри та підбір</option>
+                            <option>Технічне питання</option>
+                            <option>Співпраця</option>
+                            <option>Інше</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="order">Номер замовлення <span style="text-transform:none;letter-spacing:0;">(якщо є)</span></label>
+                        <input type="text" id="order" name="order" placeholder="#10234">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="message">Повідомлення</label>
-                    <textarea id="message" name="message" placeholder="Опишіть ваше запитання..." required></textarea>
+                    <textarea id="message" name="message" placeholder="Опишіть ваше запитання або ситуацію..." required></textarea>
                 </div>
                 <div class="submit-row">
-                    <button type="submit" class="btn btn-primary">
-                        Надіслати
-                        <svg style="margin-left:8px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    </button>
+                    <button type="submit" class="btn btn-primary">Надіслати</button>
+                    <span class="submit-meta">Відповідь протягом 24 годин</span>
                 </div>
             </form>
         </div>
 
-        <!-- RIGHT: Contacts -->
         <div class="anim-fade-up anim-delay-1">
-            <div class="info-block">
-                <p class="eyebrow">Контактна інформація</p>
-
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Телефон</div>
-                        <div class="info-value">+380 (44) 123-45-67</div>
-                    </div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Email</div>
-                        <div class="info-value">info@sahara.ua</div>
-                    </div>
-                </div>
-
-                <div class="info-row">
-                    <div class="info-icon">
+            <div class="sup-info-block">
+                <h3>Контакти</h3>
+                <div class="sup-row">
+                    <div class="sup-row-icon">
                         <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <div>
-                        <div class="info-label">Адреса</div>
-                        <div class="info-value">м. Київ, вул. Хрещатик, 1</div>
+                        <div class="sup-row-label">Шоурум</div>
+                        <div class="sup-row-value">вул. Театральна, 6<br>Ковель, Волинська обл., 45000</div>
+                    </div>
+                </div>
+                <div class="sup-row">
+                    <div class="sup-row-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div style="flex:1;">
+                        <div class="sup-row-label">Графік роботи</div>
+                        <div class="sup-schedule" style="margin-top: 8px;">
+                            <div class="sched-row"><span class="day">Пн — Пт</span><span class="hours">10:00 — 18:30</span></div>
+                            <div class="sched-row"><span class="day">Субота</span><span class="hours">10:00 — 16:00</span></div>
+                            <div class="sched-row"><span class="day">Неділя</span><span class="hours">10:00 — 15:00</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="info-block">
-                <p class="eyebrow">Графік роботи</p>
-                <div class="schedule-list">
-                    <p>Пн — Пт: 09:00 — 20:00</p>
-                    <p>Сб: 10:00 — 18:00</p>
-                    <p>Нд: Вихідний</p>
+            <div class="sup-info-block">
+                <h3>Соціальні мережі</h3>
+                <div class="sup-row">
+                    <div class="sup-row-icon">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </div>
+                    <div><div class="sup-row-label">Instagram</div><div class="sup-row-value">@sahara.ua</div></div>
+                </div>
+                <div class="sup-row">
+                    <div class="sup-row-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    </div>
+                    <div><div class="sup-row-label">Telegram</div><div class="sup-row-value">@sahara_support</div></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="sup-faq">
+        <div class="sup-faq-head">
+            <p class="eyebrow">Часті запитання</p>
+            <h2 class="h-section">FAQ</h2>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-q" type="button">Скільки коштує і триває доставка?<span class="faq-toggle"></span></button>
+                <div class="faq-a"><div class="faq-a-inner">Доставка по Україні — 120 ₴, безкоштовно при замовленні від 1500 ₴. Термін: 1–3 робочі дні Новою поштою. Замовлення оформлені до 14:00 відправляємо того ж дня.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" type="button">Як повернути або обміняти товар?<span class="faq-toggle"></span></button>
+                <div class="faq-a"><div class="faq-a-inner">Повернення можливе протягом 14 днів з моменту отримання, якщо товар не був у використанні та збережено всі бирки. Зв'яжіться з нами через форму вище — ми оформимо повернення коштом магазину.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" type="button">Як підібрати правильний розмір?<span class="faq-toggle"></span></button>
+                <div class="faq-a"><div class="faq-a-inner">На сторінці кожного товару є детальна розмірна сітка з замірами в сантиметрах. Якщо вагаєтесь — напишіть нам, і ми підкажемо найкращий варіант для вашого зросту та фігури.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" type="button">Які способи оплати ви приймаєте?<span class="faq-toggle"></span></button>
+                <div class="faq-a"><div class="faq-a-inner">Картою онлайн (Visa, Mastercard), Apple Pay, Google Pay, накладений платіж при отриманні. Усі платежі захищені сертифікатом 3D Secure.</div></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" type="button">Чи є у вас фізичний магазин?<span class="faq-toggle"></span></button>
+                <div class="faq-a"><div class="faq-a-inner">Так, наш шоурум розташований у Ковелі, вул. Театральна, 6. Запрошуємо в гості — там ви зможете приміряти весь асортимент і отримати персональну консультацію стиліста.</div></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+(function() {
+    document.querySelectorAll('.faq-item').forEach(function(item) {
+        var q = item.querySelector('.faq-q');
+        var a = item.querySelector('.faq-a');
+        q.addEventListener('click', function() {
+            var open = item.classList.contains('open');
+            if (open) { item.classList.remove('open'); a.style.maxHeight = '0'; }
+            else { item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+        });
+    });
+
+    var day = new Date().getDay();
+    var rows = document.querySelectorAll('.sched-row');
+    if (rows.length === 3) {
+        if (day >= 1 && day <= 5) rows[0].classList.add('today');
+        else if (day === 6) rows[1].classList.add('today');
+        else if (day === 0) rows[2].classList.add('today');
+    }
+})();
+</script>
 {% endblock %}

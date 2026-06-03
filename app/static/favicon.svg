@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#111111"/>
+  <rect x="3" y="3" width="58" height="58" fill="none" stroke="#c9a96e" stroke-width="2"/>
+  <text x="32" y="50"
+        font-family="Georgia, 'DejaVu Serif', serif"
+        font-size="46"
+        font-weight="400"
+        fill="#c9a96e"
+        text-anchor="middle"
+        letter-spacing="1">S</text>
+</svg>

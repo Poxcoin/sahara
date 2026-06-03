@@ -1,25 +1,89 @@
 {% extends "base.html" %}
 {% block title %}Контакти — {{ site_name }}{% endblock %}
-{% block content %}
-<section style="padding: 80px 0; min-height: 60vh;">
-  <div class="container" style="max-width: 600px;">
-    <p class="eyebrow" style="margin-bottom: 16px; text-align: center;">Зв'язок</p>
-    <h1 class="h-page" style="text-align: center; margin-bottom: 48px;">Контакти</h1>
 
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
-        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Telegram</p>
-        <a href="https://t.me/sahara_support" style="font-size: 16px; color: hsl(var(--gold));">@sahara_support</a>
-      </div>
-      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
-        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Email</p>
-        <a href="mailto:hello@sahara.style" style="font-size: 16px; color: hsl(var(--gold));">hello@sahara.style</a>
-      </div>
-      <div style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); padding: 28px; border-radius: 4px;">
-        <p style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: hsl(var(--muted-foreground)); margin-bottom: 8px;">Підтримка</p>
-        <a href="/support" class="btn btn-outline" style="min-width: auto; padding: 0 24px; height: 44px;">Написати нам</a>
-      </div>
+{% block extra_css %}
+<style>
+    .contacts-page { max-width: 900px; margin: 0 auto; padding: 64px 16px; }
+    @media (min-width: 640px) { .contacts-page { padding: 80px 32px; } }
+
+    .contacts-head { text-align: center; margin-bottom: 64px; }
+    .contacts-head .eyebrow { margin-bottom: 16px; }
+    .contacts-head h1 { font-family: var(--font-heading); font-weight: 400; font-size: clamp(32px, 6vw, 56px); letter-spacing: 0.05em; }
+
+    .contacts-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 640px) { .contacts-grid { grid-template-columns: 1fr 1fr; } }
+
+    .contact-card { border: 1px solid hsl(var(--border)); padding: 32px; transition: border-color .3s; }
+    .contact-card:hover { border-color: hsl(var(--gold)); }
+    .contact-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 12px; }
+    .contact-card .value { font-size: 15px; font-weight: 300; line-height: 1.6; }
+    .contact-card a.value { color: hsl(var(--gold)); transition: opacity .3s; }
+    .contact-card a.value:hover { opacity: .7; }
+    .contact-card.full { grid-column: 1 / -1; }
+
+    .schedule-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .schedule-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 300; padding-bottom: 8px; border-bottom: 1px solid hsla(40,10%,88%,0.4); }
+    .schedule-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .schedule-row .day { color: hsl(var(--muted-foreground)); }
+    .schedule-row .time { font-weight: 400; }
+
+    .map-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--gold)); transition: opacity .3s; }
+    .map-link:hover { opacity: .7; }
+    .map-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contacts-page">
+    <div class="contacts-head anim-fade-up">
+        <p class="eyebrow">Зв'язатись з нами</p>
+        <h1>Контакти</h1>
     </div>
-  </div>
-</section>
+
+    <div class="contacts-grid anim-fade-up anim-delay-1">
+        <div class="contact-card">
+            <p class="label">Адреса магазину</p>
+            <p class="value">вул. Театральна, 6<br>Ковель, Волинська обл.<br>45000, Україна</p>
+            <a href="https://maps.google.com/?q=Teatralna+St+6+Kovel" target="_blank" class="map-link">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Відкрити на карті
+            </a>
+        </div>
+
+        <div class="contact-card">
+            <p class="label">Графік роботи</p>
+            <div class="schedule-rows">
+                <div class="schedule-row"><span class="day">Понеділок — П'ятниця</span><span class="time">10:00–18:30</span></div>
+                <div class="schedule-row"><span class="day">Субота</span><span class="time">10:00–16:00</span></div>
+                <div class="schedule-row"><span class="day">Неділя</span><span class="time">10:00–15:00</span></div>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <p class="label">Телефон</p>
+            <a href="tel:+380441234567" class="value">+380 (44) 123-45-67</a>
+        </div>
+
+        <div class="contact-card">
+            <p class="label">Email</p>
+            <a href="mailto:info@sahara.ua" class="value">info@sahara.ua</a>
+        </div>
+
+        <div class="contact-card">
+            <p class="label">Telegram</p>
+            <a href="https://t.me/sahara_kovel" target="_blank" class="value">@sahara_kovel</a>
+        </div>
+
+        <div class="contact-card">
+            <p class="label">Instagram</p>
+            <a href="https://instagram.com/sahara_kovel" target="_blank" class="value">@sahara_kovel</a>
+        </div>
+
+        <div class="contact-card full">
+            <p class="label">Написати нам</p>
+            <p class="value" style="margin-bottom:20px;">Є питання або хочете замовити доставку — пишіть, відповімо швидко.</p>
+            <a href="/support" class="btn btn-primary" style="min-width:auto;display:inline-flex;">Написати повідомлення</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

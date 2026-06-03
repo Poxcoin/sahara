@@ -39,6 +39,9 @@ class Product(Base):
 
     title_ua: Mapped[str | None] = mapped_column(Text, nullable=True)
     title_en: Mapped[str | None] = mapped_column(Text, nullable=True)
+    category: Mapped[str | None] = mapped_column(String(100), nullable=True)   # Футболка, Куртка, Штани…
+    season: Mapped[str | None] = mapped_column(String(100), nullable=True)     # Весна/Літо 2025, Зима 2025…
+    match_type: Mapped[str | None] = mapped_column(String(10), nullable=True)  # exact | approx
 
     status: Mapped[ProductStatus] = mapped_column(
         Enum(ProductStatus), default=ProductStatus.PENDING

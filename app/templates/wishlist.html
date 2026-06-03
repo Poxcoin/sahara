@@ -2,19 +2,266 @@
 {% set active = 'wishlist' %}
 {% block title %}Обране — {{ site_name }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .wl-page { max-width: var(--container); margin: 0 auto; padding: 32px 16px; }
+    @media (min-width: 640px) { .wl-page { padding: 48px 32px; } }
+    @media (min-width: 1024px) { .wl-page { padding: 48px 48px; } }
+
+    .wl-head { margin-bottom: 32px; }
+    @media (min-width: 640px) { .wl-head { margin-bottom: 48px; } }
+    .wl-head .eyebrow { margin-bottom: 12px; }
+
+    .wl-toolbar {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 32px; padding-bottom: 16px;
+        border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
+        gap: 16px; flex-wrap: wrap;
+    }
+    .wl-count { font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); }
+    .wl-clear {
+        font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground)); transition: color .25s;
+        display: inline-flex; align-items: center; gap: 6px;
+        cursor: pointer; background: none; border: none; font-family: inherit;
+    }
+    .wl-clear:hover { color: hsl(var(--foreground)); }
+    .wl-clear svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    .wl-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    }
+    @media (min-width: 640px) { .wl-grid { gap: 24px; } }
+    @media (min-width: 1024px) { .wl-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1280px) { .wl-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; } }
+
+    .wl-card { position: relative; }
+    .wl-card-img { position: relative; aspect-ratio: 2/3; overflow: hidden; background: hsla(40, 15%, 93%, 0.3); display: block; }
+    .wl-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s ease; }
+    .wl-card:hover .wl-card-img img { transform: scale(1.05); }
+
+    .wl-remove-btn {
+        position: absolute; top: 12px; right: 12px;
+        width: 36px; height: 36px;
+        background: hsla(40, 20%, 97%, 0.92); backdrop-filter: blur(6px);
+        display: flex; align-items: center; justify-content: center;
+        transition: background .25s, color .25s; z-index: 2;
+        cursor: pointer; border: none;
+    }
+    .wl-remove-btn:hover { background: hsl(var(--gold)); color: #fff; }
+    .wl-remove-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    .wl-add-btn {
+        position: absolute; left: 12px; right: 12px; bottom: 12px; height: 44px;
+        background: hsl(var(--foreground)); color: hsl(var(--background));
+        font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        opacity: 0; transform: translateY(8px);
+        transition: opacity .35s, transform .35s, background .25s;
+        z-index: 2; cursor: pointer; border: none; font-family: inherit;
+    }
+    .wl-add-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .wl-card:hover .wl-add-btn { opacity: 1; transform: translateY(0); }
+    .wl-add-btn:hover { background: hsl(var(--gold)); color: hsl(var(--foreground)); }
+    .wl-add-btn.added { background: hsl(var(--gold)); color: hsl(var(--foreground)); opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) { .wl-add-btn { opacity: 1; transform: none; } }
+
+    .badge-new {
+        position: absolute; top: 16px; left: 16px;
+        background: hsl(var(--gold)); color: hsl(var(--background));
+        padding: 6px 12px; font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+    }
+
+    .wl-card-info { margin-top: 16px; }
+    .wl-card-info .ci-cat { font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 4px; display: block; }
+    .wl-card-info h3 { font-family: var(--font-body); font-weight: 300; font-size: 14px; transition: color .3s; }
+    .wl-card:hover .wl-card-info h3 { color: hsl(var(--gold)); }
+    .wl-card-info .wl-price { font-family: var(--font-heading); font-size: 16px; margin-top: 6px; letter-spacing: 0.02em; }
+
+    .wl-empty { text-align: center; padding: 80px 24px; }
+    .wl-empty svg { width: 40px; height: 40px; stroke: hsl(var(--muted-foreground)); fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; margin: 0 auto 24px; }
+    .wl-empty h2 { font-family: var(--font-heading); font-size: 22px; margin-bottom: 8px; }
+    .wl-empty p { font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 32px; }
+
+    .wl-toast {
+        position: fixed; bottom: calc(var(--bottom-nav-h) + 16px); left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: hsl(var(--foreground)); color: hsl(var(--background));
+        padding: 14px 22px; font-size: 12px; letter-spacing: 0.05em;
+        z-index: 60; opacity: 0; transition: opacity .3s, transform .3s;
+        display: flex; align-items: center; gap: 10px;
+    }
+    @media (min-width: 1280px) { .wl-toast { bottom: 32px; } }
+    .wl-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .wl-toast svg { width: 14px; height: 14px; stroke: hsl(var(--gold)); fill: none; stroke-width: 1.8; }
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="max-width:var(--container); margin:0 auto; padding:32px 16px;">
-    <div style="margin-bottom:48px;">
-        <p class="eyebrow" style="margin-bottom:12px;">Обране</p>
+<div class="wl-page">
+    <div class="wl-head">
+        <p class="eyebrow">Обране</p>
         <h1 class="h-page">Список бажань</h1>
     </div>
-    <div style="text-align:center; padding:80px 24px;">
-        <svg width="40" height="40" viewBox="0 0 24 24" stroke="hsl(var(--muted-foreground))" fill="none" stroke-width="1" style="margin: 0 auto 24px; display:block;">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-        <h2 style="font-family:var(--font-heading); font-size:22px; margin-bottom:8px;">Список бажань порожній</h2>
-        <p style="font-size:14px; color:hsl(var(--muted-foreground)); margin-bottom:32px;">Додавайте улюблені товари</p>
+
+    <div class="wl-toolbar" id="wlToolbar" style="display:none;">
+        <span class="wl-count" id="wlCount">0 товарів</span>
+        <button class="wl-clear" id="wlClear" type="button">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 6"/></svg>
+            Очистити
+        </button>
+    </div>
+
+    <div class="wl-empty" id="wlEmpty">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <h2>Список бажань порожній</h2>
+        <p>Додавайте улюблені товари — серце на картці зберігає їх сюди</p>
         <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
     </div>
+
+    <div class="wl-grid" id="wlGrid" style="display:none;"></div>
 </div>
+
+<div class="wl-toast" id="wlToast">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="wlToastMsg">Додано в кошик</span>
+</div>
+
+<script>
+(function() {
+    var WL_KEY = 'sahara_wishlist', CART_KEY = 'sahara_cart';
+    var ns = 'http://www.w3.org/2000/svg';
+
+    function svgEl(tag, attrs) {
+        var e = document.createElementNS(ns, tag);
+        for (var k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+    }
+    function makeXSvg() {
+        var s = svgEl('svg', {viewBox:'0 0 24 24'});
+        s.append(svgEl('line',{x1:6,y1:6,x2:18,y2:18}), svgEl('line',{x1:18,y1:6,x2:6,y2:18}));
+        return s;
+    }
+    function makeCartSvg() {
+        var s = svgEl('svg', {viewBox:'0 0 24 24'});
+        var p1 = svgEl('path', {d:'M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z'});
+        var p2 = svgEl('path', {d:'M9 7V5a3 3 0 0 1 6 0v2'});
+        s.append(p1, p2); return s;
+    }
+    function makeCheckSvg() {
+        var s = svgEl('svg', {viewBox:'0 0 24 24'});
+        s.append(svgEl('polyline',{points:'20 6 9 17 4 12'})); return s;
+    }
+
+    function fmt(n) { return Math.round(n).toLocaleString('uk-UA') + ' ₴'; }
+    function pluralItems(n) {
+        if (n % 10 === 1 && n % 100 !== 11) return n + ' товар';
+        if ([2,3,4].includes(n%10) && ![12,13,14].includes(n%100)) return n + ' товари';
+        return n + ' товарів';
+    }
+
+    function loadWl() {
+        try { var r = JSON.parse(localStorage.getItem(WL_KEY)); return Array.isArray(r) ? r : []; }
+        catch(e) { return []; }
+    }
+    function saveWl(a) { try { localStorage.setItem(WL_KEY, JSON.stringify(a)); } catch(e) {} }
+    function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e) { return []; } }
+    function saveCart(a) { try { localStorage.setItem(CART_KEY, JSON.stringify(a)); } catch(e) {} }
+
+    var wl = loadWl();
+
+    function showToast(msg) {
+        var t = document.getElementById('wlToast');
+        document.getElementById('wlToastMsg').textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._t);
+        t._t = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+    }
+
+    function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+
+    function buildCard(item) {
+        var card = el('div', 'wl-card');
+
+        var rmBtn = el('button', 'wl-remove-btn'); rmBtn.type = 'button';
+        rmBtn.setAttribute('aria-label','Видалити з обраного');
+        rmBtn.appendChild(makeXSvg());
+
+        var imgWrap = el('a', 'wl-card-img');
+        imgWrap.href = '/product/' + encodeURIComponent(item.id);
+        var img = el('img'); img.src = item.img || ''; img.alt = item.title; img.loading = 'lazy';
+        img.onerror = function(){ this.style.display='none'; };
+        imgWrap.appendChild(img);
+        if (item.isNew) {
+            var badge = el('span','badge-new'); badge.textContent = 'Новинка';
+            imgWrap.appendChild(badge);
+        }
+
+        var addBtn = el('button', 'wl-add-btn'); addBtn.type = 'button';
+        addBtn.appendChild(makeCartSvg());
+        addBtn.appendChild(document.createTextNode(' Додати в кошик'));
+
+        var info = el('a', 'wl-card-info'); info.href = '/product/' + encodeURIComponent(item.id);
+        var catSpan = el('span', 'ci-cat'); catSpan.textContent = item.category || '';
+        var title = el('h3'); title.textContent = item.title;
+        var price = el('p', 'wl-price'); price.textContent = fmt(item.price);
+        info.append(catSpan, title, price);
+
+        card.append(rmBtn, imgWrap, addBtn, info);
+
+        rmBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            wl = wl.filter(function(x){ return x.id !== item.id; });
+            saveWl(wl); render(); showToast('Видалено з обраного');
+        });
+
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            var cart = loadCart();
+            var existing = cart.find(function(c){ return c.id === item.id; });
+            if (existing) { existing.qty += 1; }
+            else { cart.push({id: item.id, title: item.title, category: item.category, size: item.size || 'M', color: item.color || '', price: item.price, qty: 1, img: item.img || ''}); }
+            saveCart(cart);
+            addBtn.classList.add('added');
+            while (addBtn.firstChild) addBtn.removeChild(addBtn.firstChild);
+            addBtn.appendChild(makeCheckSvg());
+            addBtn.appendChild(document.createTextNode(' Додано'));
+            setTimeout(function() {
+                addBtn.classList.remove('added');
+                while (addBtn.firstChild) addBtn.removeChild(addBtn.firstChild);
+                addBtn.appendChild(makeCartSvg());
+                addBtn.appendChild(document.createTextNode(' Додати в кошик'));
+            }, 1800);
+            showToast('Додано в кошик');
+        });
+
+        return card;
+    }
+
+    function clearEl(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+    function render() {
+        var empty = document.getElementById('wlEmpty');
+        var toolbar = document.getElementById('wlToolbar');
+        var grid = document.getElementById('wlGrid');
+        var count = document.getElementById('wlCount');
+
+        if (wl.length === 0) {
+            empty.style.display = 'block'; toolbar.style.display = 'none'; grid.style.display = 'none'; return;
+        }
+        empty.style.display = 'none'; toolbar.style.display = ''; grid.style.display = '';
+        count.textContent = pluralItems(wl.length);
+
+        clearEl(grid);
+        wl.forEach(function(item){ grid.appendChild(buildCard(item)); });
+    }
+
+    document.getElementById('wlClear').addEventListener('click', function() {
+        if (wl.length === 0) return;
+        if (confirm('Очистити список бажань?')) { wl = []; saveWl(wl); render(); }
+    });
+
+    render();
+})();
+</script>
 {% endblock %}

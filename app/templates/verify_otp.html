@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% set active = 'profile' %}
+{% block title %}Підтвердження — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-wrap {
+        min-height: calc(100vh - 80px);
+        display: flex; align-items: center; justify-content: center;
+        padding: 48px 16px;
+        background: hsl(var(--background));
+    }
+    .auth-box { width: 100%; max-width: 440px; }
+    .auth-logo { text-align: center; margin-bottom: 40px; }
+    .auth-logo a {
+        font-family: var(--font-heading); font-size: 28px;
+        letter-spacing: 0.18em; color: hsl(var(--foreground)); text-decoration: none;
+    }
+    .auth-title {
+        font-family: var(--font-heading); font-size: 26px;
+        letter-spacing: 0.04em; text-align: center; margin-bottom: 8px;
+    }
+    .auth-sub {
+        text-align: center; font-size: 13px; font-weight: 300;
+        color: hsl(var(--muted-foreground)); margin-bottom: 40px; line-height: 1.6;
+    }
+    .auth-sub strong { color: hsl(var(--foreground)); font-weight: 400; }
+    .auth-divider { width: 40px; height: 1px; background: hsl(var(--gold)); margin: 0 auto 32px; opacity: .7; }
+
+    .otp-inputs {
+        display: flex; gap: 10px; justify-content: center; margin-bottom: 32px;
+    }
+    .otp-inputs input {
+        width: 52px; height: 64px; text-align: center;
+        font-family: var(--font-heading); font-size: 26px; font-weight: 500;
+        background: hsl(var(--background)); border: 1px solid hsla(40,10%,88%,.7); border-radius: 0;
+        color: hsl(var(--foreground)); transition: border-color .2s;
+        -moz-appearance: textfield;
+    }
+    .otp-inputs input::-webkit-outer-spin-button,
+    .otp-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .otp-inputs input:focus { outline: none; border-color: hsl(var(--foreground)); }
+    .otp-inputs input.filled { border-color: hsl(var(--gold)); }
+
+    .auth-error {
+        background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+        padding: 12px 16px; font-size: 13px; margin-bottom: 24px; text-align: center;
+    }
+
+    .btn-verify { width: 100%; height: 52px; font-size: 12px; }
+
+    .auth-footer { text-align: center; margin-top: 24px; font-size: 12px; color: hsl(var(--muted-foreground)); }
+    .auth-footer form { display: inline; }
+    .auth-footer button {
+        background: none; border: none; cursor: pointer; font-family: inherit;
+        font-size: 12px; color: hsl(var(--foreground)); text-decoration: underline;
+        text-underline-offset: 3px; padding: 0; transition: color .2s;
+    }
+    .auth-footer button:hover { color: hsl(var(--gold)); }
+
+    /* hidden real input for form submission */
+    #codeHidden { display: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-box">
+        <div class="auth-logo"><a href="/">{{ site_name }}</a></div>
+        <h1 class="auth-title">Введіть код</h1>
+        <p class="auth-sub">
+            Ми надіслали 6-значний код на<br>
+            <strong>{{ masked_email }}</strong><br>
+            Код дійсний 10 хвилин.
+        </p>
+        <div class="auth-divider"></div>
+
+        {% if error %}
+        <div class="auth-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/verify" id="otpForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+            <div class="otp-inputs" id="otpBoxes">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" autocomplete="one-time-code" inputmode="numeric">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" inputmode="numeric">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" inputmode="numeric">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" inputmode="numeric">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" inputmode="numeric">
+                <input type="number" maxlength="1" min="0" max="9" class="otp-digit" inputmode="numeric">
+            </div>
+            <input type="hidden" name="code" id="codeHidden">
+            <button type="submit" class="btn btn-primary btn-verify" id="btnVerify" disabled>Підтвердити</button>
+        </form>
+
+        <p class="auth-footer">
+            Не отримали?
+            <form method="post" action="/verify/resend">
+                <button type="submit">Надіслати ще раз</button>
+            </form>
+            &nbsp;·&nbsp; <a href="{% if purpose == 'login' %}/login{% else %}/register{% endif %}"
+               style="color:hsl(var(--muted-foreground));font-size:12px;">Назад</a>
+        </p>
+    </div>
+</div>
+
+<script>
+(function() {
+    const digits = Array.from(document.querySelectorAll('.otp-digit'));
+    const hidden = document.getElementById('codeHidden');
+    const btn = document.getElementById('btnVerify');
+
+    function update() {
+        const val = digits.map(d => d.value).join('');
+        hidden.value = val;
+        btn.disabled = val.length < 6;
+        digits.forEach((d, i) => {
+            d.classList.toggle('filled', d.value !== '');
+        });
+    }
+
+    digits.forEach((d, i) => {
+        d.addEventListener('input', () => {
+            // keep only single digit
+            if (d.value.length > 1) d.value = d.value.slice(-1);
+            update();
+            if (d.value && i < digits.length - 1) digits[i + 1].focus();
+        });
+        d.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !d.value && i > 0) {
+                digits[i - 1].focus();
+            }
+        });
+        d.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+            text.split('').forEach((ch, j) => {
+                if (digits[j]) digits[j].value = ch;
+            });
+            update();
+            const next = digits[Math.min(text.length, digits.length - 1)];
+            if (next) next.focus();
+        });
+    });
+
+    digits[0].focus();
+    update();
+})();
+</script>
+{% endblock %}

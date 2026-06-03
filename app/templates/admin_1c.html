@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAHARA — 1С Інтеграція</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #f5f4f1; color: #1a1a1a; font-size: 14px; }
+
+.topbar { background: #1a1a1a; color: #f5f4f1; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+.topbar h1 { font-size: 14px; letter-spacing: 0.15em; font-weight: 400; }
+.topbar-links { display: flex; gap: 16px; }
+.topbar-links a { color: #c9a96e; font-size: 12px; text-decoration: none; }
+.topbar-links a:hover { color: #fff; }
+
+.page { max-width: 1100px; margin: 0 auto; padding: 28px 16px; display: flex; flex-direction: column; gap: 20px; }
+
+.row2 { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
+@media (max-width: 800px) { .row2 { grid-template-columns: 1fr; } }
+
+.card { background: #fff; border: 1px solid #e5e2db; border-radius: 4px; }
+.card-head { padding: 13px 18px; border-bottom: 1px solid #f0ede8; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card-head h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; color: #555; white-space: nowrap; }
+.card-body { padding: 18px; }
+
+/* tunnel alert */
+.alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 4px; font-size: 13px; line-height: 1.5; }
+.alert-warn { background: #fff8e6; border: 1px solid #f0d06a; }
+.alert-ok   { background: #eafaf1; border: 1px solid #82e0aa; }
+.alert-icon { font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+.alert-url  { font-family: monospace; font-size: 12px; background: rgba(0,0,0,.06); padding: 2px 6px; border-radius: 3px; word-break: break-all; }
+
+/* status rows */
+.srow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f3ef; font-size: 13px; }
+.srow:last-child { border-bottom: none; }
+.srow-label { color: #888; min-width: 120px; font-size: 12px; }
+.srow-val { font-family: monospace; font-size: 12px; word-break: break-all; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-ok { background: #27ae60; }
+.dot-err { background: #c0392b; }
+
+/* filter chips */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { background: #f0ede8; color: #444; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-family: monospace; }
+
+/* steps */
+.steps { list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f5f3ef; font-size: 13px; line-height: 1.5; }
+.steps li:last-child { border-bottom: none; }
+.steps li::before { content: counter(s); flex-shrink: 0; width: 20px; height: 20px; background: #c9a96e; color: #1a1a1a; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.steps code { background: #f0ede8; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+/* code */
+.code-wrap { position: relative; }
+.code-box { background: #1a1a1a; color: #e8e6e0; font-family: 'SF Mono','Fira Code','Consolas',monospace; font-size: 12px; line-height: 1.7; padding: 16px 18px; border-radius: 3px; max-height: 420px; overflow-y: auto; white-space: pre; tab-size: 4; }
+.copy-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,.1); color: #bbb; border: 1px solid rgba(255,255,255,.15); border-radius: 3px; font-size: 11px; padding: 4px 10px; cursor: pointer; font-family: inherit; transition: background .15s; }
+.copy-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+.copy-btn.copied { background: #27ae60 !important; color: #fff !important; border-color: #27ae60 !important; }
+
+/* tabs */
+.tabs { display: flex; border-bottom: 2px solid #e5e2db; }
+.tab { padding: 11px 18px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; user-select: none; }
+.tab.active { color: #1a1a1a; border-bottom-color: #c9a96e; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border: none; border-radius: 3px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; transition: opacity .2s; text-decoration: none; }
+.btn:hover { opacity: .82; }
+.btn-gold { background: #c9a96e; color: #1a1a1a; }
+.btn-dark { background: #1a1a1a; color: #fff; }
+.btn-outline { background: transparent; border: 1px solid #ddd; color: #444; }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+
+.ping-result { font-size: 12px; margin-top: 10px; padding: 8px 12px; border-radius: 3px; display: none; }
+.ping-ok  { background: #d4edda; color: #155724; display: block !important; }
+.ping-err { background: #f8d7da; color: #721c24; display: block !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>SAHARA · 1С ІНТЕГРАЦІЯ</h1>
+  <div class="topbar-links">
+    <a href="/admin">← Адмінка</a>
+    <a href="/" target="_blank">↗ Сайт</a>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Tunnel status -->
+  <div class="alert alert-warn">
+    <div class="alert-icon">🔗</div>
+    <div>
+      <strong>Cloudflare Tunnel активний</strong> — 1С PC може підключитися через:<br>
+      <span class="alert-url">https://studios-paintings-alternative-after.trycloudflare.com</span><br>
+      <span style="font-size:12px;color:#856404;margin-top:4px;display:block">⚠ URL змінюється при перезапуску. Для постійного доступу — встановіть <strong>Tailscale</strong> на Windows PC з 1С і використовуйте IP <code>100.102.193.85:8001</code></span>
+    </div>
+  </div>
+
+  <div class="row2">
+
+    <!-- Ліва колонка -->
+    <div style="display:flex;flex-direction:column;gap:20px">
+
+      <!-- З'єднання -->
+      <div class="card">
+        <div class="card-head">
+          <h2>Параметри з'єднання</h2>
+          <button class="btn btn-outline btn-sm" onclick="pingServer()">Ping</button>
+        </div>
+        <div class="card-body">
+          <div class="srow">
+            <span class="srow-label">Хост (тунель)</span>
+            <span class="srow-val">studios-paintings-alternative-after<br>.trycloudflare.com</span>
+          </div>
+          <div class="srow">
+            <span class="srow-label">Порт / SSL</span>
+            <span class="srow-val">443 / HTTPS</span>
+          </div>
+          <div class="srow">
+            <span class="srow-label">Ендпоінт</span>
+            <span class="srow-val">/api/1c/sync</span>
+          </div>
+          <div class="srow">
+            <span class="srow-label">Заголовок</span>
+            <span class="srow-val">X-1C-Key</span>
+          </div>
+          <div id="ping-result" class="ping-result"></div>
+        </div>
+      </div>
+
+      <!-- Завантаження JSON з 1С -->
+      <div class="card">
+        <div class="card-head"><h2>Завантажити JSON з 1С</h2></div>
+        <div class="card-body">
+          <div style="font-size:12px;color:#666;margin-bottom:10px">
+            Якщо HTTP з 1С не працює — збережи файл через EPF і завантаж тут.
+          </div>
+          <input type="file" id="syncFile" accept=".json" style="font-size:12px;margin-bottom:8px;display:block">
+          <button class="btn btn-gold btn-sm" onclick="uploadSync()">Завантажити і синхронізувати</button>
+          <div id="upload-result" class="ping-result"></div>
+        </div>
+      </div>
+
+      <!-- Koton збагачення -->
+      <div class="card">
+        <div class="card-head"><h2>Збагачення з Koton</h2></div>
+        <div class="card-body">
+          <div style="font-size:12px;color:#666;margin-bottom:10px">
+            Оновлює ціни, всі фото та таблиці розмірів для всіх товарів із артикулом 1С.<br>
+            Запускається у фоні (~5-10 хв для 200 товарів).
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-gold btn-sm" onclick="runEnrich(false)">Оновити нові/неповні</button>
+            <button class="btn btn-dark btn-sm" onclick="runEnrich(true)">Переписати всі</button>
+          </div>
+          <div id="enrich-result" class="ping-result"></div>
+        </div>
+      </div>
+
+      <!-- Фільтри -->
+      <div class="card">
+        <div class="card-head"><h2>Фільтри відбору</h2></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:6px">Артикул починається з</div>
+            <div class="chips"><span class="chip">5…</span><span class="chip">6…</span></div>
+          </div>
+          <div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:6px">Найменування містить</div>
+            <div class="chips"><span class="chip">%Koton%</span></div>
+          </div>
+          <div>
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:6px">Вид цін</div>
+            <div class="chips"><span class="chip">Роздріб</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Інструкція -->
+      <div class="card">
+        <div class="card-head"><h2>Як підключити</h2></div>
+        <div class="card-body">
+          <ol class="steps">
+            <li>Відкрийте 1С Конфігуратор → <strong>Загальні модулі</strong> → <code>СинхронизацияСахары</code></li>
+            <li>Замініть весь вміст модуля кодом з вкладки <strong>Загальний модуль</strong> (кнопка "Копіювати")</li>
+            <li>Перевірте властивості модуля: <code>Сервер = Да</code>, <code>Клиент = Нет</code></li>
+            <li>Регламентне завдання → <code>ИмяМетода</code> = <code>СинхронизацияСахары.ОтправитьНаСайт</code></li>
+            <li>Збережіть і оновіть конфігурацію бази даних</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Права колонка — код -->
+    <div class="card">
+      <div class="card-head" style="padding-bottom:0;border-bottom:none">
+        <div class="tabs" style="border-bottom:2px solid #e5e2db;width:100%;margin-top:2px">
+          <div class="tab active" onclick="switchTab('module',this)">Загальний модуль</div>
+          <div class="tab" onclick="switchTab('regtask',this)">Регламентне завдання</div>
+        </div>
+        <a class="btn btn-gold btn-sm" id="dl-btn" href="/1c/SAHARA_ОбщийМодуль.bsl" download style="white-space:nowrap;margin-left:10px">↓ Скачати</a>
+      </div>
+
+      <div class="tab-panel active" id="panel-module">
+        <div class="card-body" style="padding:12px">
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode('code-module',this)">Копіювати</button>
+            <div class="code-box" id="code-module">{{ module_code }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-regtask">
+        <div class="card-body" style="padding:12px">
+          <div style="background:#f5f4f1;border:1px solid #e5e2db;border-radius:3px;padding:12px 14px;font-size:12px;line-height:1.7;margin-bottom:12px">
+            Регламентне завдання <strong>не потребує окремого BSL коду</strong>.<br>
+            В конфігураторі просто вкажіть:<br>
+            <code style="background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #e5e2db">ИмяМетода = СинхронизацияСахары.ОтправитьНаСайт</code><br><br>
+            Якщо хочете окремий обробник — скопіюйте цей код у будь-який серверний модуль:
+          </div>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode('code-regtask',this)">Копіювати</button>
+            <div class="code-box" id="code-regtask">{{ regtask_code }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  const dlMap = { module: '/1c/SAHARA_ОбщийМодуль.bsl', regtask: '/1c/SAHARA_РегЗадание.bsl' };
+  document.getElementById('dl-btn').href = dlMap[name];
+}
+
+function copyCode(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
+    btn.textContent = '✓ Скопійовано';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Копіювати'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+async function pingServer() {
+  const el = document.getElementById('ping-result');
+  el.className = 'ping-result';
+  el.textContent = 'Перевіряємо…';
+  el.style.display = 'block';
+  try {
+    const r = await fetch('/api/1c/ping', { headers: { 'X-1C-Key': '{{ api_key }}' } });
+    const d = await r.json();
+    el.className = r.ok ? 'ping-result ping-ok' : 'ping-result ping-err';
+    el.textContent = r.ok ? '✓ OK — ' + JSON.stringify(d) : '✗ Помилка ' + r.status;
+  } catch(e) {
+    el.className = 'ping-result ping-err';
+    el.textContent = '✗ ' + e.message;
+  }
+}
+
+async function runEnrich(force) {
+  const el = document.getElementById('enrich-result');
+  el.className = 'ping-result';
+  el.textContent = 'Запускаємо збагачення…';
+  el.style.display = 'block';
+  try {
+    const url = `/api/admin/re-enrich-koton?force=${force}`;
+    const r = await fetch(url, { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) {
+      el.className = 'ping-result ping-ok';
+      el.textContent = '✓ ' + d.message;
+    } else {
+      el.className = 'ping-result ping-err';
+      el.textContent = '✗ ' + (d.detail || JSON.stringify(d));
+    }
+  } catch(e) {
+    el.className = 'ping-result ping-err';
+    el.textContent = '✗ ' + e.message;
+  }
+}
+
+async function uploadSync() {
+  const el = document.getElementById('upload-result');
+  const file = document.getElementById('syncFile').files[0];
+  if (!file) { el.className = 'ping-result ping-err'; el.textContent = 'Вибери файл'; el.style.display='block'; return; }
+  el.className = 'ping-result'; el.textContent = 'Завантажую…'; el.style.display = 'block';
+  try {
+    const text = await file.text();
+    const r = await fetch('/api/admin/1c-upload', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: text });
+    const d = await r.json();
+    if (d.ok) {
+      el.className = 'ping-result ping-ok';
+      el.textContent = `✓ Оновлено: ${d.updated}, створено: ${d.created}, пропущено: ${d.skipped} (всього ${d.total})`;
+    } else {
+      el.className = 'ping-result ping-err';
+      el.textContent = '✗ ' + (d.detail || JSON.stringify(d));
+    }
+  } catch(e) {
+    el.className = 'ping-result ping-err';
+    el.textContent = '✗ ' + e.message;
+  }
+}
+</script>
+</body>
+</html>

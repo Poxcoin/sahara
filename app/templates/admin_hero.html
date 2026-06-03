@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero Generator — SAHARA Admin</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #f5f4f1; color: #1a1a1a; font-size: 14px; }
+
+  .topbar {
+    background: #1a1a1a; color: #f5f4f1;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar a { color: #c9a96e; font-size: 12px; text-decoration: none; }
+  .topbar a:hover { text-decoration: underline; }
+  .topbar h1 { font-size: 14px; letter-spacing: 0.15em; font-weight: 400; }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 32px 16px; display: grid; gap: 32px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e5e2db;
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; margin-bottom: 20px; color: #555; }
+
+  .preset-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .preset-btn {
+    padding: 9px 16px; border: 1px solid #ccc; background: #fafaf8;
+    font-size: 12px; cursor: pointer; border-radius: 2px; transition: all .2s;
+  }
+  .preset-btn:hover, .preset-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #777; margin-bottom: 6px; }
+  textarea {
+    width: 100%; height: 180px; padding: 12px; border: 1px solid #ddd;
+    font-family: inherit; font-size: 13px; line-height: 1.6; resize: vertical;
+    outline: none; transition: border .2s;
+  }
+  textarea:focus { border-color: #1a1a1a; }
+
+  .size-row { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
+  .size-opt { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .size-opt input { accent-color: #c9a96e; }
+
+  .btn-gen {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 0 36px; height: 52px; background: #1a1a1a; color: #fff;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    border: none; cursor: pointer; transition: background .2s;
+    margin-top: 4px;
+  }
+  .btn-gen:hover { background: #c9a96e; }
+  .btn-gen:disabled { background: #888; cursor: not-allowed; }
+
+  .spinner {
+    display: none; width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .status-bar {
+    margin-top: 16px; padding: 14px 16px;
+    border-radius: 2px; font-size: 13px; display: none;
+  }
+  .status-bar.running { background: #fff8ec; border: 1px solid #f0c96e; color: #7a5a00; display: block; }
+  .status-bar.done    { background: #edfaf0; border: 1px solid #6ecf8e; color: #1a5c2a; display: block; }
+  .status-bar.error   { background: #fdecea; border: 1px solid #f09090; color: #7a1a1a; display: block; }
+
+  /* Result preview */
+  .result-wrap { margin-top: 24px; display: none; }
+  .result-wrap img { max-width: 100%; border: 1px solid #e5e2db; display: block; }
+  .result-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .result-actions a, .result-actions button {
+    padding: 10px 20px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid #1a1a1a; background: transparent; cursor: pointer; text-decoration: none; color: #1a1a1a;
+    transition: all .2s;
+  }
+  .result-actions a:hover, .result-actions button:hover { background: #1a1a1a; color: #fff; }
+  .result-actions a.primary { background: #1a1a1a; color: #fff; }
+  .result-actions a.primary:hover { background: #c9a96e; border-color: #c9a96e; }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .gallery-item { position: relative; }
+  .gallery-item img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 1px solid #e5e2db; display: block; }
+  .gallery-item .gallery-name { font-size: 10px; color: #999; margin-top: 4px; word-break: break-all; }
+  .gallery-item .set-hero {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(26,26,26,.8); color: #fff;
+    font-size: 10px; padding: 4px 8px; cursor: pointer; border: none;
+    transition: background .2s;
+  }
+  .gallery-item .set-hero:hover { background: #c9a96e; }
+
+  .no-key { padding: 20px; background: #fdecea; border: 1px solid #f09090; border-radius: 2px; font-size: 13px; color: #7a1a1a; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>SAHARA — Hero Generator</h1>
+  <a href="/admin">← Повернутись до адмінки</a>
+</div>
+
+<div class="page">
+
+  {% if not fal_key_set %}
+  <div class="no-key">FAL_KEY не задано в .env — генерація недоступна.</div>
+  {% else %}
+
+  <!-- GENERATOR CARD -->
+  <div class="card">
+    <h2>Генерація Hero-зображення (Flux Dev / FAL.ai)</h2>
+
+    <div class="preset-row">
+      {% for key, (label, prompt, size) in presets.items() %}
+      <button class="preset-btn" data-prompt="{{ prompt }}" data-size="{{ size }}" onclick="applyPreset(this)">{{ label }}</button>
+      {% endfor %}
+      <button class="preset-btn" data-prompt="" data-size="landscape_16_9" onclick="applyPreset(this)">Власний промпт</button>
+    </div>
+
+    <form id="genForm" method="post" action="/admin/hero/generate" onsubmit="onSubmit()">
+      <label>Промпт</label>
+      <textarea name="prompt" id="promptArea" placeholder="Введіть опис зображення...">{{ presets.hero[1] }}</textarea>
+
+      <div class="size-row">
+        <label class="size-opt">
+          <input type="radio" name="image_size" value="landscape_16_9" checked> 16:9 (банер)
+        </label>
+        <label class="size-opt">
+          <input type="radio" name="image_size" value="portrait_4_3"> 4:3 вертикаль (секція)
+        </label>
+        <label class="size-opt">
+          <input type="radio" name="image_size" value="square_hd"> Квадрат HD
+        </label>
+      </div>
+
+      <button class="btn-gen" type="submit" id="genBtn">
+        <div class="spinner" id="spinner"></div>
+        Генерувати
+      </button>
+    </form>
+
+    <div class="status-bar" id="statusBar"></div>
+    <div class="result-wrap" id="resultWrap">
+      <img id="resultImg" src="" alt="Generated hero">
+      <div class="result-actions">
+        <a id="downloadBtn" href="#" download class="primary">Завантажити</a>
+        <button onclick="copyPath()">Скопіювати шлях</button>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+
+  <!-- SAVED GALLERY -->
+  {% if saved %}
+  <div class="card">
+    <h2>Збережені зображення</h2>
+    <div class="gallery">
+      {% for f in saved %}
+      <div class="gallery-item">
+        <img src="/media/hero/{{ f.name }}" alt="{{ f.name }}" loading="lazy">
+        <div class="gallery-name">{{ f.name }}</div>
+        <button class="set-hero" onclick="useAsHero('/media/hero/{{ f.name }}')">Використати</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+const presets = {{ presets | tojson }};
+
+function applyPreset(btn) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const prompt = btn.dataset.prompt;
+  const size   = btn.dataset.size;
+  if (prompt) document.getElementById('promptArea').value = prompt;
+  if (size) {
+    const radio = document.querySelector(`input[name="image_size"][value="${size}"]`);
+    if (radio) radio.checked = true;
+  }
+}
+
+// Auto-select first preset
+document.querySelector('.preset-btn')?.click();
+
+// Check job status from URL param
+const urlParams = new URLSearchParams(location.search);
+const jobId = urlParams.get('job');
+if (jobId) {
+  document.getElementById('statusBar').className = 'status-bar running';
+  document.getElementById('statusBar').textContent = '⏳ Генерація... зазвичай 30–60 секунд';
+  document.getElementById('genBtn').disabled = true;
+  document.getElementById('spinner').style.display = 'block';
+  pollJob(jobId);
+}
+
+function pollJob(id) {
+  fetch('/admin/hero/status/' + id)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'running' || data.status === 'unknown') {
+        setTimeout(() => pollJob(id), 3000);
+      } else if (data.status === 'done') {
+        document.getElementById('statusBar').className = 'status-bar done';
+        document.getElementById('statusBar').textContent = '✓ Готово!';
+        document.getElementById('genBtn').disabled = false;
+        document.getElementById('spinner').style.display = 'none';
+        showResult('/media/' + data.result);
+      } else {
+        document.getElementById('statusBar').className = 'status-bar error';
+        document.getElementById('statusBar').textContent = '✗ Помилка: ' + (data.error || 'невідома');
+        document.getElementById('genBtn').disabled = false;
+        document.getElementById('spinner').style.display = 'none';
+      }
+    });
+}
+
+function showResult(url) {
+  document.getElementById('resultImg').src = url;
+  document.getElementById('downloadBtn').href = url;
+  document.getElementById('resultWrap').style.display = 'block';
+  document.getElementById('resultWrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+function onSubmit() {
+  document.getElementById('genBtn').disabled = true;
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('statusBar').className = 'status-bar running';
+  document.getElementById('statusBar').textContent = '⏳ Відправляємо запит...';
+}
+
+function copyPath() {
+  const src = document.getElementById('resultImg').src;
+  navigator.clipboard?.writeText(src);
+}
+
+function useAsHero(path) {
+  alert('Скопіюйте цей шлях у hero-image налаштування: ' + path);
+}
+</script>
+</body>
+</html>

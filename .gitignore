@@ -1,12 +1,39 @@
-venv/
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+web.log
+sync_1c.log
+
+# Media (user uploads)
+media/tryon_uploads/
+media/tryon_results/
+media/koton_originals/
+
+# Config
+.superpowers/
+1c/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
+.venv/
+venv/
+
+# Environment
 .env
-data/sahara.db
-media/originals/
-media/generated/
-media/test_*.jpg
-*.session
-os
-os/
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

@@ -6,63 +6,158 @@
 <style>
     .pr-page { max-width: var(--container); margin: 0 auto; padding: 32px 16px; }
     @media (min-width: 640px) { .pr-page { padding: 48px 32px; } }
-    .pr-head { margin-bottom: 48px; }
+    @media (min-width: 1024px) { .pr-page { padding: 48px 48px; } }
+
+    .pr-head { margin-bottom: 32px; }
+    @media (min-width: 640px) { .pr-head { margin-bottom: 48px; } }
     .pr-head .eyebrow { margin-bottom: 12px; }
+
     .pr-user-row {
-        display: flex; align-items: center; gap: 24px;
-        margin-bottom: 48px;
+        display: flex; align-items: center; gap: 20px;
+        padding: 28px 0;
+        border-top: 1px solid hsla(40, 10%, 88%, 0.5);
+        border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
+        margin-bottom: 40px;
     }
+    @media (min-width: 640px) { .pr-user-row { gap: 28px; padding: 36px 0; } }
     .pr-avatar {
-        width: 64px; height: 64px;
-        background: hsl(var(--secondary));
+        width: 72px; height: 72px;
+        background: hsla(40, 15%, 93%, 0.7);
+        border: 1px solid hsla(40, 10%, 88%, 0.7);
         display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-heading); font-size: 24px;
+        letter-spacing: 0.05em; color: hsl(var(--gold)); flex-shrink: 0;
     }
-    @media (min-width: 640px) { .pr-avatar { width: 80px; height: 80px; } }
-    .pr-avatar svg {
-        width: 24px; height: 24px;
-        stroke: hsl(var(--muted-foreground)); fill: none;
-        stroke-width: 1.5;
+    @media (min-width: 640px) { .pr-avatar { width: 96px; height: 96px; font-size: 30px; } }
+    .pr-user-info { min-width: 0; flex: 1; }
+    .pr-user-info h2 {
+        font-family: var(--font-heading); font-size: 22px;
+        letter-spacing: 0.04em; margin-bottom: 4px;
     }
-    .pr-stats {
-        display: grid; grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-bottom: 48px;
+    @media (min-width: 640px) { .pr-user-info h2 { font-size: 26px; } }
+    .pr-user-info .pr-email { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 300; }
+    .pr-user-info .pr-since {
+        font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground)); margin-top: 8px;
     }
-    .pr-stat {
-        padding: 24px;
-        background: hsla(40, 15%, 93%, 0.3);
-        transition: background .3s;
+    .pr-logout {
+        font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground)); transition: color .25s;
+        flex-shrink: 0; align-self: flex-start; padding-top: 4px;
     }
-    .pr-stat:hover { background: hsla(40, 15%, 93%, 0.5); }
-    .pr-stat svg {
-        width: 20px; height: 20px;
-        stroke: hsl(var(--gold)); fill: none;
-        stroke-width: 1.5;
-        margin-bottom: 12px;
+    .pr-logout:hover { color: hsl(var(--foreground)); }
+
+    .pr-tabs {
+        display: flex; gap: 0;
+        border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
+        margin-bottom: 40px;
+        overflow-x: auto; scrollbar-width: none;
     }
-    .pr-stat .num {
-        font-family: var(--font-heading);
-        font-size: 24px;
-        letter-spacing: 0.05em;
+    .pr-tabs::-webkit-scrollbar { display: none; }
+    .pr-tab {
+        position: relative;
+        padding: 16px 0; margin-right: 32px;
+        font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground)); white-space: nowrap;
+        transition: color .25s; cursor: pointer; background: none; border: none; font-family: inherit;
     }
-    .pr-stat .lab {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: var(--tracking-wide-xl);
-        color: hsl(var(--muted-foreground));
-        margin-top: 4px;
+    @media (min-width: 640px) { .pr-tab { margin-right: 48px; padding: 20px 0; } }
+    .pr-tab:last-child { margin-right: 0; }
+    .pr-tab:hover { color: hsl(var(--foreground)); }
+    .pr-tab.active { color: hsl(var(--foreground)); }
+    .pr-tab.active::after {
+        content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+        height: 1px; background: hsl(var(--gold));
     }
-    .pr-links { display: flex; flex-direction: column; gap: 12px; }
-    .pr-link {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 16px;
-        border: 1px solid hsla(40, 10%, 88%, 0.5);
-        transition: border-color .3s;
+
+    .pr-panel { display: none; }
+    .pr-panel.active { display: block; animation: fadeUp .5s cubic-bezier(.2,.7,.2,1) both; }
+
+    .pr-empty { text-align: center; padding: 64px 24px 80px; max-width: 480px; margin: 0 auto; }
+    .pr-empty-illu { width: 140px; height: 140px; margin: 0 auto 32px; position: relative; }
+    .pr-empty-illu .ring { position: absolute; inset: 0; border: 1px solid hsla(39, 42%, 60%, 0.25); border-radius: 50%; }
+    .pr-empty-illu .ring-inner { position: absolute; inset: 18px; border: 1px solid hsla(39, 42%, 60%, 0.15); border-radius: 50%; }
+    .pr-empty-illu .bag { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; stroke: hsl(var(--gold)); fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; }
+    .pr-empty-illu .dot { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: hsl(var(--gold)); }
+    .pr-empty-illu .dot:nth-child(4) { top: 14px; right: 18px; opacity: .7; }
+    .pr-empty-illu .dot:nth-child(5) { bottom: 22px; left: 16px; opacity: .5; }
+    .pr-empty-illu .dot:nth-child(6) { bottom: 12px; right: 26px; opacity: .8; width: 3px; height: 3px; }
+    .pr-empty h3 { font-family: var(--font-heading); font-size: 24px; letter-spacing: 0.04em; margin-bottom: 12px; }
+    .pr-empty p { font-size: 14px; font-weight: 300; color: hsl(var(--muted-foreground)); line-height: 1.6; margin-bottom: 32px; }
+
+    .ord-list { display: flex; flex-direction: column; gap: 16px; }
+    .ord-card { border: 1px solid hsla(40, 10%, 88%, 0.7); background: #fff; }
+    .ord-card-head {
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        padding: 18px 20px; border-bottom: 1px solid hsla(40, 10%, 88%, 0.7); cursor: pointer;
     }
-    .pr-link:hover { border-color: hsl(var(--gold)); }
-    .pr-link span { font-size: 14px; }
-    .pr-link .arrow { color: hsl(var(--muted-foreground)); transition: color .3s; }
-    .pr-link:hover .arrow { color: hsl(var(--gold)); }
+    .ord-card-head:hover { background: hsla(40, 15%, 93%, 0.3); }
+    .ord-id { font-size: 13px; font-weight: 500; }
+    .ord-id span { color: hsl(var(--muted-foreground)); font-weight: 300; font-size: 11px; margin-left: 6px; }
+    .ord-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .ord-date { font-size: 11px; color: hsl(var(--muted-foreground)); }
+    .ord-total { font-size: 13px; font-weight: 500; }
+    .ord-badge { display: inline-block; padding: 3px 10px; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+    .ord-badge-new       { background: #d6eaf8; color: #1a5276; }
+    .ord-badge-confirmed { background: #e8daef; color: #6c3483; }
+    .ord-badge-shipped   { background: #fdebd0; color: #784212; }
+    .ord-badge-done      { background: #d5f5e3; color: #1e8449; }
+    .ord-badge-cancelled { background: #fadbd8; color: #922b21; }
+    .ord-items { padding: 16px 20px; display: none; }
+    .ord-items.open { display: block; }
+    .ord-item-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid hsla(40, 10%, 88%, 0.5); }
+    .ord-item-row:last-child { border-bottom: none; }
+    .ord-item-title { font-size: 13px; font-weight: 400; flex: 1; }
+    .ord-item-meta { font-size: 11px; color: hsl(var(--muted-foreground)); white-space: nowrap; }
+
+    .pr-form { max-width: 560px; }
+    .pr-form .pr-section-title { font-family: var(--font-heading); font-size: 20px; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .pr-form .pr-section-sub { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 300; margin-bottom: 32px; }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (min-width: 640px) { .form-grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+
+    .form-group label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); margin-bottom: 8px; }
+    .form-group input, .form-group select {
+        width: 100%; padding: 0 16px; height: 48px;
+        background: hsl(var(--background)); border: 1px solid hsla(40, 10%, 88%, 0.7); border-radius: 0;
+        font-family: var(--font-body); font-size: 14px; font-weight: 300;
+        color: hsl(var(--foreground)); transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: hsl(var(--foreground)); }
+    .form-actions { margin-top: 32px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .form-saved { font-size: 12px; color: hsl(var(--gold)); display: inline-flex; align-items: center; gap: 6px; opacity: 0; transition: opacity .3s; }
+    .form-saved.show { opacity: 1; }
+    .form-saved svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+    .pr-section-title { font-family: var(--font-heading); font-size: 20px; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .pr-section-sub { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 300; margin-bottom: 32px; }
+
+    .addr-list { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+    @media (min-width: 768px) { .addr-list { grid-template-columns: 1fr 1fr; gap: 20px; } }
+
+    .addr-card { position: relative; padding: 24px; border: 1px solid hsla(40, 10%, 88%, 0.7); background: hsla(40, 15%, 93%, 0.25); transition: border-color .25s; }
+    .addr-card.default { border-color: hsl(var(--gold)); }
+    .addr-card:hover { border-color: hsl(var(--foreground)); }
+    .addr-card.default:hover { border-color: hsl(var(--gold)); }
+
+    .addr-tag { display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--gold)); margin-bottom: 12px; }
+    .addr-card h4 { font-family: var(--font-heading); font-size: 17px; letter-spacing: 0.03em; margin-bottom: 6px; }
+    .addr-card .addr-text { font-size: 13px; font-weight: 300; color: hsl(var(--foreground)); line-height: 1.6; margin-bottom: 4px; }
+    .addr-card .addr-phone { font-size: 12px; color: hsl(var(--muted-foreground)); margin-top: 8px; }
+    .addr-actions { margin-top: 16px; padding-top: 16px; border-top: 1px solid hsla(40, 10%, 88%, 0.5); display: flex; gap: 16px; }
+    .addr-actions a { font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); transition: color .25s; cursor: pointer; }
+    .addr-actions a:hover { color: hsl(var(--foreground)); }
+    .addr-actions a.danger:hover { color: #b85450; }
+
+    .addr-add {
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        padding: 24px; border: 1px dashed hsla(40, 10%, 70%, 0.7); background: transparent;
+        color: hsl(var(--muted-foreground)); font-size: 11px; text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl); transition: all .25s; cursor: pointer; min-height: 180px;
+        font-family: inherit;
+    }
+    .addr-add:hover { border-color: hsl(var(--gold)); color: hsl(var(--gold)); }
+    .addr-add svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
 </style>
 {% endblock %}
 
@@ -73,35 +168,173 @@
         <h1 class="h-page">Профіль</h1>
     </div>
 
-    <div style="max-width: 640px;">
-        <div class="pr-user-row">
-            <div class="pr-avatar">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
-            </div>
-            <div>
-                <h2 style="font-family:var(--font-heading); font-size:22px;">Гість</h2>
-                <p style="font-size:14px; color:hsl(var(--muted-foreground)); margin-top:4px;">Увійдіть, щоб побачити замовлення</p>
-            </div>
+    <div class="pr-user-row">
+        <div class="pr-avatar" id="prAvatar">{{ user.name[0].upper() if user.name else 'А' }}</div>
+        <div class="pr-user-info">
+            <h2 id="prName">{{ user.name }}{% if user.last_name %} {{ user.last_name }}{% endif %}</h2>
+            <div class="pr-email" id="prEmail">{{ user.email }}</div>
+            <div class="pr-since">Клієнт з {{ user.created_at.strftime('%B %Y') }}</div>
+            {% if not user.is_verified %}
+            <div style="margin-top:8px;font-size:11px;color:#b85450;text-transform:uppercase;letter-spacing:0.1em;">Email не підтверджено</div>
+            {% endif %}
         </div>
+        <form method="post" action="/logout" style="margin:0;">
+            <button type="submit" class="pr-logout" style="background:none;border:none;cursor:pointer;font-family:inherit;">Вийти</button>
+        </form>
+    </div>
 
-        <div class="pr-stats">
-            <a href="/cart" class="pr-stat">
-                <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
-                <div class="num">0</div>
-                <div class="lab">У кошику</div>
-            </a>
-            <a href="/wishlist" class="pr-stat">
-                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                <div class="num">0</div>
-                <div class="lab">В обраному</div>
-            </a>
+    <div class="pr-tabs" role="tablist">
+        <button class="pr-tab active" data-tab="orders">Замовлення</button>
+        <button class="pr-tab" data-tab="data">Дані</button>
+        <button class="pr-tab" data-tab="addresses">Адреси</button>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="pr-panel active" data-panel="orders">
+        {% if orders %}
+        <div class="ord-list">
+            {% for order in orders %}
+            <div class="ord-card">
+                <div class="ord-card-head" onclick="this.nextElementSibling.classList.toggle('open')">
+                    <div class="ord-id">
+                        #{{ order.id }}
+                        <span>{{ order.items | length }} товар{{ 'ів' if (order.items | length) > 4 else ('и' if (order.items | length) > 1 else '') }}</span>
+                    </div>
+                    <div class="ord-meta">
+                        <span class="ord-date">{{ order.created_at.strftime('%d.%m.%Y') }}</span>
+                        <span class="ord-total">{{ "{:,.0f}".format(order.total_uah).replace(",", " ") }} ₴</span>
+                        <span class="ord-badge ord-badge-{{ order.status.value }}">
+                            {% if order.status.value == 'new' %}Новий
+                            {% elif order.status.value == 'confirmed' %}Підтверджено
+                            {% elif order.status.value == 'shipped' %}Відправлено
+                            {% elif order.status.value == 'done' %}Виконано
+                            {% elif order.status.value == 'cancelled' %}Скасовано
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="ord-items">
+                    {% for it in order.items %}
+                    <div class="ord-item-row">
+                        <div class="ord-item-title">{{ it.product_title }}</div>
+                        <div class="ord-item-meta">
+                            {% if it.size %}{{ it.size }} · {% endif %}{{ it.qty }} шт · {{ "{:,.0f}".format(it.price_uah * it.qty).replace(",", " ") }} ₴
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <div class="pr-empty">
+            <div class="pr-empty-illu">
+                <div class="ring"></div>
+                <div class="ring-inner"></div>
+                <svg class="bag" viewBox="0 0 24 24">
+                    <path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/>
+                    <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
+                </svg>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <h3>Замовлень ще немає</h3>
+            <p>Коли ви оформите перше замовлення, воно з'явиться тут із статусом доставки та історією покупок.</p>
+            <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
+        </div>
+        {% endif %}
+    </div>
 
-        <div class="pr-links">
-            <a href="/catalog" class="pr-link"><span>Каталог товарів</span><span class="arrow">→</span></a>
-            <a href="/support" class="pr-link"><span>Підтримка</span><span class="arrow">→</span></a>
-            <a href="/about" class="pr-link"><span>Про нас</span><span class="arrow">→</span></a>
+    <!-- DATA -->
+    <div class="pr-panel" data-panel="data">
+        <form class="pr-form" id="prDataForm" method="post" action="/profile/update">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+            <p class="pr-section-title">Особисті дані</p>
+            <p class="pr-section-sub">Ця інформація використовується для оформлення замовлень та зв'язку з вами</p>
+
+            {% if request.query_params.get('saved') %}
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px 16px;font-size:13px;margin-bottom:24px;">Дані збережено успішно.</div>
+            {% endif %}
+
+            <div class="form-grid cols-2">
+                <div class="form-group">
+                    <label for="firstName">Ім'я</label>
+                    <input type="text" id="firstName" name="firstName" value="{{ user.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Прізвище</label>
+                    <input type="text" id="lastName" name="lastName" value="{{ user.last_name or '' }}">
+                </div>
+            </div>
+
+            <div class="form-grid" style="margin-top: 24px;">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" disabled
+                           style="opacity:.5;cursor:not-allowed;" title="Email не можна змінити">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Телефон</label>
+                    <input type="tel" id="phone" name="phone" value="{{ user.phone or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Дата народження <span style="text-transform:none; letter-spacing:0; color:hsl(var(--muted-foreground));">(не обов'язково)</span></label>
+                    <input type="date" id="birthday" name="birthday" value="{{ user.birthday or '' }}">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="pr-panel" data-panel="addresses">
+        <p class="pr-section-title">Адреси доставки</p>
+        <p class="pr-section-sub">Збережені адреси для швидкого оформлення замовлень</p>
+
+        <div class="addr-list">
+            <button type="button" class="addr-add" id="addrAdd">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Додати адресу
+            </button>
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+    const tabs = document.querySelectorAll('.pr-tab');
+    const panels = document.querySelectorAll('.pr-panel');
+    tabs.forEach(t => {
+        t.addEventListener('click', () => {
+            tabs.forEach(x => x.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            t.classList.add('active');
+            const target = document.querySelector('[data-panel="' + t.dataset.tab + '"]');
+            if (target) target.classList.add('active');
+        });
+    });
+
+    document.getElementById('firstName')?.addEventListener('input', function() {
+        const last = document.getElementById('lastName')?.value?.trim() || '';
+        const ch = this.value.charAt(0).toUpperCase();
+        document.getElementById('prAvatar').textContent = ch || '?';
+        document.getElementById('prName').textContent = (this.value + ' ' + last).trim();
+    });
+    document.getElementById('lastName')?.addEventListener('input', function() {
+        const first = document.getElementById('firstName')?.value || '';
+        document.getElementById('prName').textContent = (first + ' ' + this.value).trim();
+    });
+    document.getElementById('email')?.addEventListener('input', function() {
+        document.getElementById('prEmail').textContent = this.value;
+    });
+
+    document.getElementById('addrAdd').addEventListener('click', () => {
+        alert('Форма додавання адреси — буде доступна після підключення бекенду');
+    });
+})();
+</script>
 {% endblock %}

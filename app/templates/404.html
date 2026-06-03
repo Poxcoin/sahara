@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Сторінку не знайдено — {{ site_name }}{% endblock %}
+
+{% block content %}
+<div style="max-width:var(--container);margin:0 auto;padding:80px 24px;text-align:center;">
+    <p style="font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl);color:hsl(var(--muted-foreground));margin-bottom:16px;">404</p>
+    <h1 style="font-family:var(--font-heading);font-size:clamp(32px,5vw,56px);font-weight:400;margin-bottom:16px;">Сторінку не знайдено</h1>
+    <p style="font-size:15px;color:hsl(var(--muted-foreground));margin-bottom:40px;max-width:400px;margin-left:auto;margin-right:auto;">
+        На жаль, ця сторінка не існує або була переміщена.
+    </p>
+    <a href="/catalog" style="display:inline-block;padding:14px 40px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl));text-decoration:none;">
+        Перейти до каталогу
+    </a>
+</div>
+{% endblock %}

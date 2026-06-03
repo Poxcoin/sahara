@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAHARA AI Studio</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #f5f4f1; color: #1a1a1a; font-size: 14px; }
+
+.topbar { background: #1a1a1a; color: #f5f4f1; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+.topbar h1 { font-size: 14px; letter-spacing: 0.15em; font-weight: 400; }
+.topbar a { color: #c9a96e; font-size: 12px; text-decoration: none; }
+
+.tabs { display: flex; background: #fff; border-bottom: 2px solid #e5e2db; padding: 0 24px; }
+.tab { padding: 14px 24px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; }
+.tab.active { color: #1a1a1a; border-bottom-color: #c9a96e; }
+
+.panel { display: none; }
+.panel.active { display: grid; }
+
+.page { max-width: 1100px; margin: 0 auto; padding: 28px 16px; }
+
+/* two-column layout */
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+.card { background: #fff; border: 1px solid #e5e2db; border-radius: 3px; }
+.card-head { padding: 14px 20px; border-bottom: 1px solid #f0ede8; }
+.card-head h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; color: #666; }
+.card-body { padding: 16px 20px; }
+
+/* Product grid */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; max-height: 400px; overflow-y: auto; }
+.prod-item { cursor: pointer; border: 2px solid transparent; border-radius: 2px; overflow: hidden; transition: border-color .15s; position: relative; }
+.prod-item:hover { border-color: #c9a96e; }
+.prod-item.selected { border-color: #1a1a1a; }
+.prod-item.selected::after { content: '✓'; position: absolute; top: 3px; right: 3px; background: #1a1a1a; color: #fff; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.prod-item img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+.prod-item .pname { font-size: 9px; color: #888; padding: 2px 4px; background: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Controls */
+label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #777; margin-bottom: 5px; }
+textarea { width: 100%; height: 150px; padding: 10px 12px; border: 1px solid #ddd; font-family: inherit; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; }
+textarea:focus { border-color: #1a1a1a; }
+
+.range-row { display: flex; align-items: center; gap: 12px; }
+input[type=range] { flex: 1; accent-color: #c9a96e; }
+.range-val { font-size: 13px; font-weight: 500; min-width: 32px; }
+
+.check-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 12px; }
+.check-row input { accent-color: #c9a96e; }
+
+.btn-gen { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; padding: 0 32px; height: 50px; background: #1a1a1a; color: #fff; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background .2s; width: 100%; justify-content: center; }
+.btn-gen:hover { background: #c9a96e; }
+.btn-gen:disabled { background: #aaa; cursor: not-allowed; }
+
+.spin { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: sp .7s linear infinite; }
+@keyframes sp { to { transform: rotate(360deg); } }
+
+/* Status */
+.status { margin-top: 12px; padding: 11px 14px; font-size: 13px; border-radius: 2px; display: none; }
+.status.running { background: #fff8ec; border: 1px solid #f0c96e; color: #7a5a00; display: block; }
+.status.done    { background: #edfaf0; border: 1px solid #6ecf8e; color: #1a5c2a; display: block; }
+.status.error   { background: #fdecea; border: 1px solid #f09090; color: #7a1a1a; display: block; }
+
+/* Result */
+.result { margin-top: 16px; display: none; }
+.result img { width: 100%; border: 1px solid #e5e2db; display: block; }
+.result-actions { display: flex; gap: 10px; margin-top: 10px; }
+.result-actions a { padding: 9px 18px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid #1a1a1a; text-decoration: none; color: #1a1a1a; }
+.result-actions a.gold { background: #c9a96e; border-color: #c9a96e; color: #fff; }
+
+/* Selected preview */
+.sel-preview { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; min-height: 60px; }
+.sel-img { width: 56px; height: 84px; object-fit: cover; border: 1px solid #ddd; display: none; }
+.sel-placeholder { width: 56px; height: 84px; border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #bbb; text-align: center; }
+.sel-title { font-size: 12px; color: #555; }
+
+/* Presets */
+.preset-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.preset-btn { padding: 8px 14px; border: 1px solid #ccc; background: #fafaf8; font-size: 12px; cursor: pointer; border-radius: 2px; }
+.preset-btn:hover, .preset-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+.size-row { display: flex; gap: 16px; margin: 12px 0; }
+.size-opt { display: flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer; }
+.size-opt input { accent-color: #c9a96e; }
+
+/* Hero gallery */
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 12px; }
+.gal img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border: 1px solid #e5e2db; display: block; }
+.gal .gname { font-size: 9px; color: #999; margin-top: 3px; }
+
+div.space { height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>SAHARA — AI Studio</h1>
+  <a href="/admin">← Адмінка</a>
+</div>
+
+<div class="tabs">
+  <div class="tab active"  onclick="tab('edit',this)">✏️ Редагувати фото промптом</div>
+  <div class="tab"         onclick="tab('fashn',this)">👗 Fashn AI — Фото моделі</div>
+  <div class="tab"         onclick="tab('hero',this)">🖼 Генерувати Hero-банер</div>
+</div>
+
+<!-- ====== TAB: EDIT PHOTO ====== -->
+<div class="panel active" id="tab-edit">
+<div class="page">
+<div class="layout">
+
+  <!-- Left: Product picker -->
+  <div class="card">
+    <div class="card-head"><h2>1. Вибери фото одягу</h2></div>
+    <div class="card-body">
+      <div class="product-grid" id="prodGrid">
+        {% for p in products %}
+        <div class="prod-item"
+             data-id="{{ p.id }}"
+             data-img="/media/{{ p.original_photo }}"
+             data-title="{{ get_product_title(p, 'uk') }}"
+             onclick="pickProduct(this)">
+          <img src="/media/{{ p.original_photo }}" alt="" loading="lazy">
+          <div class="pname">{{ get_product_title(p, 'uk') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Prompt + controls -->
+  <div class="card">
+    <div class="card-head"><h2>2. Промпт та налаштування</h2></div>
+    <div class="card-body">
+
+      <div class="sel-preview">
+        <img id="selImg" class="sel-img" src="" alt="">
+        <div id="selPlaceholder" class="sel-placeholder">Одяг<br>не<br>вибраний</div>
+        <span id="selTitle" class="sel-title" style="display:none"></span>
+      </div>
+
+      <form id="editForm" method="post" action="/admin/studio/generate" onsubmit="onSubmit('edit')">
+        <input type="hidden" name="mode" value="img2img">
+        <input type="hidden" name="product_id" id="editProductId" value="">
+        <input type="hidden" name="assign" id="editAssign" value="0">
+
+        <div class="space"></div>
+        <label>Промпт (опис результату)</label>
+        <textarea name="prompt" id="editPrompt">Ultra-realistic high fashion editorial photograph, model wearing this exact garment, Sahara desert sand dunes backdrop, golden hour sunlight from camera-left, long directional shadow on warm sand, model full body confident pose, professional fashion photography, Vogue editorial style, warm desaturated grade, film grain, photorealistic</textarea>
+
+        <div class="space"></div>
+        <label>Сила зміни (0.5 = ніжно, 1.0 = повна перегенерація)</label>
+        <div class="range-row">
+          <input type="range" name="strength" id="strengthRange" min="0.5" max="1.0" step="0.05" value="0.80"
+                 oninput="document.getElementById('strengthVal').textContent=this.value">
+          <span class="range-val" id="strengthVal">0.80</span>
+        </div>
+
+        <label class="check-row">
+          <input type="checkbox" id="assignCheck" onchange="document.getElementById('editAssign').value=this.checked?'1':'0'">
+          Зберегти результат у продукт (стане READY для публікації)
+        </label>
+
+        <button class="btn-gen" type="submit" id="editBtn" disabled>
+          <div class="spin" id="editSpin"></div>
+          Генерувати
+        </button>
+      </form>
+
+      <div class="status" id="editStatus"></div>
+      <div class="result" id="editResult">
+        <img id="editResultImg" src="" alt="Result">
+        <div class="result-actions">
+          <a id="editDL" href="#" download class="gold">Завантажити</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ====== TAB: FASHN AI ====== -->
+<div class="panel" id="tab-fashn">
+<div class="page">
+<div class="layout">
+
+  <!-- Left: Product picker -->
+  <div class="card">
+    <div class="card-head"><h2>1. Вибери фото одягу</h2></div>
+    <div class="card-body">
+      <div class="product-grid" id="fashnGrid">
+        {% for p in products %}
+        <div class="prod-item"
+             data-id="{{ p.id }}"
+             data-img="/media/{{ p.original_photo }}"
+             data-title="{{ get_product_title(p, 'uk') }}"
+             onclick="pickFashn(this)">
+          <img src="/media/{{ p.original_photo }}" alt="" loading="lazy">
+          <div class="pname">{{ get_product_title(p, 'uk') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Category + generate -->
+  <div class="card">
+    <div class="card-head"><h2>2. Налаштування Fashn.ai</h2></div>
+    <div class="card-body">
+
+      <div class="sel-preview">
+        <img id="fashnSelImg" class="sel-img" src="" alt="">
+        <div id="fashnSelPlaceholder" class="sel-placeholder">Одяг<br>не<br>вибраний</div>
+        <span id="fashnSelTitle" class="sel-title" style="display:none"></span>
+      </div>
+
+      <form id="fashnForm" method="post" action="/admin/studio/generate" onsubmit="onSubmit('fashn')">
+        <input type="hidden" name="mode" value="fashn">
+        <input type="hidden" name="product_id" id="fashnProductId" value="">
+        <input type="hidden" name="prompt" value="">
+        <input type="hidden" name="assign" id="fashnAssign" value="0">
+
+        <div class="space"></div>
+        <label>Категорія одягу</label>
+        <select name="category" style="width:100%;padding:9px 12px;border:1px solid #ddd;font-family:inherit;font-size:13px;outline:none;background:#fff;">
+          <option value="auto">Авто (за назвою)</option>
+          <option value="tops">Верх (tops)</option>
+          <option value="bottoms">Низ (bottoms)</option>
+          <option value="one-pieces">Суцільне / Плаття (one-pieces)</option>
+        </select>
+
+        <label class="check-row" style="margin-top:14px;">
+          <input type="checkbox" id="fashnAssignCheck" onchange="document.getElementById('fashnAssign').value=this.checked?'1':'0'">
+          Зберегти результат у продукт (стане READY)
+        </label>
+
+        <button class="btn-gen" type="submit" id="fashnBtn" disabled>
+          <div class="spin" id="fashnSpin"></div>
+          Генерувати модель (Fashn.ai)
+        </button>
+      </form>
+
+      <div class="status" id="fashnStatus"></div>
+      <div class="result" id="fashnResult">
+        <img id="fashnResultImg" src="" alt="Result">
+        <div class="result-actions">
+          <a id="fashnDL" href="#" download class="gold">Завантажити</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ====== TAB: HERO ====== -->
+<div class="panel" id="tab-hero">
+<div class="page">
+<div class="layout">
+
+  <div class="card">
+    <div class="card-head"><h2>Генерація Hero-банеру (Flux Dev)</h2></div>
+    <div class="card-body">
+
+      <div class="preset-row">
+        {% for key, (lbl, prompt, size) in presets.items() %}
+        <button class="preset-btn" data-prompt="{{ prompt }}" data-size="{{ size }}" onclick="applyPreset(this)">{{ lbl }}</button>
+        {% endfor %}
+      </div>
+
+      <form id="heroForm" method="post" action="/admin/studio/generate" onsubmit="onSubmit('hero')">
+        <input type="hidden" name="mode" value="txt2img">
+        <label>Промпт</label>
+        <textarea name="prompt" id="heroPrompt">{{ presets.hero[1] }}</textarea>
+
+        <div class="size-row">
+          <label class="size-opt"><input type="radio" name="image_size" value="landscape_16_9" checked> 16:9 банер</label>
+          <label class="size-opt"><input type="radio" name="image_size" value="portrait_4_3"> 4:3 вертикаль</label>
+          <label class="size-opt"><input type="radio" name="image_size" value="square_hd"> Квадрат</label>
+        </div>
+
+        <button class="btn-gen" type="submit" id="heroBtn">
+          <div class="spin" id="heroSpin"></div>
+          Генерувати
+        </button>
+      </form>
+
+      <div class="status" id="heroStatus"></div>
+      <div class="result" id="heroResult">
+        <img id="heroResultImg" src="" alt="Hero" style="max-width:100%">
+        <div class="result-actions">
+          <a id="heroDL" href="#" download class="gold">Завантажити</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  {% if hero_saved %}
+  <div class="card">
+    <div class="card-head"><h2>Збережені банери</h2></div>
+    <div class="card-body">
+      <div class="gal">
+        {% for f in hero_saved %}
+        <div>
+          <img src="/media/hero/{{ f.name }}" alt="" loading="lazy">
+          <div class="gname">{{ f.name }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+</div>
+
+<script>
+// Tabs
+function tab(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// Product selection (edit tab)
+function pickProduct(el) {
+  document.querySelectorAll('#prodGrid .prod-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  const id = el.dataset.id, img = el.dataset.img, title = el.dataset.title;
+  document.getElementById('editProductId').value = id;
+  document.getElementById('selImg').src = img;
+  document.getElementById('selImg').style.display = 'block';
+  document.getElementById('selPlaceholder').style.display = 'none';
+  document.getElementById('selTitle').textContent = title;
+  document.getElementById('selTitle').style.display = 'block';
+  document.getElementById('editBtn').disabled = false;
+}
+
+// Product selection (fashn tab)
+function pickFashn(el) {
+  document.querySelectorAll('#fashnGrid .prod-item').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  const id = el.dataset.id, img = el.dataset.img, title = el.dataset.title;
+  document.getElementById('fashnProductId').value = id;
+  document.getElementById('fashnSelImg').src = img;
+  document.getElementById('fashnSelImg').style.display = 'block';
+  document.getElementById('fashnSelPlaceholder').style.display = 'none';
+  document.getElementById('fashnSelTitle').textContent = title;
+  document.getElementById('fashnSelTitle').style.display = 'block';
+  document.getElementById('fashnBtn').disabled = false;
+}
+
+// Hero presets
+function applyPreset(btn) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (btn.dataset.prompt) document.getElementById('heroPrompt').value = btn.dataset.prompt;
+  if (btn.dataset.size) {
+    const r = document.querySelector(`input[name="image_size"][value="${btn.dataset.size}"]`);
+    if (r) r.checked = true;
+  }
+}
+document.querySelector('.preset-btn')?.click();
+
+function onSubmit(t) {
+  const btn = document.getElementById(t + 'Btn');
+  btn.disabled = true;
+  document.getElementById(t + 'Spin').style.display = 'block';
+  const st = document.getElementById(t + 'Status');
+  st.className = 'status running';
+  st.textContent = '⏳ Генеруємо... зазвичай 30–90 секунд';
+}
+
+// Poll from URL
+const p = new URLSearchParams(location.search);
+const jobId = p.get('job'), jobTab = p.get('tab') || 'edit';
+if (jobId) {
+  const tabIndex = jobTab === 'hero' ? 3 : jobTab === 'fashn' ? 2 : 1;
+  const tabBtn = document.querySelector(`.tab:nth-child(${tabIndex})`);
+  if (tabBtn) tab(jobTab, tabBtn);
+
+  const st = document.getElementById(jobTab + 'Status');
+  const btn = document.getElementById(jobTab + 'Btn');
+  const spin = document.getElementById(jobTab + 'Spin');
+  const res = document.getElementById(jobTab + 'Result');
+  const img = document.getElementById(jobTab + 'ResultImg');
+  const dl  = document.getElementById(jobTab + 'DL');
+
+  st.className = 'status running';
+  st.textContent = '⏳ Генеруємо... ~30–90 сек';
+  if (btn) btn.disabled = true;
+  if (spin) spin.style.display = 'block';
+
+  (function poll() {
+    fetch('/admin/studio/status/' + jobId)
+      .then(r => r.json())
+      .then(d => {
+        if (d.status === 'running' || d.status === 'unknown') { setTimeout(poll, 4000); return; }
+        if (d.status === 'done') {
+          st.className = 'status done'; st.textContent = '✓ Готово!';
+          if (btn) btn.disabled = false; if (spin) spin.style.display = 'none';
+          const url = '/media/' + d.result;
+          if (img) img.src = url; if (dl) dl.href = url;
+          if (res) res.style.display = 'block';
+          res?.scrollIntoView({ behavior: 'smooth' });
+          // update small preview in edit tab
+          if (jobTab === 'edit') {
+            const si = document.getElementById('selImg');
+            if (si) { si.src = url; si.style.display='block'; }
+          }
+        } else {
+          st.className = 'status error'; st.textContent = '✗ Помилка: ' + (d.error || '?');
+          if (btn) btn.disabled = false; if (spin) spin.style.display = 'none';
+        }
+      });
+  })();
+}
+</script>
+</body>
+</html>

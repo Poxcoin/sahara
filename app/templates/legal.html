@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Правова інформація — {{ site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legal-page {
+        max-width: 860px; margin: 0 auto;
+        padding: 64px 24px 96px;
+    }
+    @media (min-width: 640px) { .legal-page { padding: 80px 40px 120px; } }
+
+    .legal-page .eyebrow { margin-bottom: 16px; }
+    .legal-page h1 { font-family: var(--font-heading); font-size: 36px; letter-spacing: 0.03em; margin-bottom: 12px; }
+    @media (min-width: 640px) { .legal-page h1 { font-size: 44px; } }
+    .legal-updated {
+        font-size: 12px; color: hsl(var(--muted-foreground)); margin-bottom: 56px;
+        letter-spacing: 0.05em;
+    }
+
+    .legal-divider {
+        width: 48px; height: 1px; background: hsl(var(--gold));
+        opacity: .6; margin-bottom: 56px;
+    }
+
+    .legal-section { margin-bottom: 56px; }
+    .legal-section h2 {
+        font-family: var(--font-heading); font-size: 22px;
+        letter-spacing: 0.03em; margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid hsla(40,10%,88%,.5);
+    }
+    .legal-section p {
+        font-size: 15px; font-weight: 300; line-height: 1.8;
+        color: hsl(var(--foreground)); margin-bottom: 16px;
+    }
+    .legal-section p:last-child { margin-bottom: 0; }
+    .legal-section ul {
+        list-style: none; margin: 16px 0;
+        display: flex; flex-direction: column; gap: 10px;
+    }
+    .legal-section li {
+        font-size: 15px; font-weight: 300; line-height: 1.7;
+        color: hsl(var(--foreground));
+        padding-left: 20px; position: relative;
+    }
+    .legal-section li::before {
+        content: '—';
+        position: absolute; left: 0;
+        color: hsl(var(--gold)); font-weight: 400;
+    }
+
+    .legal-highlight {
+        background: hsla(40,15%,93%,.5);
+        border-left: 2px solid hsl(var(--gold));
+        padding: 20px 24px;
+        margin: 24px 0;
+        font-size: 14px; font-weight: 300; line-height: 1.8;
+        color: hsl(var(--foreground));
+    }
+
+    .legal-supplier-card {
+        border: 1px solid hsla(40,10%,88%,.7);
+        padding: 28px 32px; margin-top: 24px;
+        background: hsla(40,15%,93%,.25);
+    }
+    .legal-supplier-card .supplier-name {
+        font-family: var(--font-heading); font-size: 20px;
+        letter-spacing: 0.05em; margin-bottom: 12px;
+    }
+    .legal-supplier-card p {
+        font-size: 13px; margin-bottom: 6px;
+    }
+    .legal-supplier-card a {
+        color: hsl(var(--foreground)); transition: color .2s;
+    }
+    .legal-supplier-card a:hover { color: hsl(var(--gold)); }
+
+    .legal-contact {
+        margin-top: 40px; padding: 24px 32px;
+        border: 1px dashed hsla(40,10%,70%,.6);
+        font-size: 14px; font-weight: 300; line-height: 1.7;
+    }
+    .legal-contact a { color: hsl(var(--foreground)); text-decoration: underline; text-underline-offset: 3px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <p class="eyebrow">Юридична інформація</p>
+    <h1>Правова інформація</h1>
+    <p class="legal-updated">Останнє оновлення: травень 2026</p>
+    <div class="legal-divider"></div>
+
+    <!-- AI Disclaimer -->
+    <div class="legal-section">
+        <h2>Зображення, згенеровані штучним інтелектом</h2>
+        <p>
+            Магазин SAHARA використовує технології штучного інтелекту (AI) для обробки та генерації
+            зображень одягу на моделях. Усі фотографії моделей у нашому каталозі — як на сторінках
+            товарів, так і в банерах та рекламних матеріалах — є результатом роботи AI-систем
+            (зокрема, платформи Fashn.ai).
+        </p>
+        <div class="legal-highlight">
+            Жодне із зображень моделей на сайті не є фотографією реальної людини.
+            Усі зображення повністю або частково синтезовані за допомогою штучного інтелекту.
+            Будь-яка схожість персонажів із реальними людьми — живими чи померлими —
+            є виключно випадковою та ненавмисною.
+        </div>
+        <p>
+            Ми не використовуємо, не зберігаємо та не поширюємо зображення реальних осіб
+            без їхньої явної згоди. AI-генерація дозволяє нам демонструвати одяг на умовних
+            фігурах без участі живих моделей.
+        </p>
+        <ul>
+            <li>Обличчя на всіх фотографіях каталогу є AI-синтезованими та не належать реальним людям.</li>
+            <li>Фотографії одягу надані постачальником і можуть бути оброблені AI для покращення відображення.</li>
+            <li>Функція «AI Примірка» генерує нові зображення на основі завантаженого вами фото — ці зображення не зберігаються на наших серверах після сесії.</li>
+            <li>AI-генерація здійснюється через сервіс Fashn.ai відповідно до їхніх умов надання послуг.</li>
+        </ul>
+    </div>
+
+    <!-- Supplier -->
+    <div class="legal-section">
+        <h2>Постачальник одягу</h2>
+        <p>
+            SAHARA є незалежним роздрібним продавцем, який реалізує продукцію бренду Koton.
+            Ми не є офіційним представником, дочірньою компанією або афільованою структурою Koton.
+            Назва, логотипи та торгові марки Koton належать відповідному правовласнику.
+        </p>
+        <div class="legal-supplier-card">
+            <div class="supplier-name">Koton Turkey</div>
+            <p>Повна назва: Koton Mağazacılık Tekstil Sanayi ve Ticaret A.Ş.</p>
+            <p>Країна реєстрації: Туреччина</p>
+            <p>Офіційний сайт: <a href="https://www.koton.com" target="_blank" rel="noopener">www.koton.com</a></p>
+        </div>
+        <p style="margin-top:20px;">
+            Уся інформація про товари (найменування, склад, розміри, країна виробництва)
+            надається на підставі даних виробника. У разі розбіжностей слід керуватися
+            інформацією на офіційному сайті Koton або етикетці товару.
+        </p>
+    </div>
+
+    <!-- Trademarks -->
+    <div class="legal-section">
+        <h2>Торгові марки та авторські права</h2>
+        <p>
+            Назва «SAHARA», дизайн сайту та всі оригінальні матеріали є власністю
+            ФОП / юридичної особи, що здійснює діяльність під брендом SAHARA.
+        </p>
+        <p>
+            Торгова марка «Koton» та пов'язані з нею позначення є інтелектуальною власністю
+            Koton Mağazacılık Tekstil San. ve Tic. A.Ş. Ми використовуємо їх виключно
+            в інформаційних цілях для ідентифікації товарів, що продаються.
+        </p>
+        <p>
+            Фотографії товарів надані постачальником і використовуються на підставі
+            договірних відносин із ним. Якщо ви є правовласником і вважаєте,
+            що ваші права порушені — зверніться до нас за контактами нижче.
+        </p>
+        <div class="legal-highlight">
+            Усі зображення моделей, представлених у каталозі та рекламних матеріалах
+            SAHARA, згенеровані штучним інтелектом виключно на основі фотографій одягу,
+            наданих постачальником. Жодна реальна людина не зображена та не використовувалась
+            у процесі створення цих зображень. Будь-яка схожість із реальними людьми —
+            живими чи померлими — є повністю випадковою та ненавмисною.
+        </div>
+    </div>
+
+    <!-- Privacy / AI try-on -->
+    <div class="legal-section">
+        <h2>Конфіденційність та функція AI Примірки</h2>
+        <p>
+            Функція «AI Примірка» дозволяє завантажити власне фото для демонстрації того,
+            як одяг виглядатиме на вас. Звертаємо вашу увагу:
+        </p>
+        <ul>
+            <li>Ваше фото передається до AI-сервісу Fashn.ai виключно для обробки запиту.</li>
+            <li>Ми не зберігаємо ваше фото на своїх серверах після завершення сесії.</li>
+            <li>Ми не використовуємо завантажені фото для навчання AI-моделей.</li>
+            <li>Не рекомендується завантажувати фото третіх осіб без їхньої згоди.</li>
+        </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="legal-contact">
+        З питань щодо авторських прав, видалення зображень або будь-яких правових питань
+        звертайтеся за адресою: <a href="mailto:info@sahara-store.net">info@sahara-store.net</a>
+        або через форму на сторінці <a href="/support">Підтримка</a>.
+    </div>
+</div>
+{% endblock %}

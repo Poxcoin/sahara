@@ -1,0 +1,826 @@
+{% extends "base.html" %}
+{% block title %}Віртуальна примірка — SAHARA{% endblock %}
+
+{% block content %}
+<style>
+  /* ── Page shell ── */
+  .tryon-page {
+    background: hsl(var(--background));
+    min-height: calc(100vh - 72px);
+    padding: 0 0 60px;
+  }
+
+  /* ── Hero ── */
+  .tryon-hero {
+    text-align: center;
+    padding: 52px 24px 32px;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  .tryon-hero h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: hsl(var(--foreground));
+    margin-bottom: 14px;
+  }
+  .tryon-hero p {
+    font-size: 14px;
+    font-weight: 300;
+    color: hsl(var(--muted-foreground));
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── Feature strip ── */
+  .tryon-features {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-bottom: 1px solid hsl(var(--border));
+    overflow-x: auto;
+  }
+  .tryon-feat {
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+    padding: 20px 28px;
+    border-right: 1px solid hsl(var(--border));
+    font-size: 12px;
+    font-weight: 300;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+  }
+  .tryon-feat:last-child { border-right: none; }
+  .tryon-feat strong {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    color: hsl(var(--foreground));
+    margin-bottom: 4px;
+  }
+
+  /* ── Main columns layout ── */
+  .tryon-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .tryon-cols { grid-template-columns: 1fr; padding: 0 16px; }
+  }
+
+  /* ── Column card ── */
+  .tryon-col {
+    padding: 32px 20px 32px 0;
+    border-right: 1px solid hsl(var(--border));
+  }
+  .tryon-col:last-child {
+    padding: 32px 0 32px 20px;
+    border-right: none;
+  }
+  @media (max-width: 860px) {
+    .tryon-col { padding: 24px 0; border-right: none; border-bottom: 1px solid hsl(var(--border)); }
+    .tryon-col:last-child { border-bottom: none; }
+  }
+
+  .tryon-col-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    margin-bottom: 16px;
+  }
+
+  /* ── Product grid ── */
+  .prod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .prod-grid::-webkit-scrollbar { width: 4px; }
+  .prod-grid::-webkit-scrollbar-track { background: transparent; }
+  .prod-grid::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
+
+  .prod-item {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color .2s;
+    background: hsl(var(--card));
+  }
+  .prod-item:hover { border-color: hsl(var(--border)); }
+  .prod-item.selected { border-color: hsl(var(--gold)); }
+  .prod-item img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+  }
+  .prod-item-name {
+    font-size: 10px;
+    font-weight: 300;
+    padding: 4px 5px;
+    color: hsl(var(--muted-foreground));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prod-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: hsl(var(--muted-foreground));
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  /* ── Photo tabs ── */
+  .photo-tabs {
+    display: flex;
+    border-bottom: 1px solid hsl(var(--border));
+    margin-bottom: 20px;
+  }
+  .photo-tab {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    font-weight: 400;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: hsl(var(--muted-foreground));
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .2s, border-color .2s;
+  }
+  .photo-tab.active {
+    color: hsl(var(--foreground));
+    border-bottom-color: hsl(var(--foreground));
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Upload area ── */
+  .upload-area {
+    border: 2px dashed hsl(var(--border));
+    border-radius: 4px;
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    position: relative;
+    background: hsl(var(--card));
+  }
+  .upload-area:hover, .upload-area.drag-over {
+    border-color: hsl(var(--gold));
+    background: hsl(39 42% 60% / 0.04);
+  }
+  .upload-area input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .upload-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 12px;
+    stroke: hsl(var(--muted-foreground));
+  }
+  .upload-label {
+    font-size: 13px;
+    font-weight: 300;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+  }
+  .upload-label span {
+    color: hsl(var(--gold));
+    font-weight: 400;
+  }
+  .upload-preview {
+    margin-top: 14px;
+    display: none;
+  }
+  .upload-preview img {
+    max-height: 180px;
+    max-width: 100%;
+    border-radius: 2px;
+    object-fit: contain;
+  }
+
+  /* ── Reference model cards ── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .ref-card {
+    cursor: pointer;
+    border: 2px solid hsl(var(--border));
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color .2s;
+    background: hsl(var(--card));
+    text-align: center;
+  }
+  .ref-card:hover { border-color: hsl(var(--muted-foreground)); }
+  .ref-card.selected { border-color: hsl(var(--gold)); }
+  .ref-card-img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: hsl(var(--secondary));
+  }
+  .ref-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ref-card-img svg {
+    width: 50%;
+    opacity: 0.25;
+  }
+  .ref-card-label {
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CTA button ── */
+  .tryon-btn {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px 20px;
+    background: hsl(var(--gold));
+    color: hsl(var(--foreground));
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity .2s, background .2s;
+  }
+  .tryon-btn:disabled {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    cursor: not-allowed;
+    opacity: 1;
+  }
+  .tryon-btn:not(:disabled):hover { opacity: 0.85; }
+
+  /* ── Spinner ── */
+  .tryon-spinner {
+    display: none;
+    text-align: center;
+    padding: 28px 0 0;
+    color: hsl(var(--muted-foreground));
+    font-size: 13px;
+    font-weight: 300;
+  }
+  .tryon-spinner.show { display: block; }
+  .spinner-ring {
+    display: inline-block;
+    width: 28px; height: 28px;
+    border: 2px solid hsl(var(--border));
+    border-top-color: hsl(var(--gold));
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result area ── */
+  .tryon-result {
+    display: none;
+    margin-top: 24px;
+    border-top: 1px solid hsl(var(--border));
+    padding-top: 20px;
+  }
+  .tryon-result.show { display: block; }
+  .tryon-result-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    margin-bottom: 12px;
+  }
+  .tryon-result img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: 2px;
+    background: hsl(var(--secondary));
+    display: block;
+  }
+  .tryon-result-dl {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    color: hsl(var(--gold));
+    text-decoration: none;
+    border-bottom: 1px solid hsl(var(--gold));
+    padding-bottom: 1px;
+    font-weight: 400;
+    transition: opacity .2s;
+  }
+  .tryon-result-dl:hover { opacity: 0.7; }
+
+  /* ── Error ── */
+  .tryon-error {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: hsl(0 80% 97%);
+    border: 1px solid hsl(0 70% 88%);
+    border-radius: 2px;
+    font-size: 12px;
+    color: hsl(0 55% 40%);
+    font-weight: 400;
+  }
+  .tryon-error.show { display: block; }
+
+  /* ── Photo guidance ── */
+  .photo-guidance {
+    display: none;
+    padding: 12px 14px;
+    background: hsl(39 42% 60% / 0.07);
+    border: 1px solid hsl(39 42% 60% / 0.3);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    font-weight: 300;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+  }
+  .photo-guidance.show { display: block; }
+  .photo-guidance strong {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl);
+    color: hsl(var(--gold));
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  /* ── Measurements ── */
+  .measurements-section {
+    margin-top: 20px;
+    border-top: 1px solid hsl(var(--border));
+    padding-top: 16px;
+  }
+  .measurements-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; width: 100%; border: none; background: none; padding: 0;
+    text-align: left;
+  }
+  .measurements-toggle-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+    font-weight: 500; color: hsl(var(--foreground));
+  }
+  .measurements-toggle-icon {
+    width: 16px; height: 16px; stroke: hsl(var(--muted-foreground)); fill: none;
+    stroke-width: 1.5; transition: transform .2s; flex-shrink: 0;
+  }
+  .measurements-toggle.open .measurements-toggle-icon { transform: rotate(180deg); }
+  .measurements-body { display: none; margin-top: 14px; }
+  .measurements-body.open { display: block; }
+  .meas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .meas-field label {
+    display: block; font-size: 10px; text-transform: uppercase;
+    letter-spacing: var(--tracking-wide-xl); font-weight: 400;
+    color: hsl(var(--muted-foreground)); margin-bottom: 6px;
+  }
+  .meas-field input {
+    width: 100%; padding: 10px 12px; font-size: 13px;
+    background: hsl(var(--card)); border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground)); font-family: var(--font-body);
+    transition: border-color .2s; outline: none; box-sizing: border-box;
+  }
+  .meas-field input:focus { border-color: hsl(var(--gold)); }
+  .size-ref { margin-top: 14px; }
+  .size-ref-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+    font-weight: 400; color: hsl(var(--muted-foreground)); margin-bottom: 8px;
+  }
+  .size-ref-table {
+    width: 100%; border-collapse: collapse; font-size: 11px;
+    font-weight: 300; color: hsl(var(--muted-foreground));
+  }
+  .size-ref-table th {
+    text-align: left; padding: 5px 6px; font-weight: 500;
+    color: hsl(var(--foreground)); border-bottom: 1px solid hsl(var(--border));
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .size-ref-table td { padding: 5px 6px; border-bottom: 1px solid hsl(var(--border) / 0.5); }
+  .size-ref-table tr:last-child td { border-bottom: none; }
+</style>
+
+<div class="tryon-page">
+
+  <!-- Hero -->
+  <div class="tryon-hero">
+    <h1>Приміряй, не виходячи з дому.</h1>
+    <p>Завантажте власне фото або оберіть нашу референс-модель — побачите, як річ сидить саме на вас, ще до замовлення. Технологія Fashn AI працює з усім каталогом SAHARA.</p>
+  </div>
+
+  <!-- Feature strip -->
+  <div class="tryon-features">
+    <div class="tryon-feat">
+      <strong>i. Три ракурси</strong>
+      Фронт, три-чверті, спина — повне розуміння крою
+    </div>
+    <div class="tryon-feat">
+      <strong>ii. Реальні пропорції</strong>
+      Алгоритм зберігає посадку та довжину
+    </div>
+    <div class="tryon-feat">
+      <strong>iii. За 30 секунд</strong>
+      Прев'ю готове швидше, ніж ви оберете розмір
+    </div>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="tryon-cols">
+
+    <!-- Left: product picker -->
+    <div class="tryon-col">
+      <p class="tryon-col-title">Крок 1 — Оберіть річ</p>
+      <div class="prod-grid" id="prodGrid">
+        {% if products %}
+          {% for p in products %}
+          <div class="prod-item"
+               data-id="{{ p.id }}"
+               data-cat="{{ koton_category(p.title) }}"
+               onclick="pickProduct(this)">
+            {% if p.original_photo %}
+            <img src="/media/{{ p.original_photo }}" alt="{{ p.title_ua or p.title }}" loading="lazy">
+            {% else %}
+            <div style="aspect-ratio:3/4;background:hsl(var(--secondary));display:flex;align-items:center;justify-content:center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--muted-foreground))" stroke-width="1.5"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
+            </div>
+            {% endif %}
+            <div class="prod-item-name">{{ p.title_ua or p.title }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="prod-empty">Каталог наповнюється</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: photo + generate -->
+    <div class="tryon-col">
+      <p class="tryon-col-title">Крок 2 — Ваше фото</p>
+
+      <!-- Photo guidance (appears when product selected) -->
+      <div class="photo-guidance" id="photoGuidance">
+        <strong>Рекомендація щодо фото</strong>
+        <span id="guidanceText"></span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="photo-tabs">
+        <button class="photo-tab active" data-tab="upload" onclick="switchTab('upload', this)">Завантажити фото</button>
+        <button class="photo-tab" data-tab="ref" onclick="switchTab('ref', this)">Референс-модель</button>
+      </div>
+
+      <!-- Upload tab -->
+      <div class="tab-panel active" id="tab-upload">
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="fileInput" accept="image/*" onchange="onFileChange(this)">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p class="upload-label">Перетягніть фото сюди або <span>оберіть файл</span></p>
+        </div>
+        <div class="upload-preview" id="uploadPreview">
+          <img id="previewImg" src="" alt="Preview">
+        </div>
+      </div>
+
+      <!-- Ref model tab -->
+      <div class="tab-panel" id="tab-ref">
+        <div class="ref-grid">
+          <!-- F-001 -->
+          <div class="ref-card" data-ref="F-001" onclick="pickRef(this)">
+            <div class="ref-card-img">
+              <img src="/media/models/F-001.jpg" alt="Модель F-001">
+            </div>
+            <div class="ref-card-label">F-001 · 165 cm</div>
+          </div>
+          <!-- F-002 -->
+          <div class="ref-card" data-ref="F-002" onclick="pickRef(this)">
+            <div class="ref-card-img">
+              <svg viewBox="0 0 60 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="30" cy="11" rx="8" ry="8" fill="currentColor"/>
+                <path d="M16 28c0-7.7 6.3-14 14-14s14 6.3 14 14v30H16V28z" fill="currentColor"/>
+                <rect x="16" y="56" width="12" height="34" rx="2" fill="currentColor"/>
+                <rect x="32" y="56" width="12" height="34" rx="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="ref-card-label">F-002 · 170 cm</div>
+          </div>
+          <!-- F-003 -->
+          <div class="ref-card" data-ref="F-003" onclick="pickRef(this)">
+            <div class="ref-card-img">
+              <svg viewBox="0 0 60 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="30" cy="10" rx="8.5" ry="8.5" fill="currentColor"/>
+                <path d="M15 27c0-8.3 6.7-15 15-15s15 6.7 15 15v31H15V27z" fill="currentColor"/>
+                <rect x="15" y="56" width="13" height="33" rx="2" fill="currentColor"/>
+                <rect x="32" y="56" width="13" height="33" rx="2" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="ref-card-label">F-003 · 175 cm</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Measurements (optional) -->
+      <div class="measurements-section">
+        <button class="measurements-toggle" type="button" onclick="toggleMeasurements(this)">
+          <span class="measurements-toggle-label">Ваші заміри (необов'язково)</span>
+          <svg class="measurements-toggle-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="measurements-body" id="measBody">
+          <div class="meas-grid">
+            <div class="meas-field">
+              <label for="measHeight">Зріст (см)</label>
+              <input type="number" id="measHeight" placeholder="165" min="140" max="210">
+            </div>
+            <div class="meas-field">
+              <label for="measBust">Груди (см)</label>
+              <input type="number" id="measBust" placeholder="88" min="60" max="140">
+            </div>
+            <div class="meas-field">
+              <label for="measWaist">Талія (см)</label>
+              <input type="number" id="measWaist" placeholder="70" min="50" max="130">
+            </div>
+            <div class="meas-field">
+              <label for="measHips">Стегна (см)</label>
+              <input type="number" id="measHips" placeholder="96" min="70" max="150">
+            </div>
+          </div>
+          <div class="size-ref">
+            <p class="size-ref-title">Таблиця розмірів Koton (жін., см)</p>
+            <table class="size-ref-table">
+              <thead>
+                <tr><th>Розмір</th><th>Груди</th><th>Талія</th><th>Стегна</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>XS</td><td>80–84</td><td>62–66</td><td>88–92</td></tr>
+                <tr><td>S</td><td>84–88</td><td>66–70</td><td>92–96</td></tr>
+                <tr><td>M</td><td>88–92</td><td>70–74</td><td>96–100</td></tr>
+                <tr><td>L</td><td>92–96</td><td>74–78</td><td>100–104</td></tr>
+                <tr><td>XL</td><td>96–100</td><td>78–82</td><td>104–108</td></tr>
+                <tr><td>XXL</td><td>100–104</td><td>82–86</td><td>108–112</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button class="tryon-btn" id="tryonBtn" disabled onclick="doTryon()">
+        Спробувати примірку →
+      </button>
+
+      <!-- Spinner -->
+      <div class="tryon-spinner" id="spinner">
+        <span class="spinner-ring"></span>Генеруємо... ~30 секунд
+      </div>
+
+      <!-- Error -->
+      <div class="tryon-error" id="tryonError"></div>
+
+      <!-- Result -->
+      <div class="tryon-result" id="tryonResult">
+        <p class="tryon-result-label">Результат примірки</p>
+        <img id="resultImg" src="" alt="Try-on result">
+        <br>
+        <a id="resultDl" href="#" download="sahara-tryon.jpg" class="tryon-result-dl">Завантажити →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── state ── */
+  let selectedProductId = null;
+  let selectedFile = null;       // File object
+  let selectedRef = null;        // string "F-001" etc.
+  let activeTab = 'upload';
+
+  /* ── photo guidance by category ── */
+  const GUIDANCE = {
+    'tops':       'Потрібне фото від пояса вгору або повного зросту. Руки злегка відведені від тіла — плечі та руки мають бути повністю видимі.',
+    'knitwear':   'Потрібне фото від пояса вгору або повного зросту. Руки злегка відведені від тіла — плечі та руки мають бути видимі.',
+    'sweatshirt': 'Потрібне фото від пояса вгору або повного зросту. Руки злегка відведені від тіла — плечі та руки мають бути видимі.',
+    'outerwear':  'Потрібне фото повного зросту або від пояса вгору. Плечі та руки мають бути видимі, тіло рівно стоїть.',
+    'bottoms':    'Потрібне фото повного зросту. Ноги повністю видимі від стегон до ступень.',
+    'pants':      'Потрібне фото повного зросту. Ноги повністю видимі від стегон до ступень.',
+    'skirt':      'Потрібне фото повного зросту. Ноги повністю видимі від стегон до ступень.',
+    'shorts':     'Потрібне фото повного зросту. Ноги повністю видимі від стегон до ступень.',
+    'sport-pants':'Потрібне фото повного зросту. Ноги повністю видимі від стегон до ступень.',
+    'dress':      'Потрібне фото повного зросту. Руки злегка відведені від тіла, все тіло видиме від голови до ніг.',
+  };
+
+  /* ── product pick ── */
+  function pickProduct(el) {
+    document.querySelectorAll('.prod-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedProductId = el.dataset.id;
+
+    const cat = el.dataset.cat || 'tops';
+    document.getElementById('guidanceText').textContent = GUIDANCE[cat] || GUIDANCE['tops'];
+    document.getElementById('photoGuidance').classList.add('show');
+
+    checkReady();
+  }
+
+  /* ── toggle measurements ── */
+  function toggleMeasurements(btn) {
+    btn.classList.toggle('open');
+    document.getElementById('measBody').classList.toggle('open');
+  }
+
+  /* ── tab switch ── */
+  function switchTab(tab, btn) {
+    activeTab = tab;
+    document.querySelectorAll('.photo-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    // clear opposite selection
+    if (tab === 'upload') { selectedRef = null; clearRefCards(); }
+    else { selectedFile = null; clearUpload(); }
+    checkReady();
+  }
+
+  /* ── upload ── */
+  function onFileChange(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showError('Будь ласка, завантажте файл зображення.');
+      return;
+    }
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('previewImg').src = e.target.result;
+      document.getElementById('uploadPreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    checkReady();
+  }
+
+  function clearUpload() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('uploadPreview').style.display = 'none';
+    document.getElementById('previewImg').src = '';
+  }
+
+  /* ── drag-drop ── */
+  const uploadArea = document.getElementById('uploadArea');
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      // inject into input
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const fi = document.getElementById('fileInput');
+      fi.files = dt.files;
+      onFileChange(fi);
+    }
+  });
+
+  /* ── ref model ── */
+  function pickRef(el) {
+    clearRefCards();
+    el.classList.add('selected');
+    selectedRef = el.dataset.ref;
+    checkReady();
+  }
+
+  function clearRefCards() {
+    document.querySelectorAll('.ref-card').forEach(c => c.classList.remove('selected'));
+    selectedRef = null;
+  }
+
+  /* ── enable/disable button ── */
+  function checkReady() {
+    const hasProduct = !!selectedProductId;
+    const hasPhoto = activeTab === 'upload' ? !!selectedFile : !!selectedRef;
+    document.getElementById('tryonBtn').disabled = !(hasProduct && hasPhoto);
+  }
+
+  /* ── generate ── */
+  async function doTryon() {
+    hideError();
+    hideResult();
+
+    const fd = new FormData();
+    fd.append('product_id', selectedProductId);
+    if (activeTab === 'upload' && selectedFile) {
+      fd.append('user_photo', selectedFile);
+    } else if (activeTab === 'ref' && selectedRef) {
+      fd.append('ref_model', selectedRef);
+    } else {
+      showError('Оберіть фото або референс-модель.');
+      return;
+    }
+
+    // Optional measurements
+    const h = document.getElementById('measHeight').value;
+    const b = document.getElementById('measBust').value;
+    const w = document.getElementById('measWaist').value;
+    const hp = document.getElementById('measHips').value;
+    if (h) fd.append('height_cm', h);
+    if (b) fd.append('bust_cm', b);
+    if (w) fd.append('waist_cm', w);
+    if (hp) fd.append('hips_cm', hp);
+
+    // show spinner, disable button
+    document.getElementById('spinner').classList.add('show');
+    document.getElementById('tryonBtn').disabled = true;
+    document.getElementById('tryonBtn').textContent = 'Генеруємо...';
+
+    try {
+      const resp = await fetch('/tryon/generate', { method: 'POST', body: fd });
+      const data = await resp.json();
+
+      if (!resp.ok || data.error) {
+        showError(data.error || 'Сталася помилка. Спробуйте ще раз.');
+        return;
+      }
+
+      if (data.result) {
+        const src = data.result.startsWith('http') ? data.result : '/media/' + data.result;
+        document.getElementById('resultImg').src = src;
+        document.getElementById('resultDl').href = src;
+        document.getElementById('tryonResult').classList.add('show');
+      }
+    } catch (err) {
+      showError('Помилка з\'єднання. Перевірте мережу та спробуйте ще раз.');
+    } finally {
+      document.getElementById('spinner').classList.remove('show');
+      document.getElementById('tryonBtn').disabled = false;
+      document.getElementById('tryonBtn').textContent = 'Спробувати примірку →';
+      checkReady();
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('tryonError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideError() {
+    document.getElementById('tryonError').classList.remove('show');
+  }
+  function hideResult() {
+    document.getElementById('tryonResult').classList.remove('show');
+  }
+</script>
+{% endblock %}

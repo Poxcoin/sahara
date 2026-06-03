@@ -12,26 +12,109 @@
     @media (min-width: 640px) { .cart-head { margin-bottom: 48px; } }
     .cart-head .eyebrow { margin-bottom: 12px; }
 
-    .cart-empty {
-        text-align: center;
-        padding: 80px 24px;
-    }
-    .cart-empty svg {
-        width: 40px; height: 40px;
-        stroke: hsl(var(--muted-foreground)); fill: none;
-        stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;
-        margin: 0 auto 24px;
-    }
-    .cart-empty h2 {
-        font-family: var(--font-heading);
-        font-size: 22px;
-        margin-bottom: 8px;
-    }
-    .cart-empty p {
-        font-size: 14px;
+    .cart-empty { text-align: center; padding: 80px 24px; }
+    .cart-empty svg { width: 40px; height: 40px; stroke: hsl(var(--muted-foreground)); fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round; margin: 0 auto 24px; }
+    .cart-empty h2 { font-family: var(--font-heading); font-size: 22px; margin-bottom: 8px; }
+    .cart-empty p { font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 32px; }
+
+    .cart-layout { display: grid; grid-template-columns: 1fr; gap: 48px; }
+    @media (min-width: 1024px) { .cart-layout { grid-template-columns: 1fr 380px; gap: 64px; align-items: start; } }
+
+    .cart-count-line {
+        font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
         color: hsl(var(--muted-foreground));
-        margin-bottom: 32px;
+        padding-bottom: 16px; margin-bottom: 24px;
+        border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
     }
+
+    .cart-items { display: flex; flex-direction: column; }
+    .cart-item {
+        display: grid; grid-template-columns: 80px 1fr auto; gap: 16px;
+        padding: 24px 0; border-bottom: 1px solid hsla(40, 10%, 88%, 0.5);
+        align-items: start;
+    }
+    @media (min-width: 640px) { .cart-item { grid-template-columns: 100px 1fr auto; gap: 24px; padding: 28px 0; } }
+
+    .cart-item-img { aspect-ratio: 80/110; background: hsla(40, 15%, 93%, 0.4); overflow: hidden; display: block; }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .cart-item:hover .cart-item-img img { transform: scale(1.04); }
+
+    .cart-item-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .ci-cat { font-size: 9px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); color: hsl(var(--muted-foreground)); }
+    .cart-item-info h3 { font-family: var(--font-body); font-size: 14px; font-weight: 400; line-height: 1.4; }
+    .ci-meta { font-size: 12px; color: hsl(var(--muted-foreground)); font-weight: 300; }
+    .ci-bottom { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+
+    .qty { display: inline-flex; align-items: center; border: 1px solid hsla(40, 10%, 88%, 0.7); height: 36px; }
+    .qty button { width: 32px; height: 100%; font-size: 14px; font-weight: 300; color: hsl(var(--foreground)); transition: color .2s; }
+    .qty button:hover { color: hsl(var(--gold)); }
+    .qty button:disabled { color: hsl(var(--muted-foreground)); cursor: not-allowed; }
+    .qty-val { min-width: 32px; text-align: center; font-size: 13px; font-weight: 400; }
+
+    .ci-remove {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+        color: hsl(var(--muted-foreground)); transition: color .25s;
+        display: inline-flex; align-items: center; gap: 6px;
+        cursor: pointer; background: none; border: none; font-family: inherit;
+    }
+    .ci-remove:hover { color: hsl(var(--foreground)); }
+    .ci-remove svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    .cart-item-price { text-align: right; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    .ci-total { font-family: var(--font-heading); font-size: 17px; letter-spacing: 0.03em; }
+    .ci-unit { font-size: 11px; color: hsl(var(--muted-foreground)); font-weight: 300; }
+
+    .cart-summary { background: hsla(40, 15%, 93%, 0.4); padding: 32px 24px; }
+    @media (min-width: 640px) { .cart-summary { padding: 40px 32px; } }
+    @media (min-width: 1024px) { .cart-summary { position: sticky; top: 96px; } }
+    .cart-summary .eyebrow { margin-bottom: 8px; }
+    .cart-summary h2 { font-family: var(--font-heading); font-size: 24px; letter-spacing: 0.04em; margin-bottom: 24px; }
+
+    .summary-row { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; font-size: 14px; font-weight: 300; }
+    .summary-row .lbl { color: hsl(var(--muted-foreground)); }
+    .summary-row .val.free { color: hsl(var(--gold)); }
+    .summary-divider { height: 1px; background: hsla(40, 10%, 88%, 0.7); margin: 8px 0; }
+    .summary-total { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0 24px; }
+    .summary-total .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl); }
+    .summary-total .val { font-family: var(--font-heading); font-size: 26px; letter-spacing: 0.03em; }
+
+    .summary-note {
+        background: hsla(39, 42%, 60%, 0.08); border-left: 2px solid hsl(var(--gold));
+        padding: 12px 14px; font-size: 12px; font-weight: 300; line-height: 1.5;
+        margin-bottom: 20px; color: hsl(var(--foreground));
+    }
+
+    .summary-btn { width: 100%; min-width: 0; }
+    .summary-secure {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin-top: 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+        color: hsl(var(--muted-foreground));
+    }
+    .summary-secure svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    .promo-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .promo-row input {
+        flex: 1; height: 44px; padding: 0 14px;
+        background: hsl(var(--background)); border: 1px solid hsla(40, 10%, 88%, 0.7);
+        font-family: var(--font-body); font-size: 13px; font-weight: 300;
+        color: hsl(var(--foreground)); outline: none; transition: border-color .2s;
+    }
+    .promo-row input:focus { border-color: hsl(var(--foreground)); }
+    .promo-row button {
+        height: 44px; padding: 0 18px; font-size: 10px; text-transform: uppercase;
+        letter-spacing: var(--tracking-wide-xl); background: transparent;
+        border: 1px solid hsla(40, 10%, 88%, 0.7); transition: border-color .2s, color .2s;
+        cursor: pointer; font-family: inherit;
+    }
+    .promo-row button:hover { border-color: hsl(var(--foreground)); color: hsl(var(--gold)); }
+
+    .continue-link {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 32px;
+        font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wide-xl);
+        color: hsl(var(--muted-foreground)); transition: color .25s;
+    }
+    .continue-link:hover { color: hsl(var(--gold)); }
+    .continue-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
 </style>
 {% endblock %}
 
@@ -42,11 +125,195 @@
         <h1 class="h-page">Кошик</h1>
     </div>
 
-    <div class="cart-empty">
+    <div class="cart-empty" id="cartEmpty" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M5 7h14l-1.5 12a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
         <h2>Кошик порожній</h2>
         <p>Додайте товари з каталогу</p>
         <a href="/catalog" class="btn btn-primary">Перейти до каталогу</a>
     </div>
+
+    <div class="cart-layout" id="cartLayout">
+        <div>
+            <p class="cart-count-line" id="cartCountLine">0 товарів у кошику</p>
+            <div class="cart-items" id="cartItems"></div>
+            <a href="/catalog" class="continue-link">
+                <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Продовжити покупки
+            </a>
+        </div>
+
+        <aside class="cart-summary anim-fade-up">
+            <p class="eyebrow">Підсумок</p>
+            <h2>Ваше замовлення</h2>
+            <div class="summary-row">
+                <span class="lbl">Товари (<span id="sumCount">0</span>)</span>
+                <span class="val" id="sumSubtotal">0 ₴</span>
+            </div>
+            <div class="summary-row">
+                <span class="lbl">Доставка</span>
+                <span class="val" id="sumShipping">120 ₴</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-total">
+                <span class="lbl">До сплати</span>
+                <span class="val" id="sumTotal">0 ₴</span>
+            </div>
+            <div class="summary-note" id="shippingNote"></div>
+            <div class="promo-row">
+                <input type="text" placeholder="Промокод" id="promoInput">
+                <button type="button" id="promoApply">Застосувати</button>
+            </div>
+            <a href="/checkout" class="btn btn-primary summary-btn">Оформити замовлення</a>
+            <div class="summary-secure">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Безпечна оплата
+            </div>
+        </aside>
+    </div>
 </div>
+
+<script>
+(function() {
+    var FREE_SHIP = 1500, SHIP_COST = 120, KEY = 'sahara_cart';
+
+    function fmt(n) { return Math.round(n).toLocaleString('uk-UA') + ' ₴'; }
+    function pluralItems(n) {
+        if (n % 10 === 1 && n % 100 !== 11) return n + ' товар у кошику';
+        if ([2,3,4].includes(n%10) && ![12,13,14].includes(n%100)) return n + ' товари у кошику';
+        return n + ' товарів у кошику';
+    }
+    function loadCart() {
+        try { var r = JSON.parse(localStorage.getItem(KEY)); return Array.isArray(r) ? r : []; }
+        catch(e) { return []; }
+    }
+    function saveCart(c) { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch(e) {} }
+
+    var cart = loadCart();
+
+    function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+    function svgEl(ns, tag, attrs) {
+        var e = document.createElementNS(ns, tag);
+        for (var k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+    }
+    function makeXIcon() {
+        var ns = 'http://www.w3.org/2000/svg';
+        var s = svgEl(ns, 'svg', {viewBox:'0 0 24 24'});
+        s.append(svgEl(ns,'line',{x1:6,y1:6,x2:18,y2:18}), svgEl(ns,'line',{x1:18,y1:6,x2:6,y2:18}));
+        return s;
+    }
+
+    function buildItem(item) {
+        var row = el('div', 'cart-item'); row.dataset.id = item.id;
+
+        var imgLink = el('a', 'cart-item-img');
+        imgLink.href = '/product/' + encodeURIComponent(item.id);
+        var img = el('img'); img.src = item.img || ''; img.alt = item.title;
+        img.onerror = function(){ this.style.display='none'; };
+        imgLink.appendChild(img);
+
+        var info = el('div', 'cart-item-info');
+        var cat = el('span', 'ci-cat'); cat.textContent = item.category || '';
+        var title = el('h3'); title.textContent = item.title;
+        var meta = el('p', 'ci-meta');
+        var parts = [];
+        if (item.size) parts.push('Розмір: ' + item.size);
+        if (item.color) parts.push('Колір: ' + item.color);
+        meta.textContent = parts.join(' · ');
+
+        var bottom = el('div', 'ci-bottom');
+        var qtyWrap = el('div', 'qty');
+        var dec = el('button'); dec.type='button'; dec.textContent='−'; dec.setAttribute('aria-label','Зменшити');
+        if (item.qty <= 1) dec.disabled = true;
+        var qtyVal = el('span', 'qty-val'); qtyVal.textContent = item.qty;
+        var inc = el('button'); inc.type='button'; inc.textContent='+'; inc.setAttribute('aria-label','Збільшити');
+        qtyWrap.append(dec, qtyVal, inc);
+
+        var rm = el('button', 'ci-remove'); rm.type='button'; rm.setAttribute('aria-label','Видалити');
+        rm.appendChild(makeXIcon());
+        rm.appendChild(document.createTextNode(' Видалити'));
+
+        bottom.append(qtyWrap, rm);
+        info.append(cat, title, meta, bottom);
+
+        var priceCol = el('div', 'cart-item-price');
+        var total = el('span', 'ci-total'); total.textContent = fmt(item.price * item.qty);
+        priceCol.appendChild(total);
+        if (item.qty > 1) {
+            var unit = el('span', 'ci-unit'); unit.textContent = fmt(item.price) + ' × ' + item.qty;
+            priceCol.appendChild(unit);
+        }
+
+        row.append(imgLink, info, priceCol);
+        dec.addEventListener('click', function(){ updateQty(item.id, -1); });
+        inc.addEventListener('click', function(){ updateQty(item.id, +1); });
+        rm.addEventListener('click', function(){ removeItem(item.id); });
+        return row;
+    }
+
+    function clearEl(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+    function render() {
+        var empty = document.getElementById('cartEmpty');
+        var layout = document.getElementById('cartLayout');
+        var list = document.getElementById('cartItems');
+        var countLn = document.getElementById('cartCountLine');
+
+        if (cart.length === 0) {
+            empty.style.display = 'block'; layout.style.display = 'none'; return;
+        }
+        empty.style.display = 'none'; layout.style.display = '';
+
+        var totalQty = cart.reduce(function(s,i){ return s+i.qty; }, 0);
+        countLn.textContent = pluralItems(totalQty);
+
+        clearEl(list);
+        cart.forEach(function(item){ list.appendChild(buildItem(item)); });
+        renderSummary();
+    }
+
+    function renderSummary() {
+        var subtotal = cart.reduce(function(s,i){ return s + i.price * i.qty; }, 0);
+        var totalQty = cart.reduce(function(s,i){ return s+i.qty; }, 0);
+        var shipping = subtotal >= FREE_SHIP ? 0 : SHIP_COST;
+
+        document.getElementById('sumCount').textContent = totalQty;
+        document.getElementById('sumSubtotal').textContent = fmt(subtotal);
+
+        var shipEl = document.getElementById('sumShipping');
+        if (shipping === 0) { shipEl.textContent = 'безкоштовно'; shipEl.classList.add('free'); }
+        else { shipEl.textContent = fmt(shipping); shipEl.classList.remove('free'); }
+
+        document.getElementById('sumTotal').textContent = fmt(subtotal + shipping);
+
+        var note = document.getElementById('shippingNote');
+        if (subtotal >= FREE_SHIP) {
+            note.textContent = 'Безкоштовна доставка — ваше замовлення відповідає умовам';
+        } else {
+            note.textContent = 'Додайте товарів ще на ' + fmt(FREE_SHIP - subtotal) + ', щоб отримати безкоштовну доставку';
+        }
+    }
+
+    function updateQty(id, delta) {
+        var it = cart.find(function(i){ return i.id === id; });
+        if (!it) return;
+        it.qty = Math.max(1, it.qty + delta);
+        saveCart(cart); render();
+    }
+    function removeItem(id) {
+        cart = cart.filter(function(i){ return i.id !== id; });
+        saveCart(cart); render();
+    }
+
+    document.getElementById('promoApply').addEventListener('click', function() {
+        var inp = document.getElementById('promoInput');
+        if (inp.value.trim()) {
+            inp.value = ''; inp.placeholder = 'Промокод не знайдено';
+            setTimeout(function(){ inp.placeholder = 'Промокод'; }, 2000);
+        }
+    });
+
+    render();
+})();
+</script>
 {% endblock %}

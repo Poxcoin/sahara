@@ -1,0 +1,5198 @@
+[
+  {
+    "article": "2SAM10120NK"
+  },
+  {
+    "article": "2SAM10125NK"
+  },
+  {
+    "article": "2SAM30002NK"
+  },
+  {
+    "article": "2SAM30006NK"
+  },
+  {
+    "article": "2SAM30013NK"
+  },
+  {
+    "article": "2SAM30023NK"
+  },
+  {
+    "article": "2SAM70008NK"
+  },
+  {
+    "article": "3SAM00008HW"
+  },
+  {
+    "article": "3SAM10005NK"
+  },
+  {
+    "article": "3SAM10009NK"
+  },
+  {
+    "article": "3SAM10011NK"
+  },
+  {
+    "article": "3SAM10013NK"
+  },
+  {
+    "article": "3SAM10015NK"
+  },
+  {
+    "article": "3SAM10019NK"
+  },
+  {
+    "article": "3SAM10021HK"
+  },
+  {
+    "article": "3SAM10025NK"
+  },
+  {
+    "article": "3SAM10026NK"
+  },
+  {
+    "article": "3SAM10030HK"
+  },
+  {
+    "article": "3SAM10030NK"
+  },
+  {
+    "article": "3SAM10042NK"
+  },
+  {
+    "article": "3SAM10043NK"
+  },
+  {
+    "article": "3SAM10052NK"
+  },
+  {
+    "article": "3SAM10057NK"
+  },
+  {
+    "article": "3SAM10068NK"
+  },
+  {
+    "article": "3SAM10069HK"
+  },
+  {
+    "article": "3SAM10070HK"
+  },
+  {
+    "article": "3SAM10075NK"
+  },
+  {
+    "article": "3SAM10078NK"
+  },
+  {
+    "article": "3SAM10085NK"
+  },
+  {
+    "article": "3SAM10086NK"
+  },
+  {
+    "article": "3SAM10087NK"
+  },
+  {
+    "article": "3SAM10088NK"
+  },
+  {
+    "article": "3SAM10090NK"
+  },
+  {
+    "article": "3SAM10093NK"
+  },
+  {
+    "article": "3SAM10103NK"
+  },
+  {
+    "article": "3SAM10111NK"
+  },
+  {
+    "article": "3SAM10116NK"
+  },
+  {
+    "article": "3SAM10133NK"
+  },
+  {
+    "article": "3SAM10159NK"
+  },
+  {
+    "article": "3SAM10161NK"
+  },
+  {
+    "article": "3SAM10167NK"
+  },
+  {
+    "article": "3SAM10168NK"
+  },
+  {
+    "article": "3SAM10170NK"
+  },
+  {
+    "article": "3SAM10171NK"
+  },
+  {
+    "article": "3SAM10943HK"
+  },
+  {
+    "article": "3SAM10977HK"
+  },
+  {
+    "article": "3SAM11130HK"
+  },
+  {
+    "article": "3SAM30002NK"
+  },
+  {
+    "article": "3SAM30007NK"
+  },
+  {
+    "article": "3SAM30009NK"
+  },
+  {
+    "article": "3SAM30010NK"
+  },
+  {
+    "article": "3SAM30015NK"
+  },
+  {
+    "article": "3SAM30023NK"
+  },
+  {
+    "article": "3SAM30024NK"
+  },
+  {
+    "article": "3SAM30029NK"
+  },
+  {
+    "article": "3SAM30033NK"
+  },
+  {
+    "article": "3SAM30034NK"
+  },
+  {
+    "article": "3SAM30046NK"
+  },
+  {
+    "article": "3SAM40087NK"
+  },
+  {
+    "article": "3SAM40140NK"
+  },
+  {
+    "article": "3SAM40397HW"
+  },
+  {
+    "article": "3SAM40402HW"
+  },
+  {
+    "article": "3SAM60131HW"
+  },
+  {
+    "article": "3SAM60178HW"
+  },
+  {
+    "article": "3SAM60405HW"
+  },
+  {
+    "article": "3SAM60497HW"
+  },
+  {
+    "article": "3SAM70001MK"
+  },
+  {
+    "article": "3WAM00029HW"
+  },
+  {
+    "article": "3WAM10026NK"
+  },
+  {
+    "article": "3WAM10075NK"
+  },
+  {
+    "article": "3WAM40066NK"
+  },
+  {
+    "article": "3WAM50038ND"
+  },
+  {
+    "article": "4SAM10002MK"
+  },
+  {
+    "article": "4SAM10003NK"
+  },
+  {
+    "article": "4SAM10004MK"
+  },
+  {
+    "article": "4SAM10006MK"
+  },
+  {
+    "article": "4SAM10007NK"
+  },
+  {
+    "article": "4SAM10017NK"
+  },
+  {
+    "article": "4SAM10024NK"
+  },
+  {
+    "article": "4SAM10025HK"
+  },
+  {
+    "article": "4SAM10035HK"
+  },
+  {
+    "article": "4SAM10036NK"
+  },
+  {
+    "article": "4SAM10044HK"
+  },
+  {
+    "article": "4SAM10050MK"
+  },
+  {
+    "article": "4SAM10051NK"
+  },
+  {
+    "article": "4SAM10053NK"
+  },
+  {
+    "article": "4SAM10056HK"
+  },
+  {
+    "article": "4SAM10056NK"
+  },
+  {
+    "article": "4SAM10065HK"
+  },
+  {
+    "article": "4SAM10068NK"
+  },
+  {
+    "article": "4SAM10069HK"
+  },
+  {
+    "article": "4SAM10071HK"
+  },
+  {
+    "article": "4SAM10075HK"
+  },
+  {
+    "article": "4SAM10076HK"
+  },
+  {
+    "article": "4SAM10084HK"
+  },
+  {
+    "article": "4SAM10085HK"
+  },
+  {
+    "article": "4SAM10089MK"
+  },
+  {
+    "article": "4SAM10093MK"
+  },
+  {
+    "article": "4SAM10098MK"
+  },
+  {
+    "article": "4SAM10109MK"
+  },
+  {
+    "article": "4SAM10111MK"
+  },
+  {
+    "article": "4SAM10113MK"
+  },
+  {
+    "article": "4SAM10122MK"
+  },
+  {
+    "article": "4SAM10124HK"
+  },
+  {
+    "article": "4SAM10137HK"
+  },
+  {
+    "article": "4SAM10139MK"
+  },
+  {
+    "article": "4SAM10146MK"
+  },
+  {
+    "article": "4SAM10152HK"
+  },
+  {
+    "article": "4SAM10156HK"
+  },
+  {
+    "article": "4SAM10159MK"
+  },
+  {
+    "article": "4SAM10160HK"
+  },
+  {
+    "article": "4SAM10160MK"
+  },
+  {
+    "article": "4SAM10162MK"
+  },
+  {
+    "article": "4SAM10163MK"
+  },
+  {
+    "article": "4SAM10164HK"
+  },
+  {
+    "article": "4SAM10166HK"
+  },
+  {
+    "article": "4SAM10169HK"
+  },
+  {
+    "article": "4SAM10172HK"
+  },
+  {
+    "article": "4SAM10181HK"
+  },
+  {
+    "article": "4SAM10182HK"
+  },
+  {
+    "article": "4SAM10185HK"
+  },
+  {
+    "article": "4SAM10189NK"
+  },
+  {
+    "article": "4SAM10206HK"
+  },
+  {
+    "article": "4SAM10212MK"
+  },
+  {
+    "article": "4SAM10224HK"
+  },
+  {
+    "article": "4SAM10228HK"
+  },
+  {
+    "article": "4SAM10244HK"
+  },
+  {
+    "article": "4SAM10245HK"
+  },
+  {
+    "article": "4SAM10248HK"
+  },
+  {
+    "article": "4SAM10261HK"
+  },
+  {
+    "article": "4SAM10263HK"
+  },
+  {
+    "article": "4SAM10264MK"
+  },
+  {
+    "article": "4SAM10265MK"
+  },
+  {
+    "article": "4SAM10271HK"
+  },
+  {
+    "article": "4SAM10273HK"
+  },
+  {
+    "article": "4SAM10302HK"
+  },
+  {
+    "article": "4SAM10302MK"
+  },
+  {
+    "article": "4SAM10314HK"
+  },
+  {
+    "article": "4SAM10316HK"
+  },
+  {
+    "article": "4SAM10318HK"
+  },
+  {
+    "article": "4SAM10322HK"
+  },
+  {
+    "article": "4SAM10323HK"
+  },
+  {
+    "article": "4SAM10325HK"
+  },
+  {
+    "article": "4SAM10326HK"
+  },
+  {
+    "article": "4SAM10331HK"
+  },
+  {
+    "article": "4SAM10331MK"
+  },
+  {
+    "article": "4SAM10332HK"
+  },
+  {
+    "article": "4SAM10333HK"
+  },
+  {
+    "article": "4SAM10334HK"
+  },
+  {
+    "article": "4SAM10334MK"
+  },
+  {
+    "article": "4SAM10338MK"
+  },
+  {
+    "article": "4SAM10345HK"
+  },
+  {
+    "article": "4SAM10355MK"
+  },
+  {
+    "article": "4SAM10356MK"
+  },
+  {
+    "article": "4SAM10357HK"
+  },
+  {
+    "article": "4SAM10358MK"
+  },
+  {
+    "article": "4SAM10360MK"
+  },
+  {
+    "article": "4SAM10372HK"
+  },
+  {
+    "article": "4SAM10376HK"
+  },
+  {
+    "article": "4SAM10528HK"
+  },
+  {
+    "article": "4SAM10622HK"
+  },
+  {
+    "article": "4SAM10624HK"
+  },
+  {
+    "article": "4SAM10651HK"
+  },
+  {
+    "article": "4SAM10697HK"
+  },
+  {
+    "article": "4SAM10702HK"
+  },
+  {
+    "article": "4SAM10728HK"
+  },
+  {
+    "article": "4SAM10735HK"
+  },
+  {
+    "article": "4SAM10737HK"
+  },
+  {
+    "article": "4SAM10738HK"
+  },
+  {
+    "article": "4SAM10741HK"
+  },
+  {
+    "article": "4SAM10744HK"
+  },
+  {
+    "article": "4SAM10751HK"
+  },
+  {
+    "article": "4SAM10754HK"
+  },
+  {
+    "article": "4SAM10757HK"
+  },
+  {
+    "article": "4SAM10758HK"
+  },
+  {
+    "article": "4SAM10763HK"
+  },
+  {
+    "article": "4SAM10764HK"
+  },
+  {
+    "article": "4SAM10771HK"
+  },
+  {
+    "article": "4SAM10773HK"
+  },
+  {
+    "article": "4SAM10777HK"
+  },
+  {
+    "article": "4SAM10789HK"
+  },
+  {
+    "article": "4SAM10821HK"
+  },
+  {
+    "article": "4SAM10835HK"
+  },
+  {
+    "article": "4SAM10842HK"
+  },
+  {
+    "article": "4SAM10843HK"
+  },
+  {
+    "article": "4SAM10848HK"
+  },
+  {
+    "article": "4SAM10867HK"
+  },
+  {
+    "article": "4SAM10899HK"
+  },
+  {
+    "article": "4SAM10900HK"
+  },
+  {
+    "article": "4SAM10917HK"
+  },
+  {
+    "article": "4SAM10940HK"
+  },
+  {
+    "article": "4SAM10943HK"
+  },
+  {
+    "article": "4SAM10949HK"
+  },
+  {
+    "article": "4SAM10956HK"
+  },
+  {
+    "article": "4SAM10974HK"
+  },
+  {
+    "article": "4SAM10982HK"
+  },
+  {
+    "article": "4SAM10984HK"
+  },
+  {
+    "article": "4SAM10987HK"
+  },
+  {
+    "article": "4SAM11007HK"
+  },
+  {
+    "article": "4SAM11014HK"
+  },
+  {
+    "article": "4SAM11039HK"
+  },
+  {
+    "article": "4SAM11050HK"
+  },
+  {
+    "article": "4SAM11051HK"
+  },
+  {
+    "article": "4SAM11052HK"
+  },
+  {
+    "article": "4SAM11062HK"
+  },
+  {
+    "article": "4SAM11064HK"
+  },
+  {
+    "article": "4SAM11066HK"
+  },
+  {
+    "article": "4SAM11072HK"
+  },
+  {
+    "article": "4SAM11077HK"
+  },
+  {
+    "article": "4SAM11078HK"
+  },
+  {
+    "article": "4SAM11082HK"
+  },
+  {
+    "article": "4SAM11084HK"
+  },
+  {
+    "article": "4SAM11086HK"
+  },
+  {
+    "article": "4SAM11093HK"
+  },
+  {
+    "article": "4SAM11094HK"
+  },
+  {
+    "article": "4SAM11097HK"
+  },
+  {
+    "article": "4SAM11098HK"
+  },
+  {
+    "article": "4SAM30005MK"
+  },
+  {
+    "article": "4SAM30006MK"
+  },
+  {
+    "article": "4SAM30007MK"
+  },
+  {
+    "article": "4SAM30011NK"
+  },
+  {
+    "article": "4SAM30012NK"
+  },
+  {
+    "article": "4SAM30014NK"
+  },
+  {
+    "article": "4SAM30018MK"
+  },
+  {
+    "article": "4SAM30024MK"
+  },
+  {
+    "article": "4SAM30031MK"
+  },
+  {
+    "article": "4SAM30032MK"
+  },
+  {
+    "article": "4SAM30033MK"
+  },
+  {
+    "article": "4SAM30034MK"
+  },
+  {
+    "article": "4SAM30038MK"
+  },
+  {
+    "article": "4SAM30040MK"
+  },
+  {
+    "article": "4SAM30041MK"
+  },
+  {
+    "article": "4SAM30042MK"
+  },
+  {
+    "article": "4SAM30043MK"
+  },
+  {
+    "article": "4SAM30044MK"
+  },
+  {
+    "article": "4SAM30045MK"
+  },
+  {
+    "article": "4SAM30046MK"
+  },
+  {
+    "article": "4SAM30047MK"
+  },
+  {
+    "article": "4SAM30048MK"
+  },
+  {
+    "article": "4SAM30049MK"
+  },
+  {
+    "article": "4SAM40003NK"
+  },
+  {
+    "article": "4SAM40004NK"
+  },
+  {
+    "article": "4SAM40029NW"
+  },
+  {
+    "article": "4SAM40031NW"
+  },
+  {
+    "article": "4SAM40043NK"
+  },
+  {
+    "article": "4SAM40044NK"
+  },
+  {
+    "article": "4SAM40045NK"
+  },
+  {
+    "article": "4SAM40048HW"
+  },
+  {
+    "article": "4SAM40051HW"
+  },
+  {
+    "article": "4SAM40053HW"
+  },
+  {
+    "article": "4SAM40075HW"
+  },
+  {
+    "article": "4SAM40088NW"
+  },
+  {
+    "article": "4SAM40089HW"
+  },
+  {
+    "article": "4SAM40106HW"
+  },
+  {
+    "article": "4SAM40112HW"
+  },
+  {
+    "article": "4SAM40126HW"
+  },
+  {
+    "article": "4SAM40150HW"
+  },
+  {
+    "article": "4SAM40170HW"
+  },
+  {
+    "article": "4SAM40172HW"
+  },
+  {
+    "article": "4SAM40174HW"
+  },
+  {
+    "article": "4SAM40177HW"
+  },
+  {
+    "article": "4SAM40202HW"
+  },
+  {
+    "article": "4SAM40225HW"
+  },
+  {
+    "article": "4SAM40232HW"
+  },
+  {
+    "article": "4SAM50001MK"
+  },
+  {
+    "article": "4SAM50024ND"
+  },
+  {
+    "article": "4SAM50033ND"
+  },
+  {
+    "article": "4SAM50034ND"
+  },
+  {
+    "article": "4SAM50036ND"
+  },
+  {
+    "article": "4SAM50040HW"
+  },
+  {
+    "article": "4SAM50041HW"
+  },
+  {
+    "article": "4SAM50047HW"
+  },
+  {
+    "article": "4SAM50048HW"
+  },
+  {
+    "article": "4SAM60001HW"
+  },
+  {
+    "article": "4SAM60002HW"
+  },
+  {
+    "article": "4SAM60003HK"
+  },
+  {
+    "article": "4SAM60004HK"
+  },
+  {
+    "article": "4SAM60004HW"
+  },
+  {
+    "article": "4SAM60012HK"
+  },
+  {
+    "article": "4SAM60017HK"
+  },
+  {
+    "article": "4SAM60018HK"
+  },
+  {
+    "article": "4SAM60021HW"
+  },
+  {
+    "article": "4SAM60034HW"
+  },
+  {
+    "article": "4SAM60036HW"
+  },
+  {
+    "article": "4SAM60040HW"
+  },
+  {
+    "article": "4SAM60049HW"
+  },
+  {
+    "article": "4SAM60055HW"
+  },
+  {
+    "article": "4SAM60072HW"
+  },
+  {
+    "article": "4SAM60074HW"
+  },
+  {
+    "article": "4SAM60075HW"
+  },
+  {
+    "article": "4SAM60077HW"
+  },
+  {
+    "article": "4SAM60078HW"
+  },
+  {
+    "article": "4SAM60081HW"
+  },
+  {
+    "article": "4SAM60082HW"
+  },
+  {
+    "article": "4SAM60083HW"
+  },
+  {
+    "article": "4SAM60084HW"
+  },
+  {
+    "article": "4SAM60088HW"
+  },
+  {
+    "article": "4SAM60089HW"
+  },
+  {
+    "article": "4SAM60090HW"
+  },
+  {
+    "article": "4SAM60091HW"
+  },
+  {
+    "article": "4SAM60092HW"
+  },
+  {
+    "article": "4SAM60093HW"
+  },
+  {
+    "article": "4SAM60094HW"
+  },
+  {
+    "article": "4SAM60095HW"
+  },
+  {
+    "article": "4SAM60096HW"
+  },
+  {
+    "article": "4SAM60097HW"
+  },
+  {
+    "article": "4SAM60098HW"
+  },
+  {
+    "article": "4SAM60099HW"
+  },
+  {
+    "article": "4SAM60100HW"
+  },
+  {
+    "article": "4SAM60101HW"
+  },
+  {
+    "article": "4SAM60102HW"
+  },
+  {
+    "article": "4SAM60103HW"
+  },
+  {
+    "article": "4SAM60104HW"
+  },
+  {
+    "article": "4SAM60105HW"
+  },
+  {
+    "article": "4SAM60145HW"
+  },
+  {
+    "article": "4SAM60156HW"
+  },
+  {
+    "article": "4SAM60157HW"
+  },
+  {
+    "article": "4SAM60170HW"
+  },
+  {
+    "article": "4SAM60171HW"
+  },
+  {
+    "article": "4SAM60194HW"
+  },
+  {
+    "article": "4SAM60196HW"
+  },
+  {
+    "article": "4SAM60197HW"
+  },
+  {
+    "article": "4SAM60203HW"
+  },
+  {
+    "article": "4SAM60204HW"
+  },
+  {
+    "article": "4SAM60205HW"
+  },
+  {
+    "article": "4SAM60206HW"
+  },
+  {
+    "article": "4SAM60207HW"
+  },
+  {
+    "article": "4SAM60210HW"
+  },
+  {
+    "article": "4SAM60213HW"
+  },
+  {
+    "article": "4SAM60215HW"
+  },
+  {
+    "article": "4SAM60216HW"
+  },
+  {
+    "article": "4SAM60230HW"
+  },
+  {
+    "article": "4SAM60233HW"
+  },
+  {
+    "article": "4SAM60242HW"
+  },
+  {
+    "article": "4SAM60252HW"
+  },
+  {
+    "article": "4SAM60253HW"
+  },
+  {
+    "article": "4SAM60260HW"
+  },
+  {
+    "article": "4SAM60261HW"
+  },
+  {
+    "article": "4SAM60271HW"
+  },
+  {
+    "article": "4SAM60273HW"
+  },
+  {
+    "article": "4SAM60274HW"
+  },
+  {
+    "article": "4SAM60275HW"
+  },
+  {
+    "article": "4SAM60277HW"
+  },
+  {
+    "article": "4SAM60279HW"
+  },
+  {
+    "article": "4SAM60282HW"
+  },
+  {
+    "article": "4SAM60283HW"
+  },
+  {
+    "article": "4SAM60284HW"
+  },
+  {
+    "article": "4SAM60286HW"
+  },
+  {
+    "article": "4SAM60289HW"
+  },
+  {
+    "article": "4SAM60294HW"
+  },
+  {
+    "article": "4SAM60295HW"
+  },
+  {
+    "article": "4SAM60297HW"
+  },
+  {
+    "article": "4SAM60299HW"
+  },
+  {
+    "article": "4SAM60303HW"
+  },
+  {
+    "article": "4SAM60312HW"
+  },
+  {
+    "article": "4SAM60313HW"
+  },
+  {
+    "article": "4SAM60314HW"
+  },
+  {
+    "article": "4SAM60315HW"
+  },
+  {
+    "article": "4SAM70001MK"
+  },
+  {
+    "article": "4SAM70003MK"
+  },
+  {
+    "article": "4SAM70008HT"
+  },
+  {
+    "article": "4SAM70010HT"
+  },
+  {
+    "article": "4SAM70012HT"
+  },
+  {
+    "article": "4SAM70017HT"
+  },
+  {
+    "article": "4SAM70018HT"
+  },
+  {
+    "article": "4SAM70096MK"
+  },
+  {
+    "article": "4SAM70140MK"
+  },
+  {
+    "article": "4SAM70141MK"
+  },
+  {
+    "article": "4WAM00019HW"
+  },
+  {
+    "article": "4WAM10125NK"
+  },
+  {
+    "article": "4WAM10148NK"
+  },
+  {
+    "article": "4WAM10167HK"
+  },
+  {
+    "article": "4WAM10270HK"
+  },
+  {
+    "article": "4WAM10308HK"
+  },
+  {
+    "article": "4WAM20006NW"
+  },
+  {
+    "article": "4WAM20021HW"
+  },
+  {
+    "article": "4WAM20035HW"
+  },
+  {
+    "article": "4WAM20038HW"
+  },
+  {
+    "article": "4WAM20047HW"
+  },
+  {
+    "article": "4WAM20048HW"
+  },
+  {
+    "article": "4WAM20063HW"
+  },
+  {
+    "article": "4WAM20066HW"
+  },
+  {
+    "article": "4WAM20091HW"
+  },
+  {
+    "article": "4WAM20194HW"
+  },
+  {
+    "article": "4WAM20199HW"
+  },
+  {
+    "article": "4WAM30007MK"
+  },
+  {
+    "article": "4WAM30023NK"
+  },
+  {
+    "article": "4WAM40006HW"
+  },
+  {
+    "article": "4WAM40113MK"
+  },
+  {
+    "article": "4WAM40123HW"
+  },
+  {
+    "article": "4WAM40164NK"
+  },
+  {
+    "article": "4WAM50030MK"
+  },
+  {
+    "article": "4WAM50030ND"
+  },
+  {
+    "article": "4WAM60231HW"
+  },
+  {
+    "article": "4WAM60236HW"
+  },
+  {
+    "article": "4WAM60246HW"
+  },
+  {
+    "article": "4WAM60248HW"
+  },
+  {
+    "article": "4WAM70112MK"
+  },
+  {
+    "article": "4WAM70168MK"
+  },
+  {
+    "article": "4WAM70215MK"
+  },
+  {
+    "article": "4WAM70217MK"
+  },
+  {
+    "article": "4WAM70218MK"
+  },
+  {
+    "article": "4WAM70226MK"
+  },
+  {
+    "article": "4WAM70246MK"
+  },
+  {
+    "article": "4WAM70252MK"
+  },
+  {
+    "article": "4WAM70256MK"
+  },
+  {
+    "article": "4WAM70336MK"
+  },
+  {
+    "article": "4WAM70347MK"
+  },
+  {
+    "article": "4WAM70368MK"
+  },
+  {
+    "article": "4WAM70370MK"
+  },
+  {
+    "article": "4WAM70376MK"
+  },
+  {
+    "article": "4WAM70380MK"
+  },
+  {
+    "article": "4WAM70394MK"
+  },
+  {
+    "article": "4WAM70396MK"
+  },
+  {
+    "article": "4WAM70400MK"
+  },
+  {
+    "article": "4WAM70437MK"
+  },
+  {
+    "article": "4WAM70450MK"
+  },
+  {
+    "article": "4WAM70453MK"
+  },
+  {
+    "article": "4WAM70455MK"
+  },
+  {
+    "article": "4WAM70465MK"
+  },
+  {
+    "article": "4WAM70485MK"
+  },
+  {
+    "article": "4WAM70487MK"
+  },
+  {
+    "article": "4WAM70507MK"
+  },
+  {
+    "article": "5SAM10001HK"
+  },
+  {
+    "article": "5SAM10001MK"
+  },
+  {
+    "article": "5SAM10002HK"
+  },
+  {
+    "article": "5SAM10002MK"
+  },
+  {
+    "article": "5SAM10003HK"
+  },
+  {
+    "article": "5SAM10003MK"
+  },
+  {
+    "article": "5SAM10004HK"
+  },
+  {
+    "article": "5SAM10005HK"
+  },
+  {
+    "article": "5SAM10006HK"
+  },
+  {
+    "article": "5SAM10006MK"
+  },
+  {
+    "article": "5SAM10007MK"
+  },
+  {
+    "article": "5SAM10008HK"
+  },
+  {
+    "article": "5SAM10009HK"
+  },
+  {
+    "article": "5SAM10009NK"
+  },
+  {
+    "article": "5SAM10010HK"
+  },
+  {
+    "article": "5SAM10010MK"
+  },
+  {
+    "article": "5SAM10012HK"
+  },
+  {
+    "article": "5SAM10013HK"
+  },
+  {
+    "article": "5SAM10013NK"
+  },
+  {
+    "article": "5SAM10014HK"
+  },
+  {
+    "article": "5SAM10014MK"
+  },
+  {
+    "article": "5SAM10014NK"
+  },
+  {
+    "article": "5SAM10015MK"
+  },
+  {
+    "article": "5SAM10015NK"
+  },
+  {
+    "article": "5SAM10016HK"
+  },
+  {
+    "article": "5SAM10016MK"
+  },
+  {
+    "article": "5SAM10016NK"
+  },
+  {
+    "article": "5SAM10017HK"
+  },
+  {
+    "article": "5SAM10017MK"
+  },
+  {
+    "article": "5SAM10018NK"
+  },
+  {
+    "article": "5SAM10019NK"
+  },
+  {
+    "article": "5SAM10020NK"
+  },
+  {
+    "article": "5SAM10021HK"
+  },
+  {
+    "article": "5SAM10021NK"
+  },
+  {
+    "article": "5SAM10022HK"
+  },
+  {
+    "article": "5SAM10023HK"
+  },
+  {
+    "article": "5SAM10023MK"
+  },
+  {
+    "article": "5SAM10024MK"
+  },
+  {
+    "article": "5SAM10025HK"
+  },
+  {
+    "article": "5SAM10025MK"
+  },
+  {
+    "article": "5SAM10025NK"
+  },
+  {
+    "article": "5SAM10026MK"
+  },
+  {
+    "article": "5SAM10027MK"
+  },
+  {
+    "article": "5SAM10028MK"
+  },
+  {
+    "article": "5SAM10029HK"
+  },
+  {
+    "article": "5SAM10029MK"
+  },
+  {
+    "article": "5SAM10030HK"
+  },
+  {
+    "article": "5SAM10030MK"
+  },
+  {
+    "article": "5SAM10031HK"
+  },
+  {
+    "article": "5SAM10032HK"
+  },
+  {
+    "article": "5SAM10032MK"
+  },
+  {
+    "article": "5SAM10033HK"
+  },
+  {
+    "article": "5SAM10033MK"
+  },
+  {
+    "article": "5SAM10034HK"
+  },
+  {
+    "article": "5SAM10034NK"
+  },
+  {
+    "article": "5SAM10035HK"
+  },
+  {
+    "article": "5SAM10037HK"
+  },
+  {
+    "article": "5SAM10038HK"
+  },
+  {
+    "article": "5SAM10038MK"
+  },
+  {
+    "article": "5SAM10038NK"
+  },
+  {
+    "article": "5SAM10039HK"
+  },
+  {
+    "article": "5SAM10039MK"
+  },
+  {
+    "article": "5SAM10041HK"
+  },
+  {
+    "article": "5SAM10042HK"
+  },
+  {
+    "article": "5SAM10043HK"
+  },
+  {
+    "article": "5SAM10043NK"
+  },
+  {
+    "article": "5SAM10044HK"
+  },
+  {
+    "article": "5SAM10044NK"
+  },
+  {
+    "article": "5SAM10047HK"
+  },
+  {
+    "article": "5SAM10048NK"
+  },
+  {
+    "article": "5SAM10051HK"
+  },
+  {
+    "article": "5SAM10054HK"
+  },
+  {
+    "article": "5SAM10055HK"
+  },
+  {
+    "article": "5SAM10056NK"
+  },
+  {
+    "article": "5SAM10057HK"
+  },
+  {
+    "article": "5SAM10057NK"
+  },
+  {
+    "article": "5SAM10058HK"
+  },
+  {
+    "article": "5SAM10058MK"
+  },
+  {
+    "article": "5SAM10058NK"
+  },
+  {
+    "article": "5SAM10059HK"
+  },
+  {
+    "article": "5SAM10059MK"
+  },
+  {
+    "article": "5SAM10059NK"
+  },
+  {
+    "article": "5SAM10060HK"
+  },
+  {
+    "article": "5SAM10062HK"
+  },
+  {
+    "article": "5SAM10062NK"
+  },
+  {
+    "article": "5SAM10063HK"
+  },
+  {
+    "article": "5SAM10064HK"
+  },
+  {
+    "article": "5SAM10064MK"
+  },
+  {
+    "article": "5SAM10065HK"
+  },
+  {
+    "article": "5SAM10067MK"
+  },
+  {
+    "article": "5SAM10069HK"
+  },
+  {
+    "article": "5SAM10069NK"
+  },
+  {
+    "article": "5SAM10071HK"
+  },
+  {
+    "article": "5SAM10072HK"
+  },
+  {
+    "article": "5SAM10074HK"
+  },
+  {
+    "article": "5SAM10075HK"
+  },
+  {
+    "article": "5SAM10075NK"
+  },
+  {
+    "article": "5SAM10076NK"
+  },
+  {
+    "article": "5SAM10077NK"
+  },
+  {
+    "article": "5SAM10078HK"
+  },
+  {
+    "article": "5SAM10081HK"
+  },
+  {
+    "article": "5SAM10083HK"
+  },
+  {
+    "article": "5SAM10083NK"
+  },
+  {
+    "article": "5SAM10085NK"
+  },
+  {
+    "article": "5SAM10086HK"
+  },
+  {
+    "article": "5SAM10088HK"
+  },
+  {
+    "article": "5SAM10089HK"
+  },
+  {
+    "article": "5SAM10089NK"
+  },
+  {
+    "article": "5SAM10093MK"
+  },
+  {
+    "article": "5SAM10098NK"
+  },
+  {
+    "article": "5SAM10099HK"
+  },
+  {
+    "article": "5SAM10099NK"
+  },
+  {
+    "article": "5SAM10100HK"
+  },
+  {
+    "article": "5SAM10100NK"
+  },
+  {
+    "article": "5SAM10101HK"
+  },
+  {
+    "article": "5SAM10105HK"
+  },
+  {
+    "article": "5SAM10109HK"
+  },
+  {
+    "article": "5SAM10110HK"
+  },
+  {
+    "article": "5SAM10111HK"
+  },
+  {
+    "article": "5SAM10113HK"
+  },
+  {
+    "article": "5SAM10114MK"
+  },
+  {
+    "article": "5SAM10115MK"
+  },
+  {
+    "article": "5SAM10116HK"
+  },
+  {
+    "article": "5SAM10120HK"
+  },
+  {
+    "article": "5SAM10120NK"
+  },
+  {
+    "article": "5SAM10121HK"
+  },
+  {
+    "article": "5SAM10122HK"
+  },
+  {
+    "article": "5SAM10123HK"
+  },
+  {
+    "article": "5SAM10124HK"
+  },
+  {
+    "article": "5SAM10125NK"
+  },
+  {
+    "article": "5SAM10126HK"
+  },
+  {
+    "article": "5SAM10127HK"
+  },
+  {
+    "article": "5SAM10127NK"
+  },
+  {
+    "article": "5SAM10128HK"
+  },
+  {
+    "article": "5SAM10129HK"
+  },
+  {
+    "article": "5SAM10130NK"
+  },
+  {
+    "article": "5SAM10132HK"
+  },
+  {
+    "article": "5SAM10133NK"
+  },
+  {
+    "article": "5SAM10135HK"
+  },
+  {
+    "article": "5SAM10135NK"
+  },
+  {
+    "article": "5SAM10136MK"
+  },
+  {
+    "article": "5SAM10137NK"
+  },
+  {
+    "article": "5SAM10138HK"
+  },
+  {
+    "article": "5SAM10139HK"
+  },
+  {
+    "article": "5SAM10140HK"
+  },
+  {
+    "article": "5SAM10140NK"
+  },
+  {
+    "article": "5SAM10141HK"
+  },
+  {
+    "article": "5SAM10142HK"
+  },
+  {
+    "article": "5SAM10142MK"
+  },
+  {
+    "article": "5SAM10143HK"
+  },
+  {
+    "article": "5SAM10143NK"
+  },
+  {
+    "article": "5SAM10144HK"
+  },
+  {
+    "article": "5SAM10144MK"
+  },
+  {
+    "article": "5SAM10145HK"
+  },
+  {
+    "article": "5SAM10146NK"
+  },
+  {
+    "article": "5SAM10147HK"
+  },
+  {
+    "article": "5SAM10150HK"
+  },
+  {
+    "article": "5SAM10155NK"
+  },
+  {
+    "article": "5SAM10156MK"
+  },
+  {
+    "article": "5SAM10157NK"
+  },
+  {
+    "article": "5SAM10158NK"
+  },
+  {
+    "article": "5SAM10168NK"
+  },
+  {
+    "article": "5SAM10175NK"
+  },
+  {
+    "article": "5SAM10178HK"
+  },
+  {
+    "article": "5SAM10178NK"
+  },
+  {
+    "article": "5SAM10179HK"
+  },
+  {
+    "article": "5SAM10180HK"
+  },
+  {
+    "article": "5SAM10181HK"
+  },
+  {
+    "article": "5SAM10182HK"
+  },
+  {
+    "article": "5SAM10183HK"
+  },
+  {
+    "article": "5SAM10184HK"
+  },
+  {
+    "article": "5SAM10187NK"
+  },
+  {
+    "article": "5SAM10189HK"
+  },
+  {
+    "article": "5SAM10190HK"
+  },
+  {
+    "article": "5SAM10191HK"
+  },
+  {
+    "article": "5SAM10240HK"
+  },
+  {
+    "article": "5SAM10241HK"
+  },
+  {
+    "article": "5SAM10242HK"
+  },
+  {
+    "article": "5SAM10243HK"
+  },
+  {
+    "article": "5SAM10244HK"
+  },
+  {
+    "article": "5SAM10245HK"
+  },
+  {
+    "article": "5SAM10248HK"
+  },
+  {
+    "article": "5SAM10250HK"
+  },
+  {
+    "article": "5SAM10253HK"
+  },
+  {
+    "article": "5SAM10254HK"
+  },
+  {
+    "article": "5SAM10255HK"
+  },
+  {
+    "article": "5SAM10258HK"
+  },
+  {
+    "article": "5SAM10259HK"
+  },
+  {
+    "article": "5SAM10260HK"
+  },
+  {
+    "article": "5SAM10262HK"
+  },
+  {
+    "article": "5SAM10263HK"
+  },
+  {
+    "article": "5SAM10264HK"
+  },
+  {
+    "article": "5SAM10267HK"
+  },
+  {
+    "article": "5SAM10269HK"
+  },
+  {
+    "article": "5SAM10272HK"
+  },
+  {
+    "article": "5SAM10278HK"
+  },
+  {
+    "article": "5SAM10279HK"
+  },
+  {
+    "article": "5SAM10318HK"
+  },
+  {
+    "article": "5SAM10328HK"
+  },
+  {
+    "article": "5SAM10335HK"
+  },
+  {
+    "article": "5SAM10337HK"
+  },
+  {
+    "article": "5SAM10345HK"
+  },
+  {
+    "article": "5SAM10346HK"
+  },
+  {
+    "article": "5SAM10347HK"
+  },
+  {
+    "article": "5SAM10348HK"
+  },
+  {
+    "article": "5SAM10360HK"
+  },
+  {
+    "article": "5SAM10363HK"
+  },
+  {
+    "article": "5SAM10369HK"
+  },
+  {
+    "article": "5SAM10371HK"
+  },
+  {
+    "article": "5SAM10378HK"
+  },
+  {
+    "article": "5SAM10380HK"
+  },
+  {
+    "article": "5SAM10381HK"
+  },
+  {
+    "article": "5SAM10383HK"
+  },
+  {
+    "article": "5SAM10390HK"
+  },
+  {
+    "article": "5SAM10393HK"
+  },
+  {
+    "article": "5SAM10398HK"
+  },
+  {
+    "article": "5SAM10403HK"
+  },
+  {
+    "article": "5SAM10414HK"
+  },
+  {
+    "article": "5SAM10415HK"
+  },
+  {
+    "article": "5SAM10416HK"
+  },
+  {
+    "article": "5SAM10421HK"
+  },
+  {
+    "article": "5SAM10425HK"
+  },
+  {
+    "article": "5SAM10427HK"
+  },
+  {
+    "article": "5SAM10431HK"
+  },
+  {
+    "article": "5SAM10433HK"
+  },
+  {
+    "article": "5SAM10438HK"
+  },
+  {
+    "article": "5SAM10440HK"
+  },
+  {
+    "article": "5SAM10449HK"
+  },
+  {
+    "article": "5SAM10480HK"
+  },
+  {
+    "article": "5SAM10481HK"
+  },
+  {
+    "article": "5SAM10482HK"
+  },
+  {
+    "article": "5SAM10483HK"
+  },
+  {
+    "article": "5SAM10486HK"
+  },
+  {
+    "article": "5SAM10490HK"
+  },
+  {
+    "article": "5SAM20001NW"
+  },
+  {
+    "article": "5SAM20002HW"
+  },
+  {
+    "article": "5SAM20008HW"
+  },
+  {
+    "article": "5SAM20022HW"
+  },
+  {
+    "article": "5SAM30002MK"
+  },
+  {
+    "article": "5SAM30014MK"
+  },
+  {
+    "article": "5SAM30015MK"
+  },
+  {
+    "article": "5SAM30018MK"
+  },
+  {
+    "article": "5SAM30019MK"
+  },
+  {
+    "article": "5SAM30020MK"
+  },
+  {
+    "article": "5SAM30022MK"
+  },
+  {
+    "article": "5SAM30023MK"
+  },
+  {
+    "article": "5SAM30024MK"
+  },
+  {
+    "article": "5SAM30026MK"
+  },
+  {
+    "article": "5SAM40003NW"
+  },
+  {
+    "article": "5SAM40004HW"
+  },
+  {
+    "article": "5SAM40010HK"
+  },
+  {
+    "article": "5SAM40010HW"
+  },
+  {
+    "article": "5SAM40011HW"
+  },
+  {
+    "article": "5SAM40012MK"
+  },
+  {
+    "article": "5SAM40012NW"
+  },
+  {
+    "article": "5SAM40013MK"
+  },
+  {
+    "article": "5SAM40013NK"
+  },
+  {
+    "article": "5SAM40014NK"
+  },
+  {
+    "article": "5SAM40015NK"
+  },
+  {
+    "article": "5SAM40017HK"
+  },
+  {
+    "article": "5SAM40017MK"
+  },
+  {
+    "article": "5SAM40018AA"
+  },
+  {
+    "article": "5SAM40018HK"
+  },
+  {
+    "article": "5SAM40018MK"
+  },
+  {
+    "article": "5SAM40022HK"
+  },
+  {
+    "article": "5SAM40023HW"
+  },
+  {
+    "article": "5SAM40023MK"
+  },
+  {
+    "article": "5SAM40024HW"
+  },
+  {
+    "article": "5SAM40025MK"
+  },
+  {
+    "article": "5SAM40026HW"
+  },
+  {
+    "article": "5SAM40027HK"
+  },
+  {
+    "article": "5SAM40029HW"
+  },
+  {
+    "article": "5SAM40030HW"
+  },
+  {
+    "article": "5SAM40031HW"
+  },
+  {
+    "article": "5SAM40032AA"
+  },
+  {
+    "article": "5SAM40032HW"
+  },
+  {
+    "article": "5SAM40034HW"
+  },
+  {
+    "article": "5SAM40036HW"
+  },
+  {
+    "article": "5SAM40037HW"
+  },
+  {
+    "article": "5SAM40039MK"
+  },
+  {
+    "article": "5SAM40040MK"
+  },
+  {
+    "article": "5SAM40041MK"
+  },
+  {
+    "article": "5SAM40041NK"
+  },
+  {
+    "article": "5SAM40042MK"
+  },
+  {
+    "article": "5SAM40043MK"
+  },
+  {
+    "article": "5SAM40044MK"
+  },
+  {
+    "article": "5SAM40045MK"
+  },
+  {
+    "article": "5SAM40053NK"
+  },
+  {
+    "article": "5SAM40072HW"
+  },
+  {
+    "article": "5SAM40073HW"
+  },
+  {
+    "article": "5SAM40075HW"
+  },
+  {
+    "article": "5SAM40088HW"
+  },
+  {
+    "article": "5SAM40089HW"
+  },
+  {
+    "article": "5SAM40090HW"
+  },
+  {
+    "article": "5SAM40098HW"
+  },
+  {
+    "article": "5SAM40099HW"
+  },
+  {
+    "article": "5SAM40108HW"
+  },
+  {
+    "article": "5SAM40129HW"
+  },
+  {
+    "article": "5SAM40139HW"
+  },
+  {
+    "article": "5SAM40140HW"
+  },
+  {
+    "article": "5SAM40146HW"
+  },
+  {
+    "article": "5SAM40149HW"
+  },
+  {
+    "article": "5SAM40150HW"
+  },
+  {
+    "article": "5SAM40158HW"
+  },
+  {
+    "article": "5SAM40161HW"
+  },
+  {
+    "article": "5SAM40164HW"
+  },
+  {
+    "article": "5SAM40166HW"
+  },
+  {
+    "article": "5SAM40177HW"
+  },
+  {
+    "article": "5SAM40181HW"
+  },
+  {
+    "article": "5SAM40182HW"
+  },
+  {
+    "article": "5SAM40183HW"
+  },
+  {
+    "article": "5SAM40192HW"
+  },
+  {
+    "article": "5SAM40194HW"
+  },
+  {
+    "article": "5SAM50001ID"
+  },
+  {
+    "article": "5SAM50002ND"
+  },
+  {
+    "article": "5SAM50003ND"
+  },
+  {
+    "article": "5SAM50005ND"
+  },
+  {
+    "article": "5SAM50006ND"
+  },
+  {
+    "article": "5SAM50009ND"
+  },
+  {
+    "article": "5SAM50011ND"
+  },
+  {
+    "article": "5SAM50021ND"
+  },
+  {
+    "article": "5SAM50023ND"
+  },
+  {
+    "article": "5SAM50024ND"
+  },
+  {
+    "article": "5SAM60001HK"
+  },
+  {
+    "article": "5SAM60001ID"
+  },
+  {
+    "article": "5SAM60002HK"
+  },
+  {
+    "article": "5SAM60003HK"
+  },
+  {
+    "article": "5SAM60003HW"
+  },
+  {
+    "article": "5SAM60004IK"
+  },
+  {
+    "article": "5SAM60005HW"
+  },
+  {
+    "article": "5SAM60006HW"
+  },
+  {
+    "article": "5SAM60007HW"
+  },
+  {
+    "article": "5SAM60009HW"
+  },
+  {
+    "article": "5SAM60010HK"
+  },
+  {
+    "article": "5SAM60010HW"
+  },
+  {
+    "article": "5SAM60011HK"
+  },
+  {
+    "article": "5SAM60012HW"
+  },
+  {
+    "article": "5SAM60014HW"
+  },
+  {
+    "article": "5SAM60015HK"
+  },
+  {
+    "article": "5SAM60015HW"
+  },
+  {
+    "article": "5SAM60016HW"
+  },
+  {
+    "article": "5SAM60017HK"
+  },
+  {
+    "article": "5SAM60018HK"
+  },
+  {
+    "article": "5SAM60019HK"
+  },
+  {
+    "article": "5SAM60020HK"
+  },
+  {
+    "article": "5SAM60021HK"
+  },
+  {
+    "article": "5SAM60022HW"
+  },
+  {
+    "article": "5SAM60023HW"
+  },
+  {
+    "article": "5SAM60024HW"
+  },
+  {
+    "article": "5SAM60026HW"
+  },
+  {
+    "article": "5SAM60027HW"
+  },
+  {
+    "article": "5SAM60055HW"
+  },
+  {
+    "article": "5SAM60056HW"
+  },
+  {
+    "article": "5SAM60070HW"
+  },
+  {
+    "article": "5SAM60083HW"
+  },
+  {
+    "article": "5SAM60085HW"
+  },
+  {
+    "article": "5SAM60094HW"
+  },
+  {
+    "article": "5SAM60095HW"
+  },
+  {
+    "article": "5SAM60098HW"
+  },
+  {
+    "article": "5SAM60100HW"
+  },
+  {
+    "article": "5SAM60123HW"
+  },
+  {
+    "article": "5SAM60150HW"
+  },
+  {
+    "article": "5SAM60155HW"
+  },
+  {
+    "article": "5SAM60156HW"
+  },
+  {
+    "article": "5SAM60172HW"
+  },
+  {
+    "article": "5SAM60174HW"
+  },
+  {
+    "article": "5SAM60176HW"
+  },
+  {
+    "article": "5SAM60177HW"
+  },
+  {
+    "article": "5SAM60180HW"
+  },
+  {
+    "article": "5SAM60194HW"
+  },
+  {
+    "article": "5SAM60207HW"
+  },
+  {
+    "article": "5SAM60208HW"
+  },
+  {
+    "article": "5SAM60209HW"
+  },
+  {
+    "article": "5SAM60211HW"
+  },
+  {
+    "article": "5SAM60213HW"
+  },
+  {
+    "article": "5SAM60217HW"
+  },
+  {
+    "article": "5SAM60219HW"
+  },
+  {
+    "article": "5SAM60220HW"
+  },
+  {
+    "article": "5SAM60223HW"
+  },
+  {
+    "article": "5SAM60225HW"
+  },
+  {
+    "article": "5SAM70001HT"
+  },
+  {
+    "article": "5SAM70002HT"
+  },
+  {
+    "article": "5SAM70002MK"
+  },
+  {
+    "article": "5SAM70003HT"
+  },
+  {
+    "article": "5SAM70003MK"
+  },
+  {
+    "article": "5SAM70004MK"
+  },
+  {
+    "article": "5SAM70005HT"
+  },
+  {
+    "article": "5SAM70005MK"
+  },
+  {
+    "article": "5SAM70006HT"
+  },
+  {
+    "article": "5SAM70006MK"
+  },
+  {
+    "article": "5SAM70007MK"
+  },
+  {
+    "article": "5SAM70008MK"
+  },
+  {
+    "article": "5SAM70009MK"
+  },
+  {
+    "article": "5SAM70010HT"
+  },
+  {
+    "article": "5SAM70011HT"
+  },
+  {
+    "article": "5SAM70012HT"
+  },
+  {
+    "article": "5SAM70012MK"
+  },
+  {
+    "article": "5SAM70014HT"
+  },
+  {
+    "article": "5SAM70015HT"
+  },
+  {
+    "article": "5SAM70016HT"
+  },
+  {
+    "article": "5SAM70017HT"
+  },
+  {
+    "article": "5SAM70018HT"
+  },
+  {
+    "article": "5SAM70019HT"
+  },
+  {
+    "article": "5SAM70020HT"
+  },
+  {
+    "article": "5SAM70022HT"
+  },
+  {
+    "article": "5SAM70023HT"
+  },
+  {
+    "article": "5SAM70024HT"
+  },
+  {
+    "article": "5SAM70026HT"
+  },
+  {
+    "article": "5SAM70027HT"
+  },
+  {
+    "article": "5SAM70028HT"
+  },
+  {
+    "article": "5SAM70029HT"
+  },
+  {
+    "article": "5SAM70031HT"
+  },
+  {
+    "article": "5SAM70032MK"
+  },
+  {
+    "article": "5SAM70033HT"
+  },
+  {
+    "article": "5SAM70033MK"
+  },
+  {
+    "article": "5SAM70034MK"
+  },
+  {
+    "article": "5SAM70036MK"
+  },
+  {
+    "article": "5SAM70038MK"
+  },
+  {
+    "article": "5SAM70039MK"
+  },
+  {
+    "article": "5SAM70042MK"
+  },
+  {
+    "article": "5SAM70043MK"
+  },
+  {
+    "article": "5SAM70044MK"
+  },
+  {
+    "article": "5SAM70045MK"
+  },
+  {
+    "article": "5SAM70046HT"
+  },
+  {
+    "article": "5SAM70046MK"
+  },
+  {
+    "article": "5SAM70047HT"
+  },
+  {
+    "article": "5SAM70048MK"
+  },
+  {
+    "article": "5SAM70049HT"
+  },
+  {
+    "article": "5SAM70063HT"
+  },
+  {
+    "article": "5SAM80039AA"
+  },
+  {
+    "article": "5WAM00003HW"
+  },
+  {
+    "article": "5WAM00005HW"
+  },
+  {
+    "article": "5WAM00012HW"
+  },
+  {
+    "article": "5WAM00014HW"
+  },
+  {
+    "article": "5WAM00015HW"
+  },
+  {
+    "article": "5WAM00021HW"
+  },
+  {
+    "article": "5WAM00027HW"
+  },
+  {
+    "article": "5WAM00028HW"
+  },
+  {
+    "article": "5WAM10018NK"
+  },
+  {
+    "article": "5WAM10030NK"
+  },
+  {
+    "article": "5WAM10041HK"
+  },
+  {
+    "article": "5WAM10049HK"
+  },
+  {
+    "article": "5WAM10052NK"
+  },
+  {
+    "article": "5WAM10057HK"
+  },
+  {
+    "article": "5WAM10061HK"
+  },
+  {
+    "article": "5WAM10075HK"
+  },
+  {
+    "article": "5WAM10076HK"
+  },
+  {
+    "article": "5WAM10077HK"
+  },
+  {
+    "article": "5WAM10081HK"
+  },
+  {
+    "article": "5WAM10082HK"
+  },
+  {
+    "article": "5WAM10087HK"
+  },
+  {
+    "article": "5WAM10091HK"
+  },
+  {
+    "article": "5WAM10093HK"
+  },
+  {
+    "article": "5WAM10112NK"
+  },
+  {
+    "article": "5WAM10121HK"
+  },
+  {
+    "article": "5WAM10123HK"
+  },
+  {
+    "article": "5WAM10165HK"
+  },
+  {
+    "article": "5WAM10171HK"
+  },
+  {
+    "article": "5WAM10173HK"
+  },
+  {
+    "article": "5WAM10176HK"
+  },
+  {
+    "article": "5WAM10177HK"
+  },
+  {
+    "article": "5WAM10178HK"
+  },
+  {
+    "article": "5WAM10180HK"
+  },
+  {
+    "article": "5WAM10181HK"
+  },
+  {
+    "article": "5WAM10184HK"
+  },
+  {
+    "article": "5WAM10185HK"
+  },
+  {
+    "article": "5WAM10186HK"
+  },
+  {
+    "article": "5WAM10187HK"
+  },
+  {
+    "article": "5WAM10188HK"
+  },
+  {
+    "article": "5WAM10189HK"
+  },
+  {
+    "article": "5WAM10191HK"
+  },
+  {
+    "article": "5WAM10192HK"
+  },
+  {
+    "article": "5WAM10197HK"
+  },
+  {
+    "article": "5WAM10201HK"
+  },
+  {
+    "article": "5WAM10216HK"
+  },
+  {
+    "article": "5WAM10220HK"
+  },
+  {
+    "article": "5WAM10223HK"
+  },
+  {
+    "article": "5WAM10227HK"
+  },
+  {
+    "article": "5WAM10228HK"
+  },
+  {
+    "article": "5WAM20008NK"
+  },
+  {
+    "article": "5WAM20033HW"
+  },
+  {
+    "article": "5WAM20034HW"
+  },
+  {
+    "article": "5WAM20037HW"
+  },
+  {
+    "article": "5WAM20046HW"
+  },
+  {
+    "article": "5WAM20047HW"
+  },
+  {
+    "article": "5WAM20057HW"
+  },
+  {
+    "article": "5WAM20059HW"
+  },
+  {
+    "article": "5WAM20065HW"
+  },
+  {
+    "article": "5WAM20067HW"
+  },
+  {
+    "article": "5WAM20071HW"
+  },
+  {
+    "article": "5WAM20072HW"
+  },
+  {
+    "article": "5WAM20081HW"
+  },
+  {
+    "article": "5WAM20087HW"
+  },
+  {
+    "article": "5WAM20093HW"
+  },
+  {
+    "article": "5WAM20103HW"
+  },
+  {
+    "article": "5WAM20118HW"
+  },
+  {
+    "article": "5WAM20119HW"
+  },
+  {
+    "article": "5WAM20121HW"
+  },
+  {
+    "article": "5WAM20123HW"
+  },
+  {
+    "article": "5WAM20125HW"
+  },
+  {
+    "article": "5WAM20147HW"
+  },
+  {
+    "article": "5WAM20149HW"
+  },
+  {
+    "article": "5WAM20150HW"
+  },
+  {
+    "article": "5WAM20161HW"
+  },
+  {
+    "article": "5WAM20162HW"
+  },
+  {
+    "article": "5WAM40001HK"
+  },
+  {
+    "article": "5WAM40006NW"
+  },
+  {
+    "article": "5WAM40007HK"
+  },
+  {
+    "article": "5WAM40009HK"
+  },
+  {
+    "article": "5WAM40022HW"
+  },
+  {
+    "article": "5WAM40025HK"
+  },
+  {
+    "article": "5WAM40025HW"
+  },
+  {
+    "article": "5WAM40027HK"
+  },
+  {
+    "article": "5WAM40027MK"
+  },
+  {
+    "article": "5WAM40028NK"
+  },
+  {
+    "article": "5WAM40031NW"
+  },
+  {
+    "article": "5WAM40033HW"
+  },
+  {
+    "article": "5WAM40037HW"
+  },
+  {
+    "article": "5WAM40038HW"
+  },
+  {
+    "article": "5WAM40043HW"
+  },
+  {
+    "article": "5WAM40045AA"
+  },
+  {
+    "article": "5WAM40050NW"
+  },
+  {
+    "article": "5WAM40055HW"
+  },
+  {
+    "article": "5WAM40056HW"
+  },
+  {
+    "article": "5WAM40057HW"
+  },
+  {
+    "article": "5WAM40058NK"
+  },
+  {
+    "article": "5WAM40065MK"
+  },
+  {
+    "article": "5WAM40066MK"
+  },
+  {
+    "article": "5WAM40067MK"
+  },
+  {
+    "article": "5WAM40072HW"
+  },
+  {
+    "article": "5WAM40080HW"
+  },
+  {
+    "article": "5WAM40082HW"
+  },
+  {
+    "article": "5WAM40087HW"
+  },
+  {
+    "article": "5WAM40094HW"
+  },
+  {
+    "article": "5WAM40094NK"
+  },
+  {
+    "article": "5WAM40095NK"
+  },
+  {
+    "article": "5WAM40125NK"
+  },
+  {
+    "article": "5WAM50001ND"
+  },
+  {
+    "article": "5WAM50005HW"
+  },
+  {
+    "article": "5WAM50016ID"
+  },
+  {
+    "article": "5WAM50017HW"
+  },
+  {
+    "article": "5WAM50024MK"
+  },
+  {
+    "article": "5WAM50026MK"
+  },
+  {
+    "article": "5WAM50034HW"
+  },
+  {
+    "article": "5WAM60002HW"
+  },
+  {
+    "article": "5WAM60005HW"
+  },
+  {
+    "article": "5WAM60007HW"
+  },
+  {
+    "article": "5WAM60012HK"
+  },
+  {
+    "article": "5WAM60014HK"
+  },
+  {
+    "article": "5WAM60023HW"
+  },
+  {
+    "article": "5WAM60051HW"
+  },
+  {
+    "article": "5WAM60054HW"
+  },
+  {
+    "article": "5WAM60056HW"
+  },
+  {
+    "article": "5WAM60058HW"
+  },
+  {
+    "article": "5WAM60064HW"
+  },
+  {
+    "article": "5WAM60074HW"
+  },
+  {
+    "article": "5WAM60075HW"
+  },
+  {
+    "article": "5WAM60078HW"
+  },
+  {
+    "article": "5WAM60088HW"
+  },
+  {
+    "article": "5WAM60090HW"
+  },
+  {
+    "article": "5WAM60093HW"
+  },
+  {
+    "article": "5WAM60094HW"
+  },
+  {
+    "article": "5WAM60095HW"
+  },
+  {
+    "article": "5WAM60096HW"
+  },
+  {
+    "article": "5WAM60097HW"
+  },
+  {
+    "article": "5WAM60107HW"
+  },
+  {
+    "article": "5WAM60109HW"
+  },
+  {
+    "article": "5WAM60110HW"
+  },
+  {
+    "article": "5WAM60114HW"
+  },
+  {
+    "article": "5WAM60115HW"
+  },
+  {
+    "article": "5WAM60121HW"
+  },
+  {
+    "article": "5WAM60122HW"
+  },
+  {
+    "article": "5WAM60125HW"
+  },
+  {
+    "article": "5WAM60128HW"
+  },
+  {
+    "article": "5WAM60133HW"
+  },
+  {
+    "article": "5WAM60138HW"
+  },
+  {
+    "article": "5WAM60144HW"
+  },
+  {
+    "article": "5WAM60145HW"
+  },
+  {
+    "article": "5WAM60151HW"
+  },
+  {
+    "article": "5WAM60155HW"
+  },
+  {
+    "article": "5WAM60156HW"
+  },
+  {
+    "article": "5WAM60159HW"
+  },
+  {
+    "article": "5WAM60160HW"
+  },
+  {
+    "article": "5WAM60162HW"
+  },
+  {
+    "article": "5WAM60163HW"
+  },
+  {
+    "article": "5WAM60165HW"
+  },
+  {
+    "article": "5WAM60170HW"
+  },
+  {
+    "article": "5WAM60172HW"
+  },
+  {
+    "article": "5WAM60174HW"
+  },
+  {
+    "article": "5WAM60175HW"
+  },
+  {
+    "article": "5WAM60176HW"
+  },
+  {
+    "article": "5WAM60186HW"
+  },
+  {
+    "article": "5WAM60190HW"
+  },
+  {
+    "article": "5WAM70001MK"
+  },
+  {
+    "article": "5WAM70002MK"
+  },
+  {
+    "article": "5WAM70023MK"
+  },
+  {
+    "article": "5WAM70028MK"
+  },
+  {
+    "article": "5WAM70029MK"
+  },
+  {
+    "article": "5WAM70030MK"
+  },
+  {
+    "article": "5WAM70031MK"
+  },
+  {
+    "article": "5WAM70075MK"
+  },
+  {
+    "article": "5WAM70077MK"
+  },
+  {
+    "article": "5WAM70084MK"
+  },
+  {
+    "article": "5WAM70090MK"
+  },
+  {
+    "article": "5WAM70091MK"
+  },
+  {
+    "article": "5WAM70095MK"
+  },
+  {
+    "article": "5WAM70162MK"
+  },
+  {
+    "article": "5WAM70168MK"
+  },
+  {
+    "article": "5WAM70169MK"
+  },
+  {
+    "article": "5WAM70170MK"
+  },
+  {
+    "article": "5WAM70171MK"
+  },
+  {
+    "article": "5WAM70175MK"
+  },
+  {
+    "article": "5WAM70184MK"
+  },
+  {
+    "article": "5WAM70185MK"
+  },
+  {
+    "article": "5WAM70191MK"
+  },
+  {
+    "article": "5WAM70210MK"
+  },
+  {
+    "article": "5WAM70217MK"
+  },
+  {
+    "article": "5WAM70219MK"
+  },
+  {
+    "article": "5WAM70222MK"
+  },
+  {
+    "article": "5WAM70224MK"
+  },
+  {
+    "article": "5WAM70232MK"
+  },
+  {
+    "article": "5WAM70234MK"
+  },
+  {
+    "article": "5WAM70235MK"
+  },
+  {
+    "article": "5WAM70237MK"
+  },
+  {
+    "article": "5WAM70238MK"
+  },
+  {
+    "article": "5WAM70239MK"
+  },
+  {
+    "article": "5WAM70240MK"
+  },
+  {
+    "article": "5WAM70247MK"
+  },
+  {
+    "article": "5WAM70249MK"
+  },
+  {
+    "article": "5WAM70251MK"
+  },
+  {
+    "article": "5WAM70252MK"
+  },
+  {
+    "article": "5WAM70254MK"
+  },
+  {
+    "article": "5WAM70255MK"
+  },
+  {
+    "article": "5WAM70262MK"
+  },
+  {
+    "article": "5WAM70263MK"
+  },
+  {
+    "article": "6SAM10002MK"
+  },
+  {
+    "article": "6SAM10003MK"
+  },
+  {
+    "article": "6SAM10004MK"
+  },
+  {
+    "article": "6SAM10005MK"
+  },
+  {
+    "article": "6SAM10006MK"
+  },
+  {
+    "article": "6SAM10007MK"
+  },
+  {
+    "article": "6SAM10009MK"
+  },
+  {
+    "article": "6SAM10010MK"
+  },
+  {
+    "article": "6SAM10011MK"
+  },
+  {
+    "article": "6SAM10012MK"
+  },
+  {
+    "article": "6SAM10015MK"
+  },
+  {
+    "article": "6SAM10016MK"
+  },
+  {
+    "article": "6SAM10017MK"
+  },
+  {
+    "article": "6SAM10018MK"
+  },
+  {
+    "article": "6SAM10020MK"
+  },
+  {
+    "article": "6SAM10021MK"
+  },
+  {
+    "article": "6SAM10022MK"
+  },
+  {
+    "article": "6SAM10023MK"
+  },
+  {
+    "article": "6SAM10024MK"
+  },
+  {
+    "article": "6SAM10027MK"
+  },
+  {
+    "article": "6SAM10028MK"
+  },
+  {
+    "article": "6SAM10029MK"
+  },
+  {
+    "article": "6SAM10031MK"
+  },
+  {
+    "article": "6SAM10033MK"
+  },
+  {
+    "article": "6SAM10034MK"
+  },
+  {
+    "article": "6SAM10035MK"
+  },
+  {
+    "article": "6SAM10036MK"
+  },
+  {
+    "article": "6SAM10037MK"
+  },
+  {
+    "article": "6SAM10038MK"
+  },
+  {
+    "article": "6SAM10039MK"
+  },
+  {
+    "article": "6SAM10040MK"
+  },
+  {
+    "article": "6SAM10044MK"
+  },
+  {
+    "article": "6SAM10045MK"
+  },
+  {
+    "article": "6SAM10051MK"
+  },
+  {
+    "article": "6SAM10052MK"
+  },
+  {
+    "article": "6SAM10054MK"
+  },
+  {
+    "article": "6SAM10055MK"
+  },
+  {
+    "article": "6SAM10056MK"
+  },
+  {
+    "article": "6SAM10063MK"
+  },
+  {
+    "article": "6SAM10064MK"
+  },
+  {
+    "article": "6SAM10066MK"
+  },
+  {
+    "article": "6SAM10067MK"
+  },
+  {
+    "article": "6SAM10068MK"
+  },
+  {
+    "article": "6SAM10069MK"
+  },
+  {
+    "article": "6SAM10071MK"
+  },
+  {
+    "article": "6SAM10072MK"
+  },
+  {
+    "article": "6SAM10073MK"
+  },
+  {
+    "article": "6SAM10074MK"
+  },
+  {
+    "article": "6SAM10076MK"
+  },
+  {
+    "article": "6SAM10077MK"
+  },
+  {
+    "article": "6SAM10078MK"
+  },
+  {
+    "article": "6SAM10079MK"
+  },
+  {
+    "article": "6SAM10080MK"
+  },
+  {
+    "article": "6SAM10081MK"
+  },
+  {
+    "article": "6SAM10082MK"
+  },
+  {
+    "article": "6SAM10091MK"
+  },
+  {
+    "article": "6SAM10092MK"
+  },
+  {
+    "article": "6SAM10093MK"
+  },
+  {
+    "article": "6SAM10095MK"
+  },
+  {
+    "article": "6SAM10098MK"
+  },
+  {
+    "article": "6SAM10100MK"
+  },
+  {
+    "article": "6SAM10101MK"
+  },
+  {
+    "article": "6SAM10102MK"
+  },
+  {
+    "article": "6SAM10103MK"
+  },
+  {
+    "article": "6SAM10104MK"
+  },
+  {
+    "article": "6SAM10105MK"
+  },
+  {
+    "article": "6SAM10118MK"
+  },
+  {
+    "article": "6SAM10207MK"
+  },
+  {
+    "article": "6SAM10213MK"
+  },
+  {
+    "article": "6SAM10239MK"
+  },
+  {
+    "article": "6SAM10240MK"
+  },
+  {
+    "article": "6SAM10241MK"
+  },
+  {
+    "article": "6SAM10244MK"
+  },
+  {
+    "article": "6SAM10249MK"
+  },
+  {
+    "article": "6SAM10273MK"
+  },
+  {
+    "article": "6SAM10274MK"
+  },
+  {
+    "article": "6SAM10275MK"
+  },
+  {
+    "article": "6SAM10276MK"
+  },
+  {
+    "article": "6SAM10277MK"
+  },
+  {
+    "article": "6SAM10278MK"
+  },
+  {
+    "article": "6SAM10279MK"
+  },
+  {
+    "article": "6SAM10280MK"
+  },
+  {
+    "article": "6SAM10281MK"
+  },
+  {
+    "article": "6SAM10282MK"
+  },
+  {
+    "article": "6SAM10283MK"
+  },
+  {
+    "article": "6SAM10284MK"
+  },
+  {
+    "article": "6SAM10285MK"
+  },
+  {
+    "article": "6SAM10287MK"
+  },
+  {
+    "article": "6SAM10289MK"
+  },
+  {
+    "article": "6SAM10290MK"
+  },
+  {
+    "article": "6SAM10291MK"
+  },
+  {
+    "article": "6SAM10292MK"
+  },
+  {
+    "article": "6SAM10293MK"
+  },
+  {
+    "article": "6SAM10294MK"
+  },
+  {
+    "article": "6SAM10295MK"
+  },
+  {
+    "article": "6SAM10307MK"
+  },
+  {
+    "article": "6SAM10308MK"
+  },
+  {
+    "article": "6SAM10311MK"
+  },
+  {
+    "article": "6SAM10313MK"
+  },
+  {
+    "article": "6SAM10317MK"
+  },
+  {
+    "article": "6SAM10318MK"
+  },
+  {
+    "article": "6SAM10321MK"
+  },
+  {
+    "article": "6SAM10323MK"
+  },
+  {
+    "article": "6SAM10332MK"
+  },
+  {
+    "article": "6SAM10346MK"
+  },
+  {
+    "article": "6SAM10350MK"
+  },
+  {
+    "article": "6SAM10352MK"
+  },
+  {
+    "article": "6SAM10353MK"
+  },
+  {
+    "article": "6SAM10357MK"
+  },
+  {
+    "article": "6SAM10359MK"
+  },
+  {
+    "article": "6SAM10360MK"
+  },
+  {
+    "article": "6SAM10362MK"
+  },
+  {
+    "article": "6SAM10363MK"
+  },
+  {
+    "article": "6SAM10372MK"
+  },
+  {
+    "article": "6SAM10373MK"
+  },
+  {
+    "article": "6SAM10374MK"
+  },
+  {
+    "article": "6SAM10375MK"
+  },
+  {
+    "article": "6SAM10378MK"
+  },
+  {
+    "article": "6SAM10379MK"
+  },
+  {
+    "article": "6SAM10380MK"
+  },
+  {
+    "article": "6SAM10381MK"
+  },
+  {
+    "article": "6SAM10382MK"
+  },
+  {
+    "article": "6SAM10383MK"
+  },
+  {
+    "article": "6SAM10384MK"
+  },
+  {
+    "article": "6SAM10385MK"
+  },
+  {
+    "article": "6SAM10386MK"
+  },
+  {
+    "article": "6SAM10387MK"
+  },
+  {
+    "article": "6SAM10388MK"
+  },
+  {
+    "article": "6SAM10389MK"
+  },
+  {
+    "article": "6SAM10390MK"
+  },
+  {
+    "article": "6SAM10393MK"
+  },
+  {
+    "article": "6SAM10396MK"
+  },
+  {
+    "article": "6SAM10397MK"
+  },
+  {
+    "article": "6SAM10398MK"
+  },
+  {
+    "article": "6SAM10399MK"
+  },
+  {
+    "article": "6SAM10400MK"
+  },
+  {
+    "article": "6SAM10406MK"
+  },
+  {
+    "article": "6SAM10407MK"
+  },
+  {
+    "article": "6SAM10408MK"
+  },
+  {
+    "article": "6SAM10411MK"
+  },
+  {
+    "article": "6SAM10412MK"
+  },
+  {
+    "article": "6SAM10417MK"
+  },
+  {
+    "article": "6SAM10418MK"
+  },
+  {
+    "article": "6SAM10419MK"
+  },
+  {
+    "article": "6SAM10420MK"
+  },
+  {
+    "article": "6SAM10421MK"
+  },
+  {
+    "article": "6SAM10422MK"
+  },
+  {
+    "article": "6SAM10424MK"
+  },
+  {
+    "article": "6SAM10425MK"
+  },
+  {
+    "article": "6SAM10426MK"
+  },
+  {
+    "article": "6SAM10428MK"
+  },
+  {
+    "article": "6SAM10429MK"
+  },
+  {
+    "article": "6SAM10432MK"
+  },
+  {
+    "article": "6SAM10433MK"
+  },
+  {
+    "article": "6SAM10434MK"
+  },
+  {
+    "article": "6SAM10435MK"
+  },
+  {
+    "article": "6SAM10436MK"
+  },
+  {
+    "article": "6SAM10437MK"
+  },
+  {
+    "article": "6SAM10438MK"
+  },
+  {
+    "article": "6SAM10442MK"
+  },
+  {
+    "article": "6SAM10444MK"
+  },
+  {
+    "article": "6SAM10446MK"
+  },
+  {
+    "article": "6SAM10447MK"
+  },
+  {
+    "article": "6SAM10448MK"
+  },
+  {
+    "article": "6SAM10449MK"
+  },
+  {
+    "article": "6SAM10450MK"
+  },
+  {
+    "article": "6SAM10455MK"
+  },
+  {
+    "article": "6SAM10458MK"
+  },
+  {
+    "article": "6SAM10459MK"
+  },
+  {
+    "article": "6SAM10460MK"
+  },
+  {
+    "article": "6SAM10462MK"
+  },
+  {
+    "article": "6SAM10465MK"
+  },
+  {
+    "article": "6SAM10468MK"
+  },
+  {
+    "article": "6SAM10470MK"
+  },
+  {
+    "article": "6SAM10476MK"
+  },
+  {
+    "article": "6SAM10480MK"
+  },
+  {
+    "article": "6SAM10481MK"
+  },
+  {
+    "article": "6SAM10483MK"
+  },
+  {
+    "article": "6SAM10484MK"
+  },
+  {
+    "article": "6SAM10500MK"
+  },
+  {
+    "article": "6SAM10503MK"
+  },
+  {
+    "article": "6SAM10507MK"
+  },
+  {
+    "article": "6SAM10511MK"
+  },
+  {
+    "article": "6SAM10516MK"
+  },
+  {
+    "article": "6SAM10520MK"
+  },
+  {
+    "article": "6SAM10521MK"
+  },
+  {
+    "article": "6SAM10522MK"
+  },
+  {
+    "article": "6SAM10525MK"
+  },
+  {
+    "article": "6SAM10526MK"
+  },
+  {
+    "article": "6SAM10527MK"
+  },
+  {
+    "article": "6SAM10528MK"
+  },
+  {
+    "article": "6SAM10532MK"
+  },
+  {
+    "article": "6SAM20008IW"
+  },
+  {
+    "article": "6SAM20011IW"
+  },
+  {
+    "article": "6SAM20012IW"
+  },
+  {
+    "article": "6SAM20019HK"
+  },
+  {
+    "article": "6SAM20019HW"
+  },
+  {
+    "article": "6SAM20020HK"
+  },
+  {
+    "article": "6SAM20021HK"
+  },
+  {
+    "article": "6SAM20021HW"
+  },
+  {
+    "article": "6SAM20022HK"
+  },
+  {
+    "article": "6SAM20023HW"
+  },
+  {
+    "article": "6SAM20024HW"
+  },
+  {
+    "article": "6SAM20025HW"
+  },
+  {
+    "article": "6SAM20026HW"
+  },
+  {
+    "article": "6SAM20032NW"
+  },
+  {
+    "article": "6SAM20036NW"
+  },
+  {
+    "article": "6SAM20043HW"
+  },
+  {
+    "article": "6SAM20044HW"
+  },
+  {
+    "article": "6SAM20049HW"
+  },
+  {
+    "article": "6SAM20058HW"
+  },
+  {
+    "article": "6SAM20059HW"
+  },
+  {
+    "article": "6SAM20064HW"
+  },
+  {
+    "article": "6SAM20067HW"
+  },
+  {
+    "article": "6SAM20072HW"
+  },
+  {
+    "article": "6SAM30001MK"
+  },
+  {
+    "article": "6SAM30002MK"
+  },
+  {
+    "article": "6SAM30006MK"
+  },
+  {
+    "article": "6SAM30015MK"
+  },
+  {
+    "article": "6SAM40001HK"
+  },
+  {
+    "article": "6SAM40003HK"
+  },
+  {
+    "article": "6SAM40003HW"
+  },
+  {
+    "article": "6SAM40004HK"
+  },
+  {
+    "article": "6SAM40005HW"
+  },
+  {
+    "article": "6SAM40007HK"
+  },
+  {
+    "article": "6SAM40007HW"
+  },
+  {
+    "article": "6SAM40008HW"
+  },
+  {
+    "article": "6SAM40009HW"
+  },
+  {
+    "article": "6SAM40009IW"
+  },
+  {
+    "article": "6SAM40011NK"
+  },
+  {
+    "article": "6SAM40012HK"
+  },
+  {
+    "article": "6SAM40012HW"
+  },
+  {
+    "article": "6SAM40012NW"
+  },
+  {
+    "article": "6SAM40013HK"
+  },
+  {
+    "article": "6SAM40013HW"
+  },
+  {
+    "article": "6SAM40014HK"
+  },
+  {
+    "article": "6SAM40014HW"
+  },
+  {
+    "article": "6SAM40014NK"
+  },
+  {
+    "article": "6SAM40015HK"
+  },
+  {
+    "article": "6SAM40016HK"
+  },
+  {
+    "article": "6SAM40016NW"
+  },
+  {
+    "article": "6SAM40017HK"
+  },
+  {
+    "article": "6SAM40017IW"
+  },
+  {
+    "article": "6SAM40018HW"
+  },
+  {
+    "article": "6SAM40018IW"
+  },
+  {
+    "article": "6SAM40018NK"
+  },
+  {
+    "article": "6SAM40019IW"
+  },
+  {
+    "article": "6SAM40020IW"
+  },
+  {
+    "article": "6SAM40021MK"
+  },
+  {
+    "article": "6SAM40022NW"
+  },
+  {
+    "article": "6SAM40026MK"
+  },
+  {
+    "article": "6SAM40026NK"
+  },
+  {
+    "article": "6SAM40027NK"
+  },
+  {
+    "article": "6SAM40029MK"
+  },
+  {
+    "article": "6SAM40029NK"
+  },
+  {
+    "article": "6SAM40029NW"
+  },
+  {
+    "article": "6SAM40030MK"
+  },
+  {
+    "article": "6SAM40030NK"
+  },
+  {
+    "article": "6SAM40032HW"
+  },
+  {
+    "article": "6SAM40036NW"
+  },
+  {
+    "article": "6SAM40037MK"
+  },
+  {
+    "article": "6SAM40037NK"
+  },
+  {
+    "article": "6SAM40037NW"
+  },
+  {
+    "article": "6SAM40038MK"
+  },
+  {
+    "article": "6SAM40038NK"
+  },
+  {
+    "article": "6SAM40040MK"
+  },
+  {
+    "article": "6SAM40040NK"
+  },
+  {
+    "article": "6SAM40041MK"
+  },
+  {
+    "article": "6SAM40045NK"
+  },
+  {
+    "article": "6SAM40048HW"
+  },
+  {
+    "article": "6SAM40049HW"
+  },
+  {
+    "article": "6SAM40049NK"
+  },
+  {
+    "article": "6SAM40052HW"
+  },
+  {
+    "article": "6SAM40053HW"
+  },
+  {
+    "article": "6SAM40055HW"
+  },
+  {
+    "article": "6SAM40060NK"
+  },
+  {
+    "article": "6SAM40062NW"
+  },
+  {
+    "article": "6SAM40064NK"
+  },
+  {
+    "article": "6SAM40065NK"
+  },
+  {
+    "article": "6SAM40069NK"
+  },
+  {
+    "article": "6SAM40071NK"
+  },
+  {
+    "article": "6SAM40072NK"
+  },
+  {
+    "article": "6SAM40074HW"
+  },
+  {
+    "article": "6SAM40074NK"
+  },
+  {
+    "article": "6SAM40075NK"
+  },
+  {
+    "article": "6SAM40079HW"
+  },
+  {
+    "article": "6SAM40081HW"
+  },
+  {
+    "article": "6SAM40082HW"
+  },
+  {
+    "article": "6SAM40082NK"
+  },
+  {
+    "article": "6SAM40083HW"
+  },
+  {
+    "article": "6SAM40085HW"
+  },
+  {
+    "article": "6SAM40111HW"
+  },
+  {
+    "article": "6SAM40116NK"
+  },
+  {
+    "article": "6SAM40118HW"
+  },
+  {
+    "article": "6SAM40120HW"
+  },
+  {
+    "article": "6SAM50001ND"
+  },
+  {
+    "article": "6SAM50002ND"
+  },
+  {
+    "article": "6SAM50024ND"
+  },
+  {
+    "article": "6SAM50025ND"
+  },
+  {
+    "article": "6SAM50026ND"
+  },
+  {
+    "article": "6SAM50028ND"
+  },
+  {
+    "article": "6SAM50071ND"
+  },
+  {
+    "article": "6SAM50087ND"
+  },
+  {
+    "article": "6SAM60001HK"
+  },
+  {
+    "article": "6SAM60001IK"
+  },
+  {
+    "article": "6SAM60002HK"
+  },
+  {
+    "article": "6SAM60002IW"
+  },
+  {
+    "article": "6SAM60002NK"
+  },
+  {
+    "article": "6SAM60003HK"
+  },
+  {
+    "article": "6SAM60005HW"
+  },
+  {
+    "article": "6SAM60005NW"
+  },
+  {
+    "article": "6SAM60006HK"
+  },
+  {
+    "article": "6SAM60006HW"
+  },
+  {
+    "article": "6SAM60007HK"
+  },
+  {
+    "article": "6SAM60008HW"
+  },
+  {
+    "article": "6SAM60009HK"
+  },
+  {
+    "article": "6SAM60009HW"
+  },
+  {
+    "article": "6SAM60010HW"
+  },
+  {
+    "article": "6SAM60012HW"
+  },
+  {
+    "article": "6SAM60013HW"
+  },
+  {
+    "article": "6SAM60015HW"
+  },
+  {
+    "article": "6SAM60016HW"
+  },
+  {
+    "article": "6SAM60017HK"
+  },
+  {
+    "article": "6SAM60018HW"
+  },
+  {
+    "article": "6SAM60019HW"
+  },
+  {
+    "article": "6SAM60019NW"
+  },
+  {
+    "article": "6SAM60022HW"
+  },
+  {
+    "article": "6SAM60022IW"
+  },
+  {
+    "article": "6SAM60023HK"
+  },
+  {
+    "article": "6SAM60024HK"
+  },
+  {
+    "article": "6SAM60024HW"
+  },
+  {
+    "article": "6SAM60025HK"
+  },
+  {
+    "article": "6SAM60025IW"
+  },
+  {
+    "article": "6SAM60025NW"
+  },
+  {
+    "article": "6SAM60027HW"
+  },
+  {
+    "article": "6SAM60027IW"
+  },
+  {
+    "article": "6SAM60028HW"
+  },
+  {
+    "article": "6SAM60028NW"
+  },
+  {
+    "article": "6SAM60029HW"
+  },
+  {
+    "article": "6SAM60029IW"
+  },
+  {
+    "article": "6SAM60029NW"
+  },
+  {
+    "article": "6SAM60030HW"
+  },
+  {
+    "article": "6SAM60030IW"
+  },
+  {
+    "article": "6SAM60031HW"
+  },
+  {
+    "article": "6SAM60032HW"
+  },
+  {
+    "article": "6SAM60032IW"
+  },
+  {
+    "article": "6SAM60033HW"
+  },
+  {
+    "article": "6SAM60033NW"
+  },
+  {
+    "article": "6SAM60034NW"
+  },
+  {
+    "article": "6SAM60035HW"
+  },
+  {
+    "article": "6SAM60035NW"
+  },
+  {
+    "article": "6SAM60036NW"
+  },
+  {
+    "article": "6SAM60038HW"
+  },
+  {
+    "article": "6SAM60038IW"
+  },
+  {
+    "article": "6SAM60039HW"
+  },
+  {
+    "article": "6SAM60039IW"
+  },
+  {
+    "article": "6SAM60040HW"
+  },
+  {
+    "article": "6SAM60040NW"
+  },
+  {
+    "article": "6SAM60041HW"
+  },
+  {
+    "article": "6SAM60042HW"
+  },
+  {
+    "article": "6SAM60044HW"
+  },
+  {
+    "article": "6SAM60044IW"
+  },
+  {
+    "article": "6SAM60045HW"
+  },
+  {
+    "article": "6SAM60045IW"
+  },
+  {
+    "article": "6SAM60047NW"
+  },
+  {
+    "article": "6SAM60048HW"
+  },
+  {
+    "article": "6SAM60050NW"
+  },
+  {
+    "article": "6SAM60052HW"
+  },
+  {
+    "article": "6SAM60053HW"
+  },
+  {
+    "article": "6SAM60053NW"
+  },
+  {
+    "article": "6SAM60054HW"
+  },
+  {
+    "article": "6SAM60056HW"
+  },
+  {
+    "article": "6SAM60057HW"
+  },
+  {
+    "article": "6SAM60058HW"
+  },
+  {
+    "article": "6SAM60059HW"
+  },
+  {
+    "article": "6SAM60060HW"
+  },
+  {
+    "article": "6SAM60063HW"
+  },
+  {
+    "article": "6SAM60066HW"
+  },
+  {
+    "article": "6SAM60067HW"
+  },
+  {
+    "article": "6SAM60068HW"
+  },
+  {
+    "article": "6SAM60069HW"
+  },
+  {
+    "article": "6SAM60071HW"
+  },
+  {
+    "article": "6SAM60075NW"
+  },
+  {
+    "article": "6SAM60076HW"
+  },
+  {
+    "article": "6SAM60076NW"
+  },
+  {
+    "article": "6SAM60077HW"
+  },
+  {
+    "article": "6SAM60093HW"
+  },
+  {
+    "article": "6SAM60094HW"
+  },
+  {
+    "article": "6SAM60095HW"
+  },
+  {
+    "article": "6SAM60097HW"
+  },
+  {
+    "article": "6SAM60098HW"
+  },
+  {
+    "article": "6SAM60099HW"
+  },
+  {
+    "article": "6SAM60100HW"
+  },
+  {
+    "article": "6SAM60102HW"
+  },
+  {
+    "article": "6SAM60103HW"
+  },
+  {
+    "article": "6SAM60107HW"
+  },
+  {
+    "article": "6SAM60111HW"
+  },
+  {
+    "article": "6SAM60112HW"
+  },
+  {
+    "article": "6SAM60114HW"
+  },
+  {
+    "article": "6SAM60115HW"
+  },
+  {
+    "article": "6SAM60116HW"
+  },
+  {
+    "article": "6SAM60118HW"
+  },
+  {
+    "article": "6SAM60120HW"
+  },
+  {
+    "article": "6SAM60122HW"
+  },
+  {
+    "article": "6SAM60123HW"
+  },
+  {
+    "article": "6SAM60125HW"
+  },
+  {
+    "article": "6SAM60134HW"
+  },
+  {
+    "article": "6SAM60136HW"
+  },
+  {
+    "article": "6SAM60140HW"
+  },
+  {
+    "article": "6SAM60141HW"
+  },
+  {
+    "article": "6SAM60167HW"
+  },
+  {
+    "article": "6SAM60173HW"
+  },
+  {
+    "article": "6SAM60174HW"
+  },
+  {
+    "article": "6SAM60176HW"
+  },
+  {
+    "article": "6SAM60177HW"
+  },
+  {
+    "article": "6SAM60191HW"
+  },
+  {
+    "article": "6SAM70010MK"
+  },
+  {
+    "article": "6SAM70011MK"
+  },
+  {
+    "article": "6SAM70012MK"
+  },
+  {
+    "article": "6SAM70013MK"
+  },
+  {
+    "article": "6SAM70014MK"
+  },
+  {
+    "article": "6SAM70015NK"
+  },
+  {
+    "article": "6SAM70017MK"
+  },
+  {
+    "article": "6SAM70025MK"
+  },
+  {
+    "article": "6SAM70030MK"
+  },
+  {
+    "article": "6SAM70031MK"
+  },
+  {
+    "article": "6SAM70034MK"
+  },
+  {
+    "article": "6SAM70036MK"
+  },
+  {
+    "article": "6SAM70040MK"
+  },
+  {
+    "article": "6SAM70042MK"
+  },
+  {
+    "article": "6SAM70044MK"
+  },
+  {
+    "article": "6SAM70045MK"
+  },
+  {
+    "article": "6SAM70046MK"
+  },
+  {
+    "article": "6SAM70051MK"
+  },
+  {
+    "article": "6SAM70052MK"
+  },
+  {
+    "article": "6SAM70053MK"
+  },
+  {
+    "article": "6SAM70055MK"
+  },
+  {
+    "article": "6SAM70058MK"
+  },
+  {
+    "article": "6SAM70074MK"
+  },
+  {
+    "article": "6SAM70078MK"
+  },
+  {
+    "article": "6SAM70079MK"
+  },
+  {
+    "article": "6WAM00025HW"
+  },
+  {
+    "article": "6WAM00029HW"
+  },
+  {
+    "article": "6WAM00032HW"
+  },
+  {
+    "article": "6WAM00034HW"
+  },
+  {
+    "article": "6WAM10006NK"
+  },
+  {
+    "article": "6WAM10012NK"
+  },
+  {
+    "article": "6WAM10015NK"
+  },
+  {
+    "article": "6WAM10020NK"
+  },
+  {
+    "article": "6WAM10028HK"
+  },
+  {
+    "article": "6WAM10037MK"
+  },
+  {
+    "article": "6WAM10038MK"
+  },
+  {
+    "article": "6WAM10039MK"
+  },
+  {
+    "article": "6WAM10043MK"
+  },
+  {
+    "article": "6WAM10045MK"
+  },
+  {
+    "article": "6WAM10049NK"
+  },
+  {
+    "article": "6WAM10053HK"
+  },
+  {
+    "article": "6WAM10056HK"
+  },
+  {
+    "article": "6WAM10056NK"
+  },
+  {
+    "article": "6WAM10061HK"
+  },
+  {
+    "article": "6WAM10061NK"
+  },
+  {
+    "article": "6WAM10062HK"
+  },
+  {
+    "article": "6WAM10064NK"
+  },
+  {
+    "article": "6WAM10070HK"
+  },
+  {
+    "article": "6WAM10075HK"
+  },
+  {
+    "article": "6WAM10080NK"
+  },
+  {
+    "article": "6WAM10085NK"
+  },
+  {
+    "article": "6WAM10086NK"
+  },
+  {
+    "article": "6WAM10090HK"
+  },
+  {
+    "article": "6WAM10091HK"
+  },
+  {
+    "article": "6WAM10092HK"
+  },
+  {
+    "article": "6WAM10095HK"
+  },
+  {
+    "article": "6WAM10096HK"
+  },
+  {
+    "article": "6WAM10097HK"
+  },
+  {
+    "article": "6WAM10100HK"
+  },
+  {
+    "article": "6WAM10104HK"
+  },
+  {
+    "article": "6WAM10104NK"
+  },
+  {
+    "article": "6WAM10105HK"
+  },
+  {
+    "article": "6WAM10106HK"
+  },
+  {
+    "article": "6WAM10106NK"
+  },
+  {
+    "article": "6WAM10110HK"
+  },
+  {
+    "article": "6WAM10112NK"
+  },
+  {
+    "article": "6WAM20023IW"
+  },
+  {
+    "article": "6WAM20036HK"
+  },
+  {
+    "article": "6WAM20079HW"
+  },
+  {
+    "article": "6WAM20081HW"
+  },
+  {
+    "article": "6WAM20088HW"
+  },
+  {
+    "article": "6WAM20089HW"
+  },
+  {
+    "article": "6WAM20090HW"
+  },
+  {
+    "article": "6WAM20095HW"
+  },
+  {
+    "article": "6WAM20096HW"
+  },
+  {
+    "article": "6WAM20099HW"
+  },
+  {
+    "article": "6WAM20100HW"
+  },
+  {
+    "article": "6WAM20101HW"
+  },
+  {
+    "article": "6WAM20104HW"
+  },
+  {
+    "article": "6WAM20105HW"
+  },
+  {
+    "article": "6WAM20114HW"
+  },
+  {
+    "article": "6WAM20116HW"
+  },
+  {
+    "article": "6WAM20117HW"
+  },
+  {
+    "article": "6WAM20122HW"
+  },
+  {
+    "article": "6WAM20123HW"
+  },
+  {
+    "article": "6WAM20124HW"
+  },
+  {
+    "article": "6WAM20125HW"
+  },
+  {
+    "article": "6WAM20126HW"
+  },
+  {
+    "article": "6WAM20127HW"
+  },
+  {
+    "article": "6WAM20128HW"
+  },
+  {
+    "article": "6WAM20138HW"
+  },
+  {
+    "article": "6WAM20147HW"
+  },
+  {
+    "article": "6WAM20158HW"
+  },
+  {
+    "article": "6WAM20159HW"
+  },
+  {
+    "article": "6WAM20160HW"
+  },
+  {
+    "article": "6WAM20161HW"
+  },
+  {
+    "article": "6WAM20163HW"
+  },
+  {
+    "article": "6WAM20176HW"
+  },
+  {
+    "article": "6WAM20195HW"
+  },
+  {
+    "article": "6WAM20210HW"
+  },
+  {
+    "article": "6WAM20211HW"
+  },
+  {
+    "article": "6WAM20217HW"
+  },
+  {
+    "article": "6WAM20253HW"
+  },
+  {
+    "article": "6WAM40001NK"
+  },
+  {
+    "article": "6WAM40004HK"
+  },
+  {
+    "article": "6WAM40005HK"
+  },
+  {
+    "article": "6WAM40007HK"
+  },
+  {
+    "article": "6WAM40010HK"
+  },
+  {
+    "article": "6WAM40011AA"
+  },
+  {
+    "article": "6WAM40013HK"
+  },
+  {
+    "article": "6WAM40013MK"
+  },
+  {
+    "article": "6WAM40016MK"
+  },
+  {
+    "article": "6WAM40017MK"
+  },
+  {
+    "article": "6WAM40018MK"
+  },
+  {
+    "article": "6WAM40019MK"
+  },
+  {
+    "article": "6WAM40020MK"
+  },
+  {
+    "article": "6WAM40026NK"
+  },
+  {
+    "article": "6WAM40028NK"
+  },
+  {
+    "article": "6WAM40029MK"
+  },
+  {
+    "article": "6WAM40033MK"
+  },
+  {
+    "article": "6WAM40038HW"
+  },
+  {
+    "article": "6WAM40045HW"
+  },
+  {
+    "article": "6WAM40050HW"
+  },
+  {
+    "article": "6WAM40050NK"
+  },
+  {
+    "article": "6WAM40051MK"
+  },
+  {
+    "article": "6WAM40052MK"
+  },
+  {
+    "article": "6WAM40053MK"
+  },
+  {
+    "article": "6WAM40054MK"
+  },
+  {
+    "article": "6WAM40057MK"
+  },
+  {
+    "article": "6WAM40059MK"
+  },
+  {
+    "article": "6WAM40061HW"
+  },
+  {
+    "article": "6WAM40063MK"
+  },
+  {
+    "article": "6WAM40064HW"
+  },
+  {
+    "article": "6WAM40078HW"
+  },
+  {
+    "article": "6WAM40082HW"
+  },
+  {
+    "article": "6WAM40084HW"
+  },
+  {
+    "article": "6WAM40089HW"
+  },
+  {
+    "article": "6WAM40093HW"
+  },
+  {
+    "article": "6WAM40109HW"
+  },
+  {
+    "article": "6WAM40113HW"
+  },
+  {
+    "article": "6WAM40114HW"
+  },
+  {
+    "article": "6WAM40121HW"
+  },
+  {
+    "article": "6WAM40123NK"
+  },
+  {
+    "article": "6WAM50009ND"
+  },
+  {
+    "article": "6WAM50019ND"
+  },
+  {
+    "article": "6WAM50042ND"
+  },
+  {
+    "article": "6WAM60027IW"
+  },
+  {
+    "article": "6WAM60065HW"
+  },
+  {
+    "article": "6WAM60067HW"
+  },
+  {
+    "article": "6WAM60068HW"
+  },
+  {
+    "article": "6WAM60069HW"
+  },
+  {
+    "article": "6WAM60070HW"
+  },
+  {
+    "article": "6WAM60073HW"
+  },
+  {
+    "article": "6WAM60108HW"
+  },
+  {
+    "article": "6WAM60111HW"
+  },
+  {
+    "article": "6WAM60148HW"
+  },
+  {
+    "article": "6WAM60151HW"
+  },
+  {
+    "article": "6WAM60155HW"
+  },
+  {
+    "article": "6WAM60158HW"
+  },
+  {
+    "article": "6WAM60168HW"
+  },
+  {
+    "article": "6WAM60171HW"
+  },
+  {
+    "article": "6WAM60188HW"
+  },
+  {
+    "article": "6WAM60196HW"
+  },
+  {
+    "article": "6WAM60200HW"
+  },
+  {
+    "article": "6WAM60205HW"
+  },
+  {
+    "article": "6WAM60223HW"
+  },
+  {
+    "article": "6WAM60224HW"
+  },
+  {
+    "article": "6WAM60225HW"
+  },
+  {
+    "article": "6WAM60226HW"
+  },
+  {
+    "article": "6WAM60228HW"
+  },
+  {
+    "article": "6WAM60229HW"
+  },
+  {
+    "article": "6WAM60230HW"
+  },
+  {
+    "article": "6WAM60231HW"
+  },
+  {
+    "article": "6WAM70011HT"
+  },
+  {
+    "article": "6WAM70015MK"
+  },
+  {
+    "article": "6WAM70016MK"
+  },
+  {
+    "article": "6WAM70017MK"
+  },
+  {
+    "article": "6WAM70018MK"
+  },
+  {
+    "article": "6WAM70019MK"
+  },
+  {
+    "article": "6WAM70020MK"
+  },
+  {
+    "article": "6WAM70021MK"
+  },
+  {
+    "article": "6WAM70022MK"
+  },
+  {
+    "article": "6WAM70023HT"
+  },
+  {
+    "article": "6WAM70023MK"
+  },
+  {
+    "article": "6WAM70028MK"
+  },
+  {
+    "article": "6WAM70032NK"
+  },
+  {
+    "article": "6WAM70034MK"
+  },
+  {
+    "article": "6WAM70035MK"
+  },
+  {
+    "article": "6WAM70037NK"
+  },
+  {
+    "article": "6WAM70039MK"
+  },
+  {
+    "article": "6WAM70041NK"
+  },
+  {
+    "article": "6WAM70042MK"
+  },
+  {
+    "article": "6WAM70043HT"
+  },
+  {
+    "article": "6WAM70044MK"
+  },
+  {
+    "article": "6WAM70051MK"
+  },
+  {
+    "article": "6WAM70052MK"
+  },
+  {
+    "article": "6WAM70056MK"
+  },
+  {
+    "article": "6WAM70068MK"
+  },
+  {
+    "article": "6WAM70070MK"
+  },
+  {
+    "article": "6WAM70077MK"
+  },
+  {
+    "article": "6WAM70083MK"
+  },
+  {
+    "article": "6WAM70086MK"
+  },
+  {
+    "article": "6WAM70087MK"
+  },
+  {
+    "article": "6WAM70089MK"
+  },
+  {
+    "article": "6WAM70090MK"
+  },
+  {
+    "article": "6WAM70091MK"
+  },
+  {
+    "article": "6WAM70092MK"
+  },
+  {
+    "article": "6WAM70096MK"
+  },
+  {
+    "article": "6WAM70113MK"
+  },
+  {
+    "article": "6WAM70114MK"
+  },
+  {
+    "article": "6WAM70116MK"
+  },
+  {
+    "article": "6WAM70118MK"
+  },
+  {
+    "article": "6WAM70121MK"
+  },
+  {
+    "article": "6WAM70125MK"
+  },
+  {
+    "article": "6WAM70132MK"
+  },
+  {
+    "article": "6WAM70133MK"
+  },
+  {
+    "article": "6WAM70135MK"
+  },
+  {
+    "article": "6WAM70136MK"
+  },
+  {
+    "article": "6WAM70138MK"
+  },
+  {
+    "article": "6WAM70139MK"
+  },
+  {
+    "article": "6WAM70142MK"
+  },
+  {
+    "article": "6WAM70144MK"
+  },
+  {
+    "article": "6WAM70149MK"
+  },
+  {
+    "article": "6WAM70152MK"
+  },
+  {
+    "article": "6WAM70153MK"
+  },
+  {
+    "article": "6WAM70161MK"
+  },
+  {
+    "article": "6WAM70162MK"
+  },
+  {
+    "article": "6WAM70163MK"
+  },
+  {
+    "article": "6WAM70167MK"
+  },
+  {
+    "article": "6WAM70170MK"
+  },
+  {
+    "article": "6WAM70174MK"
+  },
+  {
+    "article": "6WAM70175MK"
+  },
+  {
+    "article": "6WAM70191MK"
+  },
+  {
+    "article": "6WAM70192MK"
+  },
+  {
+    "article": "6WAM70199MK"
+  },
+  {
+    "article": "6WAM70200MK"
+  },
+  {
+    "article": "6WAM70218MK"
+  },
+  {
+    "article": "6WAM70219MK"
+  },
+  {
+    "article": "6WAM70221MK"
+  },
+  {
+    "article": "6WAM70222MK"
+  },
+  {
+    "article": "6WAM70232MK"
+  },
+  {
+    "article": "6WAM70251MK"
+  },
+  {
+    "article": "6WAM70261MK"
+  },
+  {
+    "article": "6WAM70266MK"
+  },
+  {
+    "article": "6WAM70296MK"
+  },
+  {
+    "article": "6WAM70297MK"
+  },
+  {
+    "article": "6WAM70298MK"
+  },
+  {
+    "article": "6WAM70299MK"
+  },
+  {
+    "article": "6WAM70300MK"
+  },
+  {
+    "article": "6WAM70301MK"
+  },
+  {
+    "article": "6WAM70302MK"
+  },
+  {
+    "article": "6WAM70303MK"
+  },
+  {
+    "article": "6WAM70306MK"
+  },
+  {
+    "article": "6WAM70308MK"
+  },
+  {
+    "article": "6WAM70309MK"
+  },
+  {
+    "article": "6WAM70310MK"
+  },
+  {
+    "article": "6WAM70311MK"
+  },
+  {
+    "article": "6WAM90010HT"
+  }
+]
