@@ -116,3 +116,29 @@ class OrderItem(Base):
     size: Mapped[str | None] = mapped_column(String(20), nullable=True)
     price_uah: Mapped[float] = mapped_column(Float)
     qty: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Admin(Base):
+    __tablename__ = "admins"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(100), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
+    totp_secret: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    backup_codes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    totp_enabled: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class AdminAuditLog(Base):
+    __tablename__ = "admin_audit_logs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    admin_id: Mapped[int | None] = mapped_column(ForeignKey("admins.id"), nullable=True)
+    action: Mapped[str] = mapped_column(String(50))
+    ip_address: Mapped[str] = mapped_column(String(45))
+    user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
+    success: Mapped[bool] = mapped_column(default=False)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)

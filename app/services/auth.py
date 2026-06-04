@@ -91,3 +91,65 @@ def verify_csrf(request: Request, form_token: str) -> None:
     cookie_token = request.cookies.get(_CSRF_COOKIE, "")
     if not cookie_token or not secrets.compare_digest(cookie_token, form_token):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid CSRF token")
+
+
+# ── Admin Session Management ──
+_ADMIN_COOKIE = "sahara_admin_session"
+_ADMIN_MAX_AGE = 60 * 60  # 1 hour
+
+
+def create_admin_session(response: Response, admin_id: int) -> None:
+    """Create secure admin session cookie (1 hour, httponly, strict SameSite)."""
+    token = _serializer().dumps(admin_id, salt="sahara-admin")
+    response.set_cookie(
+        _ADMIN_COOKIE, token,
+        max_age=_ADMIN_MAX_AGE,
+        httponly=True,
+        secure=True,
+        samesite="strict"
+    )
+
+
+def get_admin_id_from_cookie(request: Request) -> int | None:
+    """Extract admin ID from secure session cookie."""
+    token = request.cookies.get(_ADMIN_COOKIE)
+    if not token:
+        return None
+    try:
+        return _serializer().loads(token, max_age=_ADMIN_MAX_AGE, salt="sahara-admin")
+    except (BadSignature, SignatureExpired):
+        return None
+
+
+def clear_admin_session(response: Response) -> None:
+    """Clear admin session cookie."""
+    response.delete_cookie(_ADMIN_COOKIE)
+
+
+# ── TOTP (2FA) ──
+def generate_totp_secret() -> str:
+    """Generate random TOTP secret (base32, 32 chars)."""
+    import pyotp
+    return pyotp.random_base32()
+
+
+def get_totp_provisioning_uri(username: str, secret: str) -> str:
+    """Generate QR code URI for admin 2FA setup."""
+    import pyotp
+    totp = pyotp.TOTP(secret)
+    return totp.provisioning_uri(name=username, issuer_name="SAHARA Admin")
+
+
+def verify_totp(secret: str, token: str) -> bool:
+    """Verify TOTP token (accepts current and previous 30s window)."""
+    import pyotp
+    try:
+        totp = pyotp.TOTP(secret)
+        return totp.verify(token, valid_window=1)
+    except Exception:
+        return False
+
+
+def generate_backup_codes(count: int = 10) -> list[str]:
+    """Generate backup codes (8 chars hex) for 2FA recovery."""
+    return [secrets.token_hex(4) for _ in range(count)]
