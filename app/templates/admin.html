@@ -315,13 +315,17 @@
   <div class="topbar">
     <span class="topbar-title" id="tab-title">Очікують</span>
     <span class="topbar-meta" id="tab-meta"></span>
-    <div style="display:flex;gap:4px;margin-left:auto;align-items:center">
+    <div style="display:flex;gap:8px;margin-left:auto;align-items:center">
       <div id="stock-filter" style="display:flex;gap:4px">
         <button class="sf-btn sf-active" onclick="setStockFilter('all',this)">Всі</button>
         <button class="sf-btn" onclick="setStockFilter('in',this)">В наявності</button>
         <button class="sf-btn" onclick="setStockFilter('out',this)">0 шт</button>
       </div>
       <button id="btn-publish-all" onclick="publishAllPending(this)" style="display:none;padding:6px 14px;background:#1a1a1a;color:#c9a96e;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;margin-left:8px">→ Опублікувати все</button>
+      <div style="display:flex;gap:8px;align-items:center;margin-left:16px;border-left:1px solid var(--border);padding-left:16px">
+        <a href="/admin/2fa/setup" style="padding:6px 12px;background:rgba(0,0,0,.05);color:#666;border:none;border-radius:4px;font-size:11px;text-decoration:none;cursor:pointer;font-family:inherit;transition:.2s" onmouseover="this.style.background='rgba(0,0,0,.1)'" onmouseout="this.style.background='rgba(0,0,0,.05)'">🔐 2FA</a>
+        <a href="/admin/logout" style="padding:6px 12px;background:rgba(0,0,0,.05);color:#666;border:none;border-radius:4px;font-size:11px;text-decoration:none;cursor:pointer;font-family:inherit;transition:.2s" onmouseover="this.style.background='rgba(0,0,0,.1)'" onmouseout="this.style.background='rgba(0,0,0,.05)'">← Вихід</a>
+      </div>
     </div>
   </div>
   <div id="filter-bar" style="padding:8px 20px;background:#faf9f7;border-bottom:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;align-items:center">

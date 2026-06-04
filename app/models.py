@@ -124,9 +124,10 @@ class Admin(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(100), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    totp_secret: Mapped[str | None] = mapped_column(String(32), nullable=True)
-    backup_codes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    totp_secret: Mapped[str | None] = mapped_column(String(255), nullable=True)  # encrypted (Fernet format)
+    backup_codes: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON: [{"code": "xxxx-xxxx-xxxx", "used": False}, ...]
     totp_enabled: Mapped[bool] = mapped_column(default=False)
+    totp_counter: Mapped[int] = mapped_column(default=0)  # prevent replay attacks
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
@@ -142,3 +143,15 @@ class AdminAuditLog(Base):
     success: Mapped[bool] = mapped_column(default=False)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class AdminSession(Base):
+    __tablename__ = "admin_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    session_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    admin_id: Mapped[int] = mapped_column(ForeignKey("admins.id"), index=True)
+    mfa_verified: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_activity: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

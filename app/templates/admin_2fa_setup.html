@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Налаштування 2FA — {{ site_name }} Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f5f3ef;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    color: #1a1a1a;
+    padding: 20px;
+  }
+  .container {
+    width: 100%; max-width: 500px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #e5e0d8;
+    padding: 36px 32px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    margin-bottom: 20px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .qr-box {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .qr-box img {
+    max-width: 280px;
+    height: auto;
+  }
+  .qr-label {
+    font-size: 11px;
+    color: #999;
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+  .secret-box {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    padding: 12px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    word-break: break-all;
+    margin-bottom: 16px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    font-family: inherit;
+    font-size: 15px;
+    color: #1a1a1a;
+    background: #fafafa;
+    outline: none;
+    transition: border-color .2s;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  input:focus { border-color: #1a1a1a; background: #fff; }
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #1a1a1a;
+    background: #fafafa;
+    outline: none;
+    transition: border-color .2s;
+    border-radius: 2px;
+    resize: vertical;
+    min-height: 120px;
+  }
+  textarea:focus { border-color: #1a1a1a; background: #fff; }
+  .warning {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 12px;
+    padding: 12px 14px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .buttons {
+    display: flex;
+    gap: 12px;
+  }
+  .btn {
+    flex: 1;
+    padding: 12px 14px;
+    border: none;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .2s;
+    border-radius: 2px;
+  }
+  .btn-enable {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .btn-enable:hover { background: #c9a96e; }
+  .btn-cancel {
+    background: #f5f3ef;
+    color: #1a1a1a;
+    border: 1px solid #ddd;
+  }
+  .btn-cancel:hover { background: #efefef; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="title">Налаштування двофакторної автентифікації</div>
+    <div class="subtitle">
+      Сканування цього QR-кода вашим автентифікатором (Google Authenticator, Authy, тощо) для включення 2FA
+    </div>
+
+    <div class="qr-box">
+      <img src="{{ totp_uri }}" alt="QR Code for TOTP setup">
+      <div class="qr-label">Або введіть вручну:</div>
+      <div class="secret-box">{{ plaintext_secret }}</div>
+    </div>
+
+    <form method="post" action="/admin/2fa/enable">
+      <input type="hidden" name="csrf_token" value="{{ request.cookies.get('_csrf', '') }}">
+      <input type="hidden" name="plaintext_secret" value="{{ plaintext_secret }}">
+
+      <label for="totp_code">Верифікуйте 6-значний код</label>
+      <input type="text" id="totp_code" name="totp_code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required>
+
+      <div class="warning">
+        <strong>⚠️ Коди резервного копіювання:</strong><br>
+        Збережіть ці коди в безпечному місці. Вони дозволять вам отримати доступ до облікового запису, якщо ви втратите доступ до автентифікатора.
+      </div>
+
+      <label for="backup_codes">Коди резервного копіювання (скопіюйте та збережіть)</label>
+      <textarea id="backup_codes" name="backup_codes" readonly>{% for code in backup_codes %}{{ code }}
+{% endfor %}</textarea>
+
+      <div class="buttons">
+        <a href="/admin" class="btn btn-cancel">Скасувати</a>
+        <button type="submit" class="btn btn-enable">Увімкнути 2FA</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

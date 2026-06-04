@@ -32,7 +32,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
 from app.db import init_db, get_session, async_session
-from app.models import Product, ProductStatus, User, Order, OrderItem, OrderStatus, Admin, AdminAuditLog
+from app.models import Product, ProductStatus, User, Order, OrderItem, OrderStatus, Admin, AdminAuditLog, AdminSession
 from app.services.tryon import detect_category
 from app.services import auth as auth_svc
 from app.services.ai_generator import img2img, txt2img, PRESETS, PROMPT_TEMPLATE
@@ -307,7 +307,6 @@ async def admin_login_post(
 
     username = str(form.get("username", "")).strip()
     password = str(form.get("password", "")).strip()
-    totp_code = str(form.get("totp_code", "")).strip()
 
     result = await session.execute(select(Admin).where(Admin.username == username))
     admin = result.scalar_one_or_none()
@@ -317,19 +316,21 @@ async def admin_login_post(
         await _log_admin_action(session, None, "login_fail", client_ip, user_agent, False, "Bad credentials")
         return RedirectResponse("/admin/login?error=invalid", status_code=303)
 
-    if admin.totp_enabled and not totp_code:
-        await session.execute(select(Admin).where(Admin.id == admin.id))
+    if admin.totp_enabled:
         auth_svc.set_pending_cookie(response, str(admin.id), "admin_totp")
         return RedirectResponse("/admin/totp", status_code=303)
 
-    if admin.totp_enabled and totp_code:
-        if not auth_svc.verify_totp(admin.totp_secret, totp_code):
-            _record_admin_failure(client_ip)
-            await _log_admin_action(session, admin.id, "login_totp_fail", client_ip, user_agent, False, "Bad TOTP")
-            return RedirectResponse("/admin/login?error=totp", status_code=303)
-
     _clear_admin_failures(client_ip)
     admin.last_login = datetime.utcnow()
+
+    # Create server-side session
+    session_id = secrets.token_urlsafe(32)
+    admin_session = AdminSession(
+        session_id=session_id,
+        admin_id=admin.id,
+        mfa_verified=False
+    )
+    session.add(admin_session)
     await session.commit()
 
     auth_svc.create_admin_session(response, admin.id)
@@ -350,12 +351,145 @@ async def admin_totp_page(request: Request):
     return resp
 
 
+@app.post("/admin/totp")
+async def admin_totp_verify(
+    request: Request, response: Response, session: AsyncSession = Depends(get_session)
+):
+    """Verify TOTP code from /admin/totp page."""
+    client_ip = request.client.host if request.client else "unknown"
+    user_agent = request.headers.get("user-agent", "")
+
+    pending = auth_svc.get_pending(request)
+    if not pending or pending.get("p") != "admin_totp":
+        return RedirectResponse("/admin/login", status_code=303)
+
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
+
+    admin_id = int(pending.get("e", 0))
+    totp_code = str(form.get("totp_code", "")).strip()
+
+    admin = await session.get(Admin, admin_id)
+    if not admin or not admin.totp_enabled:
+        return RedirectResponse("/admin/login", status_code=303)
+
+    if not auth_svc.verify_totp(admin.totp_secret, totp_code, encrypted=True):
+        await _log_admin_action(session, admin.id, "login_totp_fail", client_ip, user_agent, False, "Bad TOTP")
+        return RedirectResponse("/admin/totp?error=invalid_code", status_code=303)
+
+    # Clear pending cookie and create session
+    auth_svc.clear_pending_cookie(response)
+    admin.last_login = datetime.utcnow()
+
+    session_id = secrets.token_urlsafe(32)
+    admin_session = AdminSession(
+        session_id=session_id,
+        admin_id=admin.id,
+        mfa_verified=True
+    )
+    session.add(admin_session)
+    await session.commit()
+
+    auth_svc.create_admin_session(response, admin.id)
+    await _log_admin_action(session, admin.id, "login_success", client_ip, user_agent, True)
+
+    return RedirectResponse("/admin", status_code=303)
+
+
 @app.get("/admin/logout")
 async def admin_logout(response: Response):
     """Logout admin and clear session."""
     auth_svc.clear_admin_session(response)
     auth_svc.clear_pending_cookie(response)
     return RedirectResponse("/admin/login", status_code=303)
+
+
+@app.get("/admin/2fa/setup", response_class=HTMLResponse)
+async def admin_2fa_setup(request: Request, admin: Admin = Depends(get_current_admin), session: AsyncSession = Depends(get_session)):
+    """Display TOTP setup page with QR code."""
+    if admin.totp_enabled:
+        return RedirectResponse("/admin", status_code=303)
+
+    plaintext_secret = auth_svc.generate_totp_secret()
+    encrypted_secret = auth_svc.encrypt_totp_secret(plaintext_secret)
+    backup_codes = auth_svc.generate_backup_codes(10)
+    backup_json = auth_svc.backup_codes_to_json(backup_codes)
+
+    uri = auth_svc.get_totp_provisioning_uri(admin.username, plaintext_secret)
+
+    return templates.TemplateResponse(
+        "admin_2fa_setup.html",
+        {
+            "request": request,
+            "site_name": settings.site_name,
+            "totp_uri": uri,
+            "backup_codes": backup_codes,
+            "plaintext_secret": plaintext_secret,
+        },
+    )
+
+
+@app.post("/admin/2fa/enable")
+async def admin_2fa_enable(
+    request: Request,
+    admin: Admin = Depends(get_current_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    """Enable TOTP for admin after verification."""
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
+
+    plaintext_secret = str(form.get("plaintext_secret", "")).strip()
+    totp_code = str(form.get("totp_code", "")).strip()
+    backup_codes_raw = str(form.get("backup_codes", "")).strip()
+
+    if not auth_svc.verify_totp(plaintext_secret, totp_code, encrypted=False):
+        return RedirectResponse("/admin/2fa/setup?error=invalid_code", status_code=303)
+
+    encrypted_secret = auth_svc.encrypt_totp_secret(plaintext_secret)
+    backup_json = auth_svc.backup_codes_to_json(backup_codes_raw.split("\n"))
+
+    admin.totp_secret = encrypted_secret
+    admin.backup_codes = backup_json
+    admin.totp_enabled = True
+    admin.totp_counter = 0
+
+    await session.commit()
+    await _log_admin_action(
+        session, admin.id, "2fa_enable", request.client.host or "unknown",
+        request.headers.get("user-agent", ""), True
+    )
+
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.post("/admin/2fa/disable")
+async def admin_2fa_disable(
+    request: Request,
+    admin: Admin = Depends(get_current_admin),
+    session: AsyncSession = Depends(get_session),
+):
+    """Disable TOTP for admin (requires current password)."""
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
+
+    password = str(form.get("password", "")).strip()
+
+    if not auth_svc.verify_password(password, admin.password_hash):
+        return RedirectResponse("/admin?error=bad_password", status_code=303)
+
+    admin.totp_secret = None
+    admin.backup_codes = None
+    admin.totp_enabled = False
+    admin.totp_counter = 0
+
+    await session.commit()
+    await _log_admin_action(
+        session, admin.id, "2fa_disable", request.client.host or "unknown",
+        request.headers.get("user-agent", ""), True
+    )
+
+    return RedirectResponse("/admin", status_code=303)
 
 
 # ==================== ПУБЛІЧНА ЧАСТИНА ====================
@@ -966,7 +1100,7 @@ async def profile_update(
 async def admin_orders(
     request: Request,
     status: str = "",
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     from sqlalchemy import func
@@ -1012,7 +1146,7 @@ async def admin_orders(
 async def admin_order_status(
     order_id: int,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
@@ -1035,7 +1169,7 @@ async def admin_order_status(
 @app.get("/admin", response_class=HTMLResponse)
 async def admin(
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     result = await session.execute(select(Product).order_by(desc(Product.created_at)))
@@ -1086,7 +1220,7 @@ async def admin_generate(
     product_id: int,
     background: BackgroundTasks,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
@@ -1104,7 +1238,7 @@ async def admin_generate(
 async def admin_publish(
     product_id: int,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
@@ -1121,7 +1255,7 @@ async def admin_publish(
 async def admin_publish_direct(
     product_id: int,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Публікує одразу з оригінальним фото, без AI генерації."""
@@ -1139,7 +1273,7 @@ async def admin_publish_direct(
 async def admin_reject(
     product_id: int,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
@@ -1155,7 +1289,7 @@ async def admin_reject(
 @app.post("/api/admin/match-type/{product_id}")
 async def admin_set_match_type(
     product_id: int,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     product = await session.get(Product, product_id)
@@ -1177,7 +1311,7 @@ _jobs: dict[str, dict] = {}
 @app.get("/admin/studio", response_class=HTMLResponse)
 async def admin_studio(
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     result = await session.execute(select(Product).order_by(desc(Product.created_at)))
@@ -1240,7 +1374,7 @@ async def _gen_task(job_id: str, mode: str, image_path: str,
 async def admin_studio_generate(
     request: Request,
     background: BackgroundTasks,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     form = await request.form()
@@ -1296,7 +1430,7 @@ import json as _json_mod
 async def admin_reorder_photos(
     product_id: int,
     request: Request,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     data = await request.json()
@@ -1317,7 +1451,7 @@ async def admin_reorder_photos(
 @app.post("/admin/translate/{product_id}")
 async def admin_translate(
     product_id: int,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     product = await session.get(Product, product_id)
@@ -1609,7 +1743,7 @@ async def api_1c_stock(request: Request):
 async def admin_enrich_koton(
     background: BackgroundTasks,
     gender: str = "",
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """Запускає збагачення PENDING товарів з Koton.com (фото, назва, розміри)."""
     from app.services.koton_scraper import enrich_pending_from_1c
@@ -1620,7 +1754,7 @@ async def admin_enrich_koton(
 @app.post("/api/admin/translate-all")
 async def admin_translate_all(
     background: BackgroundTasks,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """Масовий переклад всіх турецьких назв на українську."""
     from app.services.koton_scraper import bulk_translate_titles
@@ -1634,7 +1768,7 @@ async def admin_re_enrich_koton(
     gender: str = "",
     force: bool = False,
     prefix: str = "",
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """
     Повторно збагачує ВСІ товари з article_1c — оновлює ціну, всі фото,
@@ -1650,7 +1784,7 @@ async def admin_re_enrich_koton(
 async def admin_enrich_wayback(
     background: BackgroundTasks,
     gender: str = "men",
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """Шукає товари без фото в Wayback Machine за датою сезону артикула. Тільки точний збіг."""
     from app.services.koton_scraper import enrich_missing_via_wayback
@@ -1662,7 +1796,7 @@ async def admin_enrich_wayback(
 async def admin_assign_koton_categories(
     background: BackgroundTasks,
     gender: str = "men",
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """
     Визначає категорію та сезон товарів через архіви Koton.com (Wayback Machine).
@@ -1691,7 +1825,7 @@ async def admin_1c_sync_status(_: str = Depends(require_admin)):
 @app.post("/api/admin/1c-file-upload")
 async def admin_1c_file_upload(
     file: UploadFile,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Приймає Excel (.xlsx) або CSV файл з 1С. Колонки: Артикул, Залишок, Ціна."""
@@ -1779,7 +1913,7 @@ async def admin_1c_file_upload(
 async def admin_1c_upload(
     request: Request,
     background: BackgroundTasks,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Завантажує JSON-файл з 1С і одразу синхронізує."""
@@ -1834,7 +1968,7 @@ async def admin_1c_upload(
 @app.post("/api/admin/1c-sync-now")
 async def admin_1c_sync_now(
     background: BackgroundTasks,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Запускає синхронізацію з 1С зараз (читає файл із sync/)."""
@@ -1870,7 +2004,7 @@ async def admin_1c_sync_now(
 async def admin_scrape_women(
     background: BackgroundTasks,
     limit: int = 50,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """Скрейпить жіночі товари з категорій Koton.com."""
     from app.services.koton_scraper import scrape_koton_women_catalog
@@ -1880,7 +2014,7 @@ async def admin_scrape_women(
 
 @app.post("/api/admin/publish-all-pending")
 async def admin_publish_all_pending(
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
     session: AsyncSession = Depends(get_session),
 ):
     """Публікує всі PENDING товари що мають фото (без AI)."""
@@ -1905,7 +2039,7 @@ async def admin_publish_all_pending(
 async def api_generate_hero(
     request: Request,
     background: BackgroundTasks,
-    _: str = Depends(require_admin),
+    _: Admin = Depends(get_current_admin),
 ):
     """Генерує hero изображення для головної сторінки на основі промпту."""
     from app.services.hero_prompt import generate_hero_prompt
