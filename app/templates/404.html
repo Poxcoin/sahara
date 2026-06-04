@@ -2,14 +2,32 @@
 {% block title %}Сторінку не знайдено — {{ site_name }}{% endblock %}
 
 {% block content %}
-<div style="max-width:var(--container);margin:0 auto;padding:80px 24px;text-align:center;">
+<div style="max-width:var(--container);margin:0 auto;padding:60px 24px;text-align:center;">
     <p style="font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl);color:hsl(var(--muted-foreground));margin-bottom:16px;">404</p>
     <h1 style="font-family:var(--font-heading);font-size:clamp(32px,5vw,56px);font-weight:400;margin-bottom:16px;">Сторінку не знайдено</h1>
     <p style="font-size:15px;color:hsl(var(--muted-foreground));margin-bottom:40px;max-width:400px;margin-left:auto;margin-right:auto;">
         На жаль, ця сторінка не існує або була переміщена.
     </p>
-    <a href="/catalog" style="display:inline-block;padding:14px 40px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl));text-decoration:none;">
-        Перейти до каталогу
+
+    <div style="margin-bottom:48px;max-width:500px;margin-left:auto;margin-right:auto;">
+        <input type="text" id="_404_search" placeholder="Пошук товарів..." style="width:100%;padding:12px 16px;border:1px solid hsla(40,10%,88%,.8);border-radius:4px;font-size:14px;margin-bottom:16px;box-sizing:border-box;">
+        <button onclick="var q=document.getElementById('_404_search').value;if(q)window.location.href='/catalog?q='+encodeURIComponent(q);" style="display:inline-block;padding:12px 32px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl);border:none;cursor:pointer;">
+            Знайти
+        </button>
+    </div>
+
+    <div style="margin-bottom:48px;">
+        <p style="font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:hsl(var(--muted-foreground));margin-bottom:20px;">Популярні категорії:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+            <a href="/catalog" style="display:inline-block;padding:10px 20px;border:1px solid hsla(40,10%,88%,.8);font-size:12px;text-decoration:none;color:hsl(var(--foreground));transition:all .2s;">Усі товари</a>
+            <a href="/catalog?cat=dress" style="display:inline-block;padding:10px 20px;border:1px solid hsla(40,10%,88%,.8);font-size:12px;text-decoration:none;color:hsl(var(--foreground));transition:all .2s;">Сукні</a>
+            <a href="/catalog?cat=pants" style="display:inline-block;padding:10px 20px;border:1px solid hsla(40,10%,88%,.8);font-size:12px;text-decoration:none;color:hsl(var(--foreground));transition:all .2s;">Штани</a>
+            <a href="/catalog?cat=top" style="display:inline-block;padding:10px 20px;border:1px solid hsla(40,10%,88%,.8);font-size:12px;text-decoration:none;color:hsl(var(--foreground));transition:all .2s;">Топи</a>
+        </div>
+    </div>
+
+    <a href="/" style="display:inline-block;padding:14px 40px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:11px;text-transform:uppercase;letter-spacing:var(--tracking-wide-xl));text-decoration:none;border-radius:2px;">
+        На головну
     </a>
 </div>
 {% endblock %}

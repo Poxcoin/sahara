@@ -1869,6 +1869,38 @@ async def admin_publish_all_pending(
     return {"ok": True, "published": count}
 
 
+@app.post("/api/admin/generate-hero")
+async def api_generate_hero(
+    request: Request,
+    background: BackgroundTasks,
+    _: str = Depends(require_admin),
+):
+    """Генерує hero изображення для головної сторінки на основі промпту."""
+    from app.services.hero_prompt import generate_hero_prompt
+    data = await request.json()
+    theme = str(data.get("theme", "editorial"))
+    user_desc = str(data.get("user_photo_desc", ""))
+
+    prompt = generate_hero_prompt(theme, user_desc)
+    hero_dir = Path(settings.media_dir, "hero")
+    hero_dir.mkdir(exist_ok=True)
+
+    job_id = _uuid.uuid4().hex[:12]
+    _jobs[job_id] = {"status": "processing", "type": "hero"}
+
+    async def _gen_hero():
+        try:
+            img_bytes = await txt2img(prompt, "landscape_16_9")
+            out_rel = f"hero/{job_id}.jpg"
+            Path(f"{settings.media_dir}/{out_rel}").write_bytes(img_bytes)
+            _jobs[job_id] = {"status": "done", "result": out_rel, "prompt": prompt}
+        except Exception as e:
+            _jobs[job_id] = {"status": "error", "error": str(e)}
+
+    background.add_task(_gen_hero)
+    return {"job_id": job_id, "prompt": prompt}
+
+
 @app.get("/admin/1c", response_class=HTMLResponse)
 async def admin_1c_page(request: Request, _: str = Depends(require_admin)):
     def _read(name: str) -> str:

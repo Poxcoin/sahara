@@ -185,6 +185,11 @@
   .sf-btn:hover { border-color: var(--gold); color: var(--gold); }
   .sf-btn.sf-active { background: var(--gold); border-color: var(--gold); color: #1a1a1a; font-weight: 600; }
   .card.sf-hidden { display: none !important; }
+
+  /* Hero Generation */
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  #hero-theme, #hero-user-desc { font-size: 13px; }
+  #hero-prompt { font-family: 'Monaco', 'Courier New', monospace; }
 </style>
 </head>
 <body>
@@ -280,6 +285,10 @@
       {% if grouped.rejected %}
       <span class="nav-count">{{ grouped.rejected|length }}</span>
       {% endif %}
+    </div>
+    <div class="nav-item {% if request.query_params.get('tab') == 'hero' %}active{% endif %}" onclick="showTab('hero')">
+      Hero Банери
+      <span class="nav-count" style="background:var(--accent-purple);color:#fff">✨</span>
     </div>
     <div class="nav-item {% if request.query_params.get('tab') == 'no_photo' %}active{% endif %}" onclick="showTab('no_photo')">
       Без фото
@@ -535,6 +544,56 @@
       {% endif %}
     </div>
 
+    <!-- HERO BANNERS -->
+    <div class="section" id="tab-hero">
+      <div style="background:#fff;border-radius:12px;padding:24px;margin-bottom:24px">
+        <h3 style="margin:0 0 20px;font-size:16px;font-weight:400;letter-spacing:.05em">Генерувати Hero Банер</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <label style="display:block;font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Тема</label>
+            <select id="hero-theme" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;font-family:inherit">
+              <option value="editorial">Editorial (Fashion Magazine)</option>
+              <option value="collection">New Collection</option>
+              <option value="lookbook">Seasonal Lookbook</option>
+              <option value="minimal">Minimalist Series</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Опис моделі (опціонально)</label>
+            <input type="text" id="hero-user-desc" placeholder="напр. dark long hair, elegant woman" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;font-family:inherit;box-sizing:border-box">
+          </div>
+        </div>
+        <textarea id="hero-prompt" placeholder="Або введіть власний промпт..." style="width:100%;height:100px;margin-top:16px;padding:12px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace;resize:vertical;box-sizing:border-box"></textarea>
+        <button onclick="generateHero()" style="margin-top:16px;padding:10px 20px;background:#1a1a1a;color:#c9a96e;border:none;border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;letter-spacing:.05em">▶ Генерувати</button>
+      </div>
+
+      <div id="hero-generation" style="display:none;background:#f9f9f9;border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div id="hero-spinner" style="width:20px;height:20px;border:2px solid #ddd;border-top:2px solid #1a1a1a;border-radius:50%;animation:spin .6s linear infinite"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#1a1a1a">Генеруємо...</div>
+            <div id="hero-job-id" style="font-size:11px;color:#999">Job ID: -</div>
+          </div>
+        </div>
+        <div id="hero-result" style="display:none;margin-top:20px">
+          <img id="hero-img" style="width:100%;max-height:400px;object-fit:cover;border-radius:8px;margin-bottom:12px">
+          <div style="display:flex;gap:8px">
+            <button onclick="downloadHero()" style="flex:1;padding:8px 12px;background:#27ae60;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer">⬇ Завантажити</button>
+            <button onclick="setAsHero()" style="flex:1;padding:8px 12px;background:#4a90e2;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer">✓ Встановити як Hero</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-radius:12px;padding:24px">
+        <h3 style="margin:0 0 20px;font-size:16px;font-weight:400;letter-spacing:.05em">Поточні Hero Банери</h3>
+        <div id="hero-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+          <div style="background:#f0ede8;border-radius:8px;padding:40px;text-align:center;color:#999">
+            <div style="font-size:12px">Тут з'являтимуться згенеровані банери</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- NO PHOTO -->
     <div class="section" id="tab-no_photo">
       {% if no_photo %}
@@ -692,6 +751,86 @@ showTab(saved);
 // Автооновлення якщо є generating
 if (counts.generating > 0) {
   setTimeout(() => location.reload(), 12000);
+}
+
+// ═══════════ HERO GENERATION ═══════════
+async function generateHero() {
+  const theme = document.getElementById('hero-theme').value;
+  const userDesc = document.getElementById('hero-user-desc').value;
+  const customPrompt = document.getElementById('hero-prompt').value;
+
+  if (!theme && !customPrompt) {
+    alert('Виберіть тему або введіть промпт');
+    return;
+  }
+
+  document.getElementById('hero-generation').style.display = 'block';
+  document.getElementById('hero-result').style.display = 'none';
+
+  try {
+    const r = await fetch('/api/admin/generate-hero', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        theme: customPrompt ? '' : theme,
+        user_photo_desc: userDesc,
+        prompt: customPrompt
+      })
+    });
+    const d = await r.json();
+    const jobId = d.job_id;
+    document.getElementById('hero-job-id').textContent = `Job ID: ${jobId}`;
+
+    // Полінг для статусу
+    pollHeroJob(jobId, 0);
+  } catch (e) {
+    alert('Помилка: ' + e.message);
+    document.getElementById('hero-generation').style.display = 'none';
+  }
+}
+
+function pollHeroJob(jobId, attempts) {
+  if (attempts > 120) {
+    alert('Тайм-аут. Спробуйте ще раз.');
+    document.getElementById('hero-generation').style.display = 'none';
+    return;
+  }
+
+  fetch(`/admin/studio/status/${jobId}`, { credentials: 'include' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.status === 'done') {
+        document.getElementById('hero-img').src = `/` + d.result + `?t=${Date.now()}`;
+        document.getElementById('hero-result').style.display = 'block';
+        window.currentHeroResult = d.result;
+      } else if (d.status === 'error') {
+        alert('Помилка генерації: ' + d.error);
+        document.getElementById('hero-generation').style.display = 'none';
+      } else {
+        setTimeout(() => pollHeroJob(jobId, attempts + 1), 1000);
+      }
+    })
+    .catch(() => {
+      setTimeout(() => pollHeroJob(jobId, attempts + 1), 2000);
+    });
+}
+
+function downloadHero() {
+  if (!window.currentHeroResult) return;
+  const a = document.createElement('a');
+  a.href = '/' + window.currentHeroResult;
+  a.download = 'hero.jpg';
+  a.click();
+}
+
+function setAsHero() {
+  if (!window.currentHeroResult) return;
+  const heroImg = document.querySelector('.hero-img');
+  if (heroImg) {
+    heroImg.src = '/' + window.currentHeroResult + '?t=' + Date.now();
+    alert('✓ Hero банер оновлено!');
+  }
 }
 
 // ===== CAROUSEL =====

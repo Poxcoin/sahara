@@ -301,7 +301,12 @@
       if(data.order_id){
         localStorage.removeItem(KEY);
         if(window.saharaUpdateCartBadge) saharaUpdateCartBadge();
-        window.location.href='/order/done/'+data.order_id;
+        errEl.style.display='none'; btn.disabled=true;
+        var toast = document.createElement('div');
+        toast.style.cssText='position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:white;padding:16px 24px;border-radius:4px;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
+        toast.textContent='✓ Замовлення прийнято! Переводимо вас…';
+        document.body.appendChild(toast);
+        setTimeout(function(){ window.location.href='/order/done/'+data.order_id; }, 2000);
       } else {
         btn.disabled=false; btn.textContent='Підтвердити замовлення';
         errEl.textContent=data.detail||'Помилка. Спробуйте ще раз.'; errEl.style.display='block';
