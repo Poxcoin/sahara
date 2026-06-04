@@ -215,7 +215,6 @@ async def not_found_handler(request: Request, exc):
     )
 
 
-security = HTTPBasic(auto_error=False)
 # ── Admin Session & Rate Limiting ──
 _admin_login_failures: dict[str, list[float]] = defaultdict(list)
 _admin_lock = threading.Lock()
@@ -1418,7 +1417,7 @@ async def admin_studio_generate(
 
 
 @app.get("/admin/studio/status/{job_id}")
-async def admin_studio_status(job_id: str, _: str = Depends(require_admin)):
+async def admin_studio_status(job_id: str, _: Admin = Depends(get_current_admin)):
     return JSONResponse(_jobs.get(job_id, {"status": "unknown"}))
 
 
@@ -1813,7 +1812,7 @@ async def admin_assign_koton_categories(
 # ════════════════════════════════════════════
 
 @app.get("/api/admin/1c-sync-status")
-async def admin_1c_sync_status(_: str = Depends(require_admin)):
+async def admin_1c_sync_status(_: Admin = Depends(get_current_admin)):
     """Статус останньої синхронізації з 1С."""
     from app.services.sync_1c import load_state
     state = load_state()
@@ -2068,7 +2067,7 @@ async def api_generate_hero(
 
 
 @app.get("/admin/1c", response_class=HTMLResponse)
-async def admin_1c_page(request: Request, _: str = Depends(require_admin)):
+async def admin_1c_page(request: Request, _: Admin = Depends(get_current_admin)):
     def _read(name: str) -> str:
         p = Path("1c") / name
         return p.read_text(encoding="utf-8") if p.exists() else f"— {name} не знайдено —"
