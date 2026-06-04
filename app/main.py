@@ -354,13 +354,19 @@ async def admin_totp_page(request: Request):
 async def admin_totp_verify(
     request: Request, response: Response, session: AsyncSession = Depends(get_session)
 ):
-    """Verify TOTP code from /admin/totp page."""
+    """Verify TOTP code from /admin/totp page with rate limiting."""
     client_ip = request.client.host if request.client else "unknown"
     user_agent = request.headers.get("user-agent", "")
 
     pending = auth_svc.get_pending(request)
     if not pending or pending.get("p") != "admin_totp":
         return RedirectResponse("/admin/login", status_code=303)
+
+    try:
+        _check_admin_rate_limit(client_ip)
+    except HTTPException:
+        await _log_admin_action(session, None, "totp_ratelimit", client_ip, user_agent, False, "Rate limited")
+        return RedirectResponse("/admin/totp?error=ratelimit", status_code=303)
 
     form = await request.form()
     auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
@@ -373,6 +379,7 @@ async def admin_totp_verify(
         return RedirectResponse("/admin/login", status_code=303)
 
     if not auth_svc.verify_totp(admin.totp_secret, totp_code, encrypted=True):
+        _record_admin_failure(client_ip)
         await _log_admin_action(session, admin.id, "login_totp_fail", client_ip, user_agent, False, "Bad TOTP")
         return RedirectResponse("/admin/totp?error=invalid_code", status_code=303)
 

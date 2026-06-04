@@ -111,9 +111,15 @@
   <div class="logo">SAHARA</div>
   <div class="sub">Двофакторна автентифікація</div>
 
+  {% if error == 'ratelimit' %}
+  <div class="error">Занадто багато невдалих спроб. Спробуйте пізніше</div>
+  {% elif error == 'invalid_code' %}
+  <div class="error">Неправильний код 2FA</div>
+  {% else %}
   <div class="info">
     Введіть 6-значний код з вашого автентифікатора
   </div>
+  {% endif %}
 
   {% if error %}
   <div class="error">Неправильний код 2FA</div>
