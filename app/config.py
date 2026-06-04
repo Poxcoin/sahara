@@ -17,7 +17,9 @@ class Settings(BaseSettings):
     fal_key: str = ""
     fashn_key: str = ""
 
-    admin_password: str = "change_me"
+    admin_username: str = "admin"
+    admin_password_hash: str = ""
+    totp_encryption_key: str = ""
     secret_key: str = "change_me_secret_key_32_chars_min"
     site_name: str = "SAHARA"
     base_url: str = "http://localhost:8000"
@@ -47,12 +49,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-# Refuse to start if the admin password is still the insecure default.
-if settings.admin_password.lower() in _WEAK_PASSWORDS:
-    print(
-        "[SECURITY] ERROR: ADMIN_PASSWORD is set to a weak/default value. "
-        "Set a strong password in your .env file and restart.",
-        file=sys.stderr,
-    )
-    sys.exit(1)
