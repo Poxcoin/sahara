@@ -42,6 +42,8 @@ from app.services.notify import send_order_telegram
 from app.services.email_service import send_order_confirmation
 from fastapi import UploadFile, File, Form
 from pydantic import BaseModel
+from collections import defaultdict
+from datetime import datetime, timedelta
 
 
 def koton_category(title: str) -> str:
@@ -112,6 +114,10 @@ os.environ["REPLICATE_API_TOKEN"] = settings.replicate_api_token
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if settings.secret_key == "change_me_secret_key_32_chars_min":
+        import sys
+        print("[SECURITY] ERROR: SECRET_KEY not configured. Set SAHARA_SECRET_KEY in .env", file=sys.stderr)
+        sys.exit(1)
     await init_db()
     Path(settings.media_dir).mkdir(exist_ok=True)
     Path(settings.media_dir, "originals").mkdir(exist_ok=True)
@@ -123,6 +129,26 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="SAHARA", lifespan=lifespan)
 
 
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, requests_per_minute: int = 60):
+        super().__init__(app)
+        self.requests_per_minute = requests_per_minute
+        self.requests = defaultdict(list)
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path.startswith("/api/"):
+            client_ip = request.client.host if request.client else "unknown"
+            now = datetime.utcnow()
+            cutoff = now - timedelta(minutes=1)
+            self.requests[client_ip] = [t for t in self.requests[client_ip] if t > cutoff]
+
+            if len(self.requests[client_ip]) >= self.requests_per_minute:
+                return HTMLResponse("Rate limit exceeded", status_code=429)
+            self.requests[client_ip].append(now)
+
+        return await call_next(request)
+
+
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
@@ -130,9 +156,18 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: https:; "
+            "font-src 'self'; "
+            "frame-ancestors 'none'"
+        )
         return response
 
 
+app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
 app.add_middleware(SecurityHeadersMiddleware)
 app.mount("/media", StaticFiles(directory=settings.media_dir), name="media")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -277,7 +312,7 @@ async def admin_login_post(request: Request, response: Response):
     if u_ok and p_ok:
         _clear_failures(client_ip)
         resp = RedirectResponse("/admin", status_code=303)
-        resp.set_cookie(_ADMIN_COOKIE, _make_admin_token(), httponly=True, samesite="lax", max_age=86400 * 7)
+        resp.set_cookie(_ADMIN_COOKIE, _make_admin_token(), httponly=True, samesite="lax", max_age=60*60, secure=True)
         return resp
 
     _record_failure(client_ip)
@@ -295,13 +330,11 @@ async def admin_logout():
 
 @app.get("/set-lang")
 async def set_lang(lang: str, ref: str = "/"):
-    # Prevent open redirect: only allow relative paths (must start with /)
-    # and must not start with // (which browsers treat as protocol-relative).
     if not ref.startswith("/") or ref.startswith("//"):
         ref = "/"
     resp = RedirectResponse(ref, status_code=303)
     if lang in ("uk", "en"):
-        resp.set_cookie("lang", lang, max_age=60*60*24*365)
+        resp.set_cookie("lang", lang, max_age=60*60*24*365, secure=True, httponly=True, samesite="lax")
     return resp
 
 
@@ -961,6 +994,9 @@ async def admin_order_status(
     order.status = OrderStatus(new_status)
     await session.commit()
     ref = request.headers.get("referer", "/admin/orders")
+    allowed_paths = {"/admin/orders", "/admin", "/"}
+    if not ref.startswith("/") or ref.startswith("//") or ref not in allowed_paths:
+        ref = "/admin/orders"
     return RedirectResponse(ref, status_code=303)
 
 

@@ -83,7 +83,7 @@ def ensure_csrf_cookie(response: Response, request: Request) -> str:
     token = request.cookies.get(_CSRF_COOKIE, "")
     if not token:
         token = secrets.token_hex(16)
-        response.set_cookie(_CSRF_COOKIE, token, httponly=False, samesite="lax")
+        response.set_cookie(_CSRF_COOKIE, token, httponly=True, samesite="strict", secure=True)
     return token
 
 
