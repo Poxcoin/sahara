@@ -26,14 +26,13 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status, Background
 from fastapi.responses import HTMLResponse, RedirectResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
 from app.db import init_db, get_session, async_session
-from app.models import Product, ProductStatus, User, Order, OrderItem, OrderStatus
+from app.models import Product, ProductStatus, User, Order, OrderItem, OrderStatus, Admin, AdminAuditLog
 from app.services.tryon import detect_category
 from app.services import auth as auth_svc
 from app.services.ai_generator import img2img, txt2img, PRESETS, PROMPT_TEMPLATE
@@ -217,77 +216,64 @@ async def not_found_handler(request: Request, exc):
 
 
 security = HTTPBasic(auto_error=False)
-
-_ADMIN_COOKIE = "sahara_admin"
-
-def _make_admin_token() -> str:
-    return _hmac.new(
-        settings.secret_key.encode(),
-        b"sahara_admin_session",
-        "sha256",
-    ).hexdigest()
-
-def _verify_admin_cookie(request: Request) -> bool:
-    token = request.cookies.get(_ADMIN_COOKIE, "")
-    return _hmac.compare_digest(token, _make_admin_token())
-
-# ---------------------------------------------------------------------------
-# Simple in-memory brute-force protection for admin login.
-# Tracks failed attempts per source IP; after 10 failures within 10 minutes
-# the IP is locked out for 10 minutes.
-# ---------------------------------------------------------------------------
-_auth_failures: dict[str, list[float]] = defaultdict(list)
-_auth_lock = threading.Lock()
-_MAX_FAILURES = 10
-_WINDOW_SECS = 600  # 10 minutes
-_LOCKOUT_SECS = 600
+# ── Admin Session & Rate Limiting ──
+_admin_login_failures: dict[str, list[float]] = defaultdict(list)
+_admin_lock = threading.Lock()
+_MAX_ADMIN_FAILURES = 5
+_ADMIN_WINDOW = 600  # 10 minutes
+_ADMIN_LOCKOUT = 900  # 15 minutes
 
 
-def _check_rate_limit(ip: str) -> None:
+async def get_current_admin(request: Request, session: AsyncSession = Depends(get_session)) -> Admin:
+    """Verify admin session and return Admin object."""
+    admin_id = auth_svc.get_admin_id_from_cookie(request)
+    if not admin_id:
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER, headers={"Location": "/admin/login"})
+
+    admin = await session.get(Admin, admin_id)
+    if not admin:
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER, headers={"Location": "/admin/login"})
+
+    return admin
+
+
+def _check_admin_rate_limit(ip: str) -> None:
+    """Check if IP is rate-limited for admin login."""
     now = time.time()
-    with _auth_lock:
-        timestamps = _auth_failures[ip]
-        # Drop entries outside the window
-        timestamps[:] = [t for t in timestamps if now - t < _WINDOW_SECS]
-        if len(timestamps) >= _MAX_FAILURES:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Too many failed login attempts. Try again later.",
-                headers={"WWW-Authenticate": "Basic"},
-            )
+    with _admin_lock:
+        timestamps = _admin_login_failures[ip]
+        timestamps[:] = [t for t in timestamps if now - t < _ADMIN_WINDOW]
+        if len(timestamps) >= _MAX_ADMIN_FAILURES:
+            raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Too many login attempts")
 
 
-def _record_failure(ip: str) -> None:
-    with _auth_lock:
-        _auth_failures[ip].append(time.time())
+def _record_admin_failure(ip: str) -> None:
+    """Record failed admin login attempt."""
+    with _admin_lock:
+        _admin_login_failures[ip].append(time.time())
 
 
-def _clear_failures(ip: str) -> None:
-    with _auth_lock:
-        _auth_failures.pop(ip, None)
+def _clear_admin_failures(ip: str) -> None:
+    """Clear failed login attempts for IP."""
+    with _admin_lock:
+        _admin_login_failures.pop(ip, None)
 
 
-def require_admin(request: Request, credentials: HTTPBasicCredentials = Depends(security)):
-    # Accept cookie-based session (from login form)
-    if _verify_admin_cookie(request):
-        return "admin"
-
-    # Accept HTTP Basic Auth as fallback (API calls)
-    client_ip = request.client.host if request.client else "unknown"
-    _check_rate_limit(client_ip)
-
-    if credentials:
-        username_ok = secrets.compare_digest(credentials.username.encode(), b"admin")
-        password_ok = secrets.compare_digest(credentials.password.encode(), settings.admin_password.encode())
-        if username_ok and password_ok:
-            _clear_failures(client_ip)
-            return credentials.username
-
-    _record_failure(client_ip)
-    raise HTTPException(
-        status_code=status.HTTP_303_SEE_OTHER,
-        headers={"Location": "/admin/login"},
+async def _log_admin_action(
+    session: AsyncSession, admin_id: int | None, action: str, ip: str,
+    user_agent: str | None = None, success: bool = False, error_msg: str | None = None
+) -> None:
+    """Log admin action to AuditLog."""
+    log = AdminAuditLog(
+        admin_id=admin_id,
+        action=action,
+        ip_address=ip,
+        user_agent=user_agent,
+        success=success,
+        error_message=error_msg
     )
+    session.add(log)
+    await session.commit()
 
 
 # ==================== ADMIN LOGIN ====================
