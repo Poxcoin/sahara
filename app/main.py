@@ -276,40 +276,86 @@ async def _log_admin_action(
     await session.commit()
 
 
-# ==================== ADMIN LOGIN ====================
+# ==================== ADMIN LOGIN & 2FA ====================
 
 @app.get("/admin/login", response_class=HTMLResponse)
-async def admin_login_page(request: Request, error: str = ""):
-    if _verify_admin_cookie(request):
+async def admin_login_page(request: Request, session: AsyncSession = Depends(get_session)):
+    admin_id = auth_svc.get_admin_id_from_cookie(request)
+    if admin_id:
         return RedirectResponse("/admin", status_code=303)
-    return templates.TemplateResponse("admin_login.html", {"request": request, "error": error, "site_name": settings.site_name})
+    resp = templates.TemplateResponse("admin_login.html", {"request": request, "site_name": settings.site_name})
+    auth_svc.ensure_csrf_cookie(resp, request)
+    return resp
 
 
 @app.post("/admin/login")
-async def admin_login_post(request: Request, response: Response):
-    form = await request.form()
-    username = str(form.get("username", ""))
-    password = str(form.get("password", ""))
+async def admin_login_post(
+    request: Request, response: Response, session: AsyncSession = Depends(get_session)
+):
+    """Admin login with username + password + optional TOTP."""
     client_ip = request.client.host if request.client else "unknown"
-    _check_rate_limit(client_ip)
+    user_agent = request.headers.get("user-agent", "")
 
-    u_ok = secrets.compare_digest(username.encode(), b"admin")
-    p_ok = secrets.compare_digest(password.encode(), settings.admin_password.encode())
-    if u_ok and p_ok:
-        _clear_failures(client_ip)
-        resp = RedirectResponse("/admin", status_code=303)
-        resp.set_cookie(_ADMIN_COOKIE, _make_admin_token(), httponly=True, samesite="lax", max_age=60*60, secure=True)
-        return resp
+    try:
+        _check_admin_rate_limit(client_ip)
+    except HTTPException:
+        await _log_admin_action(session, None, "login_ratelimit", client_ip, user_agent, False, "Rate limited")
+        raise
 
-    _record_failure(client_ip)
-    return RedirectResponse("/admin/login?error=1", status_code=303)
+    form = await request.form()
+    auth_svc.verify_csrf(request, str(form.get("csrf_token", "")))
+
+    username = str(form.get("username", "")).strip()
+    password = str(form.get("password", "")).strip()
+    totp_code = str(form.get("totp_code", "")).strip()
+
+    result = await session.execute(select(Admin).where(Admin.username == username))
+    admin = result.scalar_one_or_none()
+
+    if not admin or not auth_svc.verify_password(password, admin.password_hash):
+        _record_admin_failure(client_ip)
+        await _log_admin_action(session, None, "login_fail", client_ip, user_agent, False, "Bad credentials")
+        return RedirectResponse("/admin/login?error=invalid", status_code=303)
+
+    if admin.totp_enabled and not totp_code:
+        await session.execute(select(Admin).where(Admin.id == admin.id))
+        auth_svc.set_pending_cookie(response, str(admin.id), "admin_totp")
+        return RedirectResponse("/admin/totp", status_code=303)
+
+    if admin.totp_enabled and totp_code:
+        if not auth_svc.verify_totp(admin.totp_secret, totp_code):
+            _record_admin_failure(client_ip)
+            await _log_admin_action(session, admin.id, "login_totp_fail", client_ip, user_agent, False, "Bad TOTP")
+            return RedirectResponse("/admin/login?error=totp", status_code=303)
+
+    _clear_admin_failures(client_ip)
+    admin.last_login = datetime.utcnow()
+    await session.commit()
+
+    auth_svc.create_admin_session(response, admin.id)
+    await _log_admin_action(session, admin.id, "login_success", client_ip, user_agent, True)
+
+    return RedirectResponse("/admin", status_code=303)
+
+
+@app.get("/admin/totp", response_class=HTMLResponse)
+async def admin_totp_page(request: Request):
+    """TOTP verification page."""
+    pending = auth_svc.get_pending(request)
+    if not pending or pending.get("p") != "admin_totp":
+        return RedirectResponse("/admin/login", status_code=303)
+
+    resp = templates.TemplateResponse("admin_totp.html", {"request": request, "site_name": settings.site_name})
+    auth_svc.ensure_csrf_cookie(resp, request)
+    return resp
 
 
 @app.get("/admin/logout")
-async def admin_logout():
-    resp = RedirectResponse("/admin/login", status_code=303)
-    resp.delete_cookie(_ADMIN_COOKIE)
-    return resp
+async def admin_logout(response: Response):
+    """Logout admin and clear session."""
+    auth_svc.clear_admin_session(response)
+    auth_svc.clear_pending_cookie(response)
+    return RedirectResponse("/admin/login", status_code=303)
 
 
 # ==================== ПУБЛІЧНА ЧАСТИНА ====================

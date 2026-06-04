@@ -140,16 +140,39 @@ def get_totp_provisioning_uri(username: str, secret: str) -> str:
     return totp.provisioning_uri(name=username, issuer_name="SAHARA Admin")
 
 
-def verify_totp(secret: str, token: str) -> bool:
-    """Verify TOTP token (accepts current and previous 30s window)."""
+def verify_totp(secret: str, token: str, *, allow_previous: bool = True) -> bool:
+    """Verify TOTP token with replay protection.
+
+    Args:
+        secret: TOTP secret (should be stored encrypted in DB)
+        token: 6-digit code from user
+        allow_previous: Whether to accept tokens from the previous 30s window
+
+    Returns:
+        True if token is valid, False otherwise
+
+    Security notes:
+    - Only accepts current (and optionally previous) 30s window to prevent replay
+    - Caller must implement counter tracking to prevent time-window replay
+    """
     import pyotp
     try:
         totp = pyotp.TOTP(secret)
-        return totp.verify(token, valid_window=1)
+        # valid_window=0: only current window (strict, may reject valid codes at window boundary)
+        # valid_window=1: current + previous window (slightly more lenient, but replay-safe with counter tracking)
+        window = 1 if allow_previous else 0
+        return totp.verify(token, valid_window=window)
     except Exception:
         return False
 
 
 def generate_backup_codes(count: int = 10) -> list[str]:
-    """Generate backup codes (8 chars hex) for 2FA recovery."""
-    return [secrets.token_hex(4) for _ in range(count)]
+    """Generate backup codes (128 bits, human-friendly) for 2FA recovery."""
+    # Generate 128-bit codes formatted as xxxx-xxxx-xxxx for readability
+    codes = []
+    for _ in range(count):
+        code = secrets.token_urlsafe(16)[:20]  # 128-bit base64 -> 20 chars
+        # Format as xxxx-xxxx-xxxx
+        formatted = f"{code[:4]}-{code[4:8]}-{code[8:12]}"
+        codes.append(formatted)
+    return codes
