@@ -13,7 +13,7 @@ import replicate
 from PIL import Image
 from rembg import remove
 
-os.environ["REPLICATE_API_TOKEN"] = "r8_9DecGOUmuDWJqmNS11Ql8e0XlBwgQhq2ChhZe"
+os.environ["REPLICATE_API_TOKEN"] = os.getenv("REPLICATE_API_TOKEN", "your_token_here")
 
 TEST_IMAGE = "media/originals/106.jpg"
 OUTPUT_A = "media/test_A_rembg.jpg"
