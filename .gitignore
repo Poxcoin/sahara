@@ -37,3 +37,12 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+*.session
+*.session-journal
+*.log
+__pycache__/
+*.pyc
+.env
+os
+
